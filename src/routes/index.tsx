@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/smol/SiteFooter";
 import { ProductCard } from "@/components/smol/ProductCard";
 import { PRODUCTS } from "@/data/products";
 import logo from "@/assets/smol-stuuf-logo.png.asset.json";
+import { StickerField } from "@/components/smol/StickerField";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,6 +33,7 @@ function Home() {
       <SiteHeader />
       <main>
         <div className="hero dots">
+          <StickerField />
           <div className="wrap hero-inner">
             <div>
               <span className="sticker s1">GOOD STUUF ✓</span>

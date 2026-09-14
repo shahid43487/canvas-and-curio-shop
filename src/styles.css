@@ -169,6 +169,7 @@ body {
 .dots {
   background-image: radial-gradient(circle, rgba(22,27,83,0.16) 1.5px, transparent 1.5px);
   background-size: 16px 16px;
+  animation: pattern-drift 18s linear infinite;
 }
 .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
 
@@ -197,10 +198,15 @@ nav.links a.active, nav.links a:hover { border-bottom-color: var(--smol-red); co
   display: flex; align-items: center; gap: 6px;
 }
 .cart-btn:hover { background: var(--smol-red); color: var(--smol-white); }
+.button-spring, .btn-primary, .btn-outline, .cart-btn, .add-cart {
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease, background-color .2s ease;
+}
+.button-spring:hover, .btn-primary:hover, .btn-outline:hover, .cart-btn:hover, .add-cart:hover { transform: translateY(-3px) rotate(-1deg); box-shadow: 5px 6px 0 var(--smol-ink); }
+.button-spring:active, .btn-primary:active, .btn-outline:active, .cart-btn:active, .add-cart:active { transform: translateY(2px) scale(.93) rotate(1deg); box-shadow: 1px 2px 0 var(--smol-ink); }
 main { min-height: 70vh; }
 
 /* ---------- HERO ---------- */
-.hero { position: relative; padding: 56px 0 40px; overflow: hidden; }
+.hero { position: relative; padding: 56px 0 40px; overflow: hidden; isolation: isolate; }
 .hero-inner {
   position: relative; z-index: 1;
   display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 20px; align-items: center;
@@ -208,6 +214,7 @@ main { min-height: 70vh; }
 @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; } }
 .hero-logo-art { width: 100%; max-width: 560px; justify-self: end; transform: rotate(2deg); position: relative; }
 .hero-logo-art img { width: 100%; height: auto; display: block; }
+.hero-logo-art img { animation: logo-breathe 5s ease-in-out infinite; filter: drop-shadow(10px 12px 0 color-mix(in srgb, var(--smol-red) 88%, transparent)); }
 @media (max-width: 900px) { .hero-logo-art { justify-self: center; max-width: 420px; } }
 .eyebrow-tag {
   display: inline-flex; align-items: center; gap: 8px;
@@ -244,6 +251,7 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
   border-radius: 100px; padding: 8px 16px; font-size: 13px;
   box-shadow: 4px 4px 0 var(--smol-ink);
 }
+.sticker { animation: sticker-drift 4.5s ease-in-out infinite; }
 .sticker.red { background: var(--smol-red); color: var(--smol-white); border-color: var(--smol-ink); }
 .s1 { top: 20px; left: 400px; transform: rotate(8deg); }
 .s2 { bottom: 10px; right: 20px; transform: rotate(-6deg); }
@@ -279,9 +287,10 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
 .card {
   border-right: 3px solid var(--smol-ink); border-bottom: 3px solid var(--smol-ink);
   padding: 22px; cursor: pointer; background: var(--smol-white);
-  transition: transform .15s ease; display: block; color: inherit; text-decoration: none;
+  transition: transform .42s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease; display: block; color: inherit; text-decoration: none;
+  position: relative;
 }
-.card:hover { transform: translateY(-4px); }
+.card:hover { transform: translateY(-10px) rotate(-.7deg); box-shadow: 12px 14px 0 var(--smol-red); z-index: 2; }
 .card-tag {
   display: inline-block; font-size: 11px; font-weight: 700;
   background: var(--smol-red); color: var(--smol-white);
@@ -294,6 +303,10 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
   display: flex; align-items: center; justify-content: center;
   position: relative; margin-bottom: 16px; overflow: hidden;
 }
+.product-image { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.34,1.56,.64,1), filter .35s ease; }
+.card:hover .product-image { transform: scale(1.045) rotate(.8deg); filter: saturate(1.08) contrast(1.03); }
+.card-sticker { position: absolute; right: 12px; bottom: 12px; width: 42px; height: 42px; display: grid; place-items: center; border: 2px solid var(--smol-ink); border-radius: 50%; color: var(--smol-white); background: var(--smol-red); font-size: 20px; box-shadow: 3px 3px 0 var(--smol-ink); transition: transform .45s cubic-bezier(.34,1.56,.64,1); }
+.card:hover .card-sticker { transform: rotate(145deg) scale(1.12); }
 .swatch .num {
   position: absolute; top: 10px; left: 12px;
   font-family: var(--smol-display); font-weight: 800; font-size: 12px;
@@ -316,6 +329,8 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
   display: flex; align-items: center; justify-content: center;
   position: relative; overflow: hidden; background: var(--smol-white);
 }
+.product-photo .product-image { position: absolute; inset: 0; }
+.product-photo:hover .product-image { transform: scale(1.025); }
 .product-photo .num-badge {
   position: absolute; top: 16px; left: 16px;
   font-family: var(--smol-display); font-weight: 800; font-size: 13px;
@@ -372,7 +387,49 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
   opacity: 0.55; flex-wrap: wrap; gap: 10px;
 }
 
+/* ---------- KINETIC STICKERS + TEXTURE ---------- */
+.sticker-field { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.float-sticker { position: absolute; display: grid; place-items: center; color: var(--smol-white); background: var(--smol-red); border: 3px solid var(--smol-ink); box-shadow: 5px 5px 0 var(--smol-ink); font-family: var(--smol-display); font-weight: 800; line-height: .9; text-align: center; animation: sticker-float 5s ease-in-out infinite; }
+.sticker-eye { width: 86px; height: 48px; left: 4%; bottom: 12%; border-radius: 52% 48% 50% 50%; background: var(--smol-white); transform: rotate(-9deg); }
+.sticker-eye::before { content: ""; width: 31px; height: 31px; border-radius: 50%; background: var(--smol-ink); }
+.sticker-eye i { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--smol-white); }
+.sticker-star { width: 92px; height: 92px; right: 3%; top: 7%; clip-path: polygon(50% 0,61% 32%,88% 14%,73% 42%,100% 50%,70% 59%,86% 87%,58% 72%,49% 100%,39% 70%,12% 87%,27% 58%,0 49%,31% 40%,14% 13%,41% 31%); font-size: 12px; animation-delay: -.8s; }
+.sticker-hand { right: 10%; bottom: 7%; width: 70px; height: 78px; background: var(--smol-white); color: var(--smol-ink); border-radius: 44% 56% 45% 55%; font-size: 38px; transform: rotate(12deg); animation-delay: -1.6s; }
+.sticker-badge { left: 2%; top: 8%; width: 76px; height: 76px; border-radius: 50%; font-size: 12px; transform: rotate(-10deg); animation-delay: -2.4s; }
+.sticker-spark { left: 46%; top: 4%; color: var(--smol-red); background: transparent; border: 0; box-shadow: none; font-size: 50px; animation-delay: -3.2s; }
+.sticker-field.compact { z-index: 3; }
+.sticker-field.compact .float-sticker { transform: scale(.65); }
+.sticker-field.compact .sticker-eye { left: auto; right: 3%; bottom: 3%; }
+.sticker-field.compact .sticker-star { display: none; }
+.sticker-field.compact .sticker-hand { left: 2%; right: auto; bottom: 4%; }
+.sticker-field.compact .sticker-badge, .sticker-field.compact .sticker-spark { display: none; }
+.burst-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 9999; }
+.click-sticker { position: absolute; display: grid; place-items: center; min-width: 38px; height: 38px; padding: 0 7px; border: 2px solid var(--smol-ink); border-radius: 50%; background: var(--smol-red); color: var(--smol-white); font: 800 10px var(--smol-display); box-shadow: 3px 3px 0 var(--smol-ink); transform: translate(-50%,-50%); animation: click-pop .7s cubic-bezier(.2,.8,.2,1) forwards; }
+.click-sticker-1 { background: var(--smol-yellow); color: var(--smol-ink); animation-name: click-pop-left; }
+.click-sticker-2 { background: var(--smol-cyan); color: var(--smol-ink); animation-name: click-pop-right; }
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: .055; background-image: repeating-linear-gradient(18deg, transparent 0 3px, var(--smol-ink) 4px); mix-blend-mode: multiply; }
+@keyframes pattern-drift { to { background-position: 16px 16px; } }
+@keyframes logo-breathe { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-8px) rotate(1deg); } }
+@keyframes sticker-drift { 0%,100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+@keyframes sticker-float { 0%,100% { translate: 0 0; rotate: -2deg; } 50% { translate: 0 -12px; rotate: 3deg; } }
+@keyframes click-pop { 0% { opacity: 1; scale: .3; } 45% { opacity: 1; translate: 0 -34px; scale: 1.15; rotate: 16deg; } 100% { opacity: 0; translate: 0 -65px; scale: .7; rotate: 30deg; } }
+@keyframes click-pop-left { 0% { opacity: 1; scale: .3; } 55% { opacity: 1; translate: -38px -32px; scale: 1.1; rotate: -18deg; } 100% { opacity: 0; translate: -55px -62px; scale: .6; } }
+@keyframes click-pop-right { 0% { opacity: 1; scale: .3; } 55% { opacity: 1; translate: 38px -32px; scale: 1.1; rotate: 18deg; } 100% { opacity: 0; translate: 55px -62px; scale: .6; } }
+
 @media (max-width: 760px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
   nav.links { display: none; }
+  .float-sticker { scale: .72; }
+  .sticker-eye, .sticker-hand { display: none; }
+}
+
+@media (max-width: 520px) {
+  .grid { grid-template-columns: 1fr; }
+  .hero { padding-top: 38px; }
+  .sticker-badge { left: -12px; top: 2px; }
+  .sticker-star { right: -20px; top: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }

@@ -19,7 +19,7 @@ export function SiteHeader() {
             About
           </Link>
         </nav>
-        <button className="cart-btn" type="button">
+        <button className="cart-btn button-spring" type="button">
           Cart · 0
         </button>
       </div>

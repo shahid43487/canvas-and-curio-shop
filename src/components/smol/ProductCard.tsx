@@ -1,15 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import type { Product } from "@/data/products";
-import { Glyph } from "./Glyph";
+import { ProductImage } from "./ProductImage";
 
 export function ProductCard({ product }: { product: Product }) {
   const dark = product.tag === "LIMITED" || product.tag === "WEIRD ONE";
   return (
     <Link to="/product/$id" params={{ id: String(product.id) }} className="card">
       <span className={dark ? "card-tag dark" : "card-tag"}>{product.tag}</span>
-      <div className="swatch" style={{ background: `color-mix(in srgb, ${product.color} 13%, transparent)` }}>
+      <div className="swatch">
         <span className="num">{product.num}</span>
-        <Glyph />
+        <ProductImage id={product.id} name={product.name} />
+        <span className="card-sticker" aria-hidden="true">✦</span>
       </div>
       <h3>{product.name}</h3>
       <div className="meta">
