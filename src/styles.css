@@ -214,7 +214,7 @@ main { min-height: 70vh; }
 @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; } }
 .hero-logo-art { width: 100%; max-width: 560px; justify-self: end; transform: rotate(2deg); position: relative; }
 .hero-logo-art img { width: 100%; height: auto; display: block; }
-.hero-logo-art img { animation: logo-breathe 5s ease-in-out infinite; filter: drop-shadow(10px 12px 0 color-mix(in srgb, var(--smol-red) 88%, transparent)); }
+.hero-logo-art img { animation: logo-breathe 5s ease-in-out infinite; filter: drop-shadow(10px 12px 0 color-mix(in srgb, var(--smol-ink) 92%, transparent)); }
 @media (max-width: 900px) { .hero-logo-art { justify-self: center; max-width: 420px; } }
 .eyebrow-tag {
   display: inline-flex; align-items: center; gap: 8px;
