@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
-import { Glyph } from "@/components/smol/Glyph";
+import { ProductImage } from "@/components/smol/ProductImage";
+import { StickerField } from "@/components/smol/StickerField";
 import { PRODUCTS } from "@/data/products";
 
 export const Route = createFileRoute("/product/$id")({
@@ -40,9 +41,10 @@ function ProductPage() {
             ← Back to shop
           </Link>
           <div className="product-layout">
-            <div className="product-photo" style={{ background: `color-mix(in srgb, ${p.color} 13%, transparent)` }}>
+            <div className="product-photo">
               <span className="num-badge">{p.num}</span>
-              <Glyph className="glyph" style={{ width: "100%", height: "100%" }} />
+              <ProductImage id={p.id} name={p.name} eager />
+              <StickerField compact />
             </div>
             <div className="product-info">
               <h1>{p.name}</h1>

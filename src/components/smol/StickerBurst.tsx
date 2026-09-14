@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 type Burst = { id: number; x: number; y: number; symbol: string };
-const SYMBOLS = ["★", "✦", "●", "SMOL", "STUUF"];
+const SYMBOLS = ["★", "✦", "●", "SMOL", "STUUF"] as const;
 
 export function StickerBurst() {
   const [bursts, setBursts] = useState<Burst[]>([]);
@@ -12,7 +12,7 @@ export function StickerBurst() {
       const target = event.target;
       if (!(target instanceof Element) || !target.closest("a, button")) return;
       const id = nextId++;
-      setBursts((items) => [...items.slice(-7), { id, x: event.clientX, y: event.clientY, symbol: SYMBOLS[id % SYMBOLS.length] }]);
+      setBursts((items) => [...items.slice(-7), { id, x: event.clientX, y: event.clientY, symbol: SYMBOLS[id % SYMBOLS.length] ?? "★" }]);
       window.setTimeout(() => setBursts((items) => items.filter((item) => item.id !== id)), 720);
     };
     document.addEventListener("click", onClick);
