@@ -433,3 +433,29 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- PRODUCT PAGE KINETICS ---------- */
+.product-view { position: relative; }
+.product-view::before {
+  content: ""; position: absolute; inset: -20px 0 auto; height: 320px; z-index: -1;
+  background-image: radial-gradient(color-mix(in srgb, var(--smol-ink) 22%, transparent) 1.4px, transparent 1.4px);
+  background-size: 16px 16px; opacity: .5;
+  animation: pattern-drift 18s linear infinite;
+  pointer-events: none;
+}
+.product-photo {
+  background-image: radial-gradient(color-mix(in srgb, var(--smol-red) 16%, transparent) 1.6px, transparent 1.6px);
+  background-size: 14px 14px;
+  transition: background-size .45s ease, transform .35s ease;
+}
+.product-photo:hover { background-size: 22px 22px; transform: rotate(-.6deg); }
+.colorways .dotc { transition: transform .25s ease, box-shadow .25s ease; }
+.colorways .dotc:hover { transform: translateY(-3px) scale(1.12) rotate(-6deg); box-shadow: 2px 3px 0 var(--smol-ink); }
+.spec-row { transition: background .25s ease, padding-left .25s ease; }
+.spec-row:hover { background: color-mix(in srgb, var(--smol-red) 8%, transparent); padding-left: 8px; }
+.product-info h1 { animation: fade-in .5s ease-out both; }
+.product-info .desc, .spec-table, .colorways { animation: fade-in .6s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .product-view::before, .product-info h1, .product-info .desc, .spec-table, .colorways { animation: none; }
+  .product-photo:hover { transform: none; background-size: 14px 14px; }
+}
