@@ -76,7 +76,7 @@ function ProductPage() {
                   <span key={c} className="dotc" style={{ background: c }} />
                 ))}
               </div>
-              <button className="add-cart" type="button">
+              <button className="add-cart button-spring" type="button">
                 Add to cart — {p.price}
               </button>
               <p className="edition-note">Small batch. Once it's gone, it's gone until the next drop.</p>
