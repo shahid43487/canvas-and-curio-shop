@@ -28,8 +28,8 @@ export const Route = createFileRoute("/order/$id")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  loader: ({ context, params, search }) =>
-    context.queryClient.ensureQueryData(orderQueryOptions(params.id, search.phone ?? "")),
+  loader: ({ context, params, location }) =>
+    context.queryClient.ensureQueryData(orderQueryOptions(params.id, (location.search as { phone?: string }).phone ?? "")),
   component: OrderConfirmation,
   errorComponent: OrderError,
 });
