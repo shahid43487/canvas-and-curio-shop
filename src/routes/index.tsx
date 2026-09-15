@@ -1,10 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+
 import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { ProductCard } from "@/components/smol/ProductCard";
-import { PRODUCTS } from "@/data/products";
-import logo from "@/assets/smol-stuuf-logo.png.asset.json";
 import { StickerField } from "@/components/smol/StickerField";
+import logo from "@/assets/smol-stuuf-logo.png.asset.json";
+import { listProducts } from "@/lib/products.functions";
+
+const productsQueryOptions = queryOptions({
+  queryKey: ["products"],
+  queryFn: () => listProducts(),
+});
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,10 +31,14 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(productsQueryOptions),
   component: Home,
 });
 
 function Home() {
+  const { data } = useSuspenseQuery(productsQueryOptions);
+  const featured = data.products.slice(0, 3);
+
   return (
     <>
       <SiteHeader />
@@ -80,7 +91,7 @@ function Home() {
         </div>
         <div className="wrap" style={{ paddingBottom: 20 }}>
           <div className="grid">
-            {PRODUCTS.slice(0, 3).map((p) => (
+            {featured.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
