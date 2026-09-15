@@ -8,13 +8,13 @@ export type OrderItemInput = {
 
 export type OrderInput = {
   payment_method: "cod" | "bkash";
-  bkash_transaction_id?: string;
+  bkash_transaction_id?: string | undefined;
   shipping_name: string;
   shipping_email: string;
   shipping_phone: string;
   shipping_address: string;
   shipping_city: string;
-  shipping_notes?: string;
+  shipping_notes?: string | undefined;
   total_amount: number;
 };
 
