@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { StickerBurst } from "@/components/smol/StickerBurst";
+import { Toaster } from "@/components/ui/sonner";
+import { CartProvider } from "@/hooks/use-cart";
 
 function NotFoundComponent() {
   return (
