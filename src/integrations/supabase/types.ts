@@ -14,16 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: number
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id: number
+          quantity: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: number
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          bkash_transaction_id: string | null
+          created_at: string
+          id: string
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          shipping_address: string
+          shipping_city: string
+          shipping_email: string
+          shipping_name: string
+          shipping_notes: string | null
+          shipping_phone: string
+          status: Database["public"]["Enums"]["order_status"]
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          bkash_transaction_id?: string | null
+          created_at?: string
+          id?: string
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          shipping_address: string
+          shipping_city: string
+          shipping_email: string
+          shipping_name: string
+          shipping_notes?: string | null
+          shipping_phone: string
+          status?: Database["public"]["Enums"]["order_status"]
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          bkash_transaction_id?: string | null
+          created_at?: string
+          id?: string
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          shipping_address?: string
+          shipping_city?: string
+          shipping_email?: string
+          shipping_name?: string
+          shipping_notes?: string | null
+          shipping_phone?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          batch: string
+          color: string
+          colors: string[]
+          created_at: string
+          description: string
+          dims: string
+          id: number
+          image_key: string
+          material: string
+          name: string
+          num: string
+          price: number
+          stock: number
+          tag: string
+          updated_at: string
+        }
+        Insert: {
+          batch: string
+          color: string
+          colors?: string[]
+          created_at?: string
+          description: string
+          dims: string
+          id: number
+          image_key: string
+          material: string
+          name: string
+          num: string
+          price: number
+          stock?: number
+          tag: string
+          updated_at?: string
+        }
+        Update: {
+          batch?: string
+          color?: string
+          colors?: string[]
+          created_at?: string
+          description?: string
+          dims?: string
+          id?: number
+          image_key?: string
+          material?: string
+          name?: string
+          num?: string
+          price?: number
+          stock?: number
+          tag?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_order_with_items: {
+        Args: { items: Json; order_data: Json }
+        Returns: string
+      }
     }
     Enums: {
-      [_ in never]: never
+      order_status:
+        | "pending"
+        | "confirmed"
+        | "shipped"
+        | "delivered"
+        | "cancelled"
+      payment_method: "cod" | "bkash"
+      payment_status: "pending" | "paid"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +306,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      order_status: [
+        "pending",
+        "confirmed",
+        "shipped",
+        "delivered",
+        "cancelled",
+      ],
+      payment_method: ["cod", "bkash"],
+      payment_status: ["pending", "paid"],
+    },
   },
 } as const

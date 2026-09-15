@@ -1,8 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+
 import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { ProductCard } from "@/components/smol/ProductCard";
-import { PRODUCTS } from "@/data/products";
+import { listProducts } from "@/lib/products.functions";
+
+const productsQueryOptions = queryOptions({
+  queryKey: ["products"],
+  queryFn: () => listProducts(),
+});
 
 export const Route = createFileRoute("/shop")({
   head: () => ({
@@ -18,10 +25,13 @@ export const Route = createFileRoute("/shop")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(productsQueryOptions),
   component: Shop,
 });
 
 function Shop() {
+  const { data } = useSuspenseQuery(productsQueryOptions);
+
   return (
     <>
       <SiteHeader />
@@ -32,7 +42,7 @@ function Shop() {
             <p>Every current piece, numbered and in stock. Prices in USD.</p>
           </div>
           <div className="grid" style={{ marginBottom: 40 }}>
-            {PRODUCTS.map((p) => (
+            {data.products.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>

@@ -1,20 +1,29 @@
+import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { Minus, Plus } from "lucide-react";
+
 import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { ProductImage } from "@/components/smol/ProductImage";
 import { StickerField } from "@/components/smol/StickerField";
-import { PRODUCTS } from "@/data/products";
+import { formatPrice } from "@/data/products";
+import { useCart } from "@/hooks/use-cart";
+import { getProduct } from "@/lib/products.functions";
+
+const productQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: ["product", id],
+    queryFn: () => getProduct({ data: { id } }),
+  });
 
 export const Route = createFileRoute("/product/$id")({
-  loader: ({ params }) => {
-    const product = PRODUCTS.find((p) => String(p.id) === params.id);
-    if (!product) throw notFound();
-    return { product };
-  },
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(productQueryOptions(params.id)),
   head: ({ loaderData }) => {
     const p = loaderData?.product;
     const title = p ? `${p.name} — SMOL STUUF` : "SMOL STUUF";
-    const description = p ? `${p.desc} ${p.batch}.` : "Small-batch objects from SMOL STUUF.";
+    const description = p ? `${p.description} ${p.batch}.` : "Small-batch objects from SMOL STUUF.";
     return {
       meta: [
         { title },
@@ -30,7 +39,15 @@ export const Route = createFileRoute("/product/$id")({
 });
 
 function ProductPage() {
-  const { product: p } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { data } = useSuspenseQuery(productQueryOptions(id));
+  const { product: p } = data;
+  const { addItem, setIsOpen } = useCart();
+  const [qty, setQty] = useState(1);
+
+  if (!p) throw notFound();
+
+  const outOfStock = p.stock <= 0;
 
   return (
     <>
@@ -49,10 +66,10 @@ function ProductPage() {
             <div className="product-info">
               <h1>{p.name}</h1>
               <div className="price-row">
-                <span className="price">{p.price}</span>
+                <span className="price">{formatPrice(p.price)}</span>
                 <span className="card-tag">{p.tag}</span>
               </div>
-              <p className="desc">{p.desc}</p>
+              <p className="desc">{p.description}</p>
               <div className="spec-table">
                 <div className="spec-row">
                   <span className="k">Material</span>
@@ -70,14 +87,47 @@ function ProductPage() {
                   <span className="k">Number</span>
                   <span>{p.num}</span>
                 </div>
+                <div className="spec-row">
+                  <span className="k">Stock</span>
+                  <span>{outOfStock ? "Sold out" : `${p.stock} left`}</span>
+                </div>
               </div>
               <div className="colorways">
                 {p.colors.map((c) => (
                   <span key={c} className="dotc" style={{ background: c }} />
                 ))}
               </div>
-              <button className="add-cart button-spring" type="button">
-                Add to cart — {p.price}
+
+              <div className="qty-row">
+                <button
+                  type="button"
+                  className="qty-btn"
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  aria-label="Decrease quantity"
+                >
+                  <Minus size={16} />
+                </button>
+                <span className="qty-value">{qty}</span>
+                <button
+                  type="button"
+                  className="qty-btn"
+                  onClick={() => setQty((q) => q + 1)}
+                  aria-label="Increase quantity"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+
+              <button
+                className="add-cart button-spring"
+                type="button"
+                disabled={outOfStock}
+                onClick={() => {
+                  addItem(p, qty);
+                  setIsOpen(true);
+                }}
+              >
+                {outOfStock ? "Sold out" : `Add to cart — ${formatPrice(p.price * qty)}`}
               </button>
               <p className="edition-note">Small batch. Once it's gone, it's gone until the next drop.</p>
             </div>

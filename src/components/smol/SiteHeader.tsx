@@ -1,7 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/smol-stuuf-logo.png.asset.json";
+import { useCart } from "@/hooks/use-cart";
+import { CartSheet } from "./CartSheet";
 
 export function SiteHeader() {
+  const { totalItems, setIsOpen } = useCart();
+
   return (
     <header className="smol-header">
       <div className="navbar">
@@ -19,10 +23,11 @@ export function SiteHeader() {
             About
           </Link>
         </nav>
-        <button className="cart-btn button-spring" type="button">
-          Cart · 0
+        <button className="cart-btn button-spring" type="button" onClick={() => setIsOpen(true)}>
+          Cart · {totalItems}
         </button>
       </div>
+      <CartSheet />
     </header>
   );
 }
