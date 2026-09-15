@@ -52,6 +52,7 @@ function Checkout() {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
