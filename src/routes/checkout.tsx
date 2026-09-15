@@ -153,16 +153,26 @@ function Checkout() {
 
             <section className="checkout-section">
               <h2>Payment method</h2>
-              <RadioGroup defaultValue="cod" {...register("payment_method")} className="payment-options">
-                <div className="payment-option">
-                  <RadioGroupItem value="cod" id="cod" />
-                  <Label htmlFor="cod">Cash on delivery</Label>
-                </div>
-                <div className="payment-option">
-                  <RadioGroupItem value="bkash" id="bkash" />
-                  <Label htmlFor="bkash">bKash transfer</Label>
-                </div>
-              </RadioGroup>
+              <Controller
+                name="payment_method"
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    className="payment-options"
+                  >
+                    <div className="payment-option">
+                      <RadioGroupItem value="cod" id="cod" />
+                      <Label htmlFor="cod">Cash on delivery</Label>
+                    </div>
+                    <div className="payment-option">
+                      <RadioGroupItem value="bkash" id="bkash" />
+                      <Label htmlFor="bkash">bKash transfer</Label>
+                    </div>
+                  </RadioGroup>
+                )}
+              />
               {errors.payment_method && <span className="form-error">{errors.payment_method.message}</span>}
 
               {paymentMethod === "bkash" && (
