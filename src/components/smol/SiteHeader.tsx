@@ -1,19 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import logo from "@/assets/smol-stuuf-logo.png.asset.json";
-import { useCart } from "@/lib/cart";
 
 export function SiteHeader() {
-  const { count } = useCart();
-  const [bump, setBump] = useState(false);
-
-  useEffect(() => {
-    if (count === 0) return;
-    setBump(true);
-    const t = window.setTimeout(() => setBump(false), 520);
-    return () => window.clearTimeout(t);
-  }, [count]);
-
   return (
     <header className="smol-header">
       <div className="navbar">
@@ -31,9 +19,9 @@ export function SiteHeader() {
             About
           </Link>
         </nav>
-        <Link to="/cart" className={bump ? "cart-btn button-spring cart-bump" : "cart-btn button-spring"}>
-          Cart · {count}
-        </Link>
+        <button className="cart-btn button-spring" type="button">
+          Cart · 0
+        </button>
       </div>
     </header>
   );
