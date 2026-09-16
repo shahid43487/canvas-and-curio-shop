@@ -67,8 +67,8 @@ function Checkout() {
       <>
         <SiteHeader />
         <main className="wrap checkout-empty">
-          <h1>Your cart is empty</h1>
-          <p>Add some stuuf before checking out.</p>
+          <h1>Kuch to kharid le bawa re bawa !!!</h1>
+          <p>Your basta is empty — add some stuuf before checking out.</p>
           <Link to="/shop" className="btn-primary">
             Shop the drop
           </Link>
@@ -152,7 +152,7 @@ function Checkout() {
                   {errors.shipping_city && <span className="form-error">{errors.shipping_city.message}</span>}
                 </div>
                 <div className="form-field full">
-                  <Label className="field-sticker sticker-yellow" htmlFor="shipping_address">Drop zone</Label>
+                  <Label className="field-sticker sticker-yellow" htmlFor="shipping_address">Yaahi !! yaahi par bam fod do!!!</Label>
                   <Textarea id="shipping_address" rows={3} placeholder="House, road, area — the whole story" {...register("shipping_address")} />
                   {errors.shipping_address && <span className="form-error">{errors.shipping_address.message}</span>}
                 </div>
@@ -176,11 +176,11 @@ function Checkout() {
                   >
                     <div className="payment-option">
                       <RadioGroupItem value="cod" id="cod" />
-                       <Label htmlFor="cod">Cash on delivery <small>pay at your door</small></Label>
+                       <Label htmlFor="cod">Cash on delivery ( I don't trust you !!!) <small>Pehle Mal fir paiso ka dhamal</small></Label>
                     </div>
                     <div className="payment-option">
                       <RadioGroupItem value="bkash" id="bkash" />
-                       <Label htmlFor="bkash">bKash transfer <small>send it, then add the ID</small></Label>
+                       <Label htmlFor="bkash">Bkash transfer ( Paise to hanto ka mail Hain) <small>send it, then add the ID</small></Label>
                     </div>
                   </RadioGroup>
                 )}
@@ -205,8 +205,8 @@ function Checkout() {
 
           <aside className="checkout-summary">
             <span className="summary-tape" aria-hidden="true" />
-            <div className="summary-stamp">YOUR HAUL</div>
-            <h2>Order summary</h2>
+            <div className="summary-stamp">YOUR BASTA</div>
+            <h2>Baste ka vau</h2>
             <div className="summary-items">
               {items.map((item) => (
                 <div key={item.product.id} className="summary-item">

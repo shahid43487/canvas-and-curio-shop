@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Facebook, Instagram, Mail, Music2 } from "lucide-react";
 import fireKaiju from "@/assets/fire-kaiju-sticker.png";
 
 export function SiteFooter() {
@@ -28,15 +29,22 @@ export function SiteFooter() {
               <Link to="/about">Process</Link>
               <Link to="/about">Stockists</Link>
             </div>
-            <div className="footer-col">
+            <div className="footer-col footer-social">
               <h4>Follow</h4>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer">
-                Instagram
-              </a>
-              <a href="https://tiktok.com" target="_blank" rel="noreferrer">
-                TikTok
-              </a>
-              <Link to="/about">Newsletter</Link>
+              <div className="footer-social-icons">
+                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="social-sticker sticker-ig" aria-label="Instagram">
+                  <Instagram size={22} strokeWidth={2.4} />
+                </a>
+                <a href="https://facebook.com" target="_blank" rel="noreferrer" className="social-sticker sticker-fb" aria-label="Facebook">
+                  <Facebook size={22} strokeWidth={2.4} />
+                </a>
+                <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="social-sticker sticker-tt" aria-label="TikTok">
+                  <Music2 size={22} strokeWidth={2.4} />
+                </a>
+                <Link to="/about" className="social-sticker sticker-mail" aria-label="Newsletter">
+                  <Mail size={22} strokeWidth={2.4} />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
