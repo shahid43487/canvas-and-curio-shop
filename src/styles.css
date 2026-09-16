@@ -237,7 +237,7 @@ nav.links a.active { background: var(--smol-red); color: var(--smol-white); }
 .header-sticker.hs-drop { background: var(--smol-red); color: var(--smol-white); left: 118px; bottom: -20px; transform: rotate(-8deg); }
 .header-sticker.hs-smol { background: var(--smol-yellow); left: 50%; bottom: -18px; transform: translateX(-50%) rotate(5deg); animation-delay: -1.4s; }
 .header-sticker.hs-star {
-  background: var(--smol-cyan); right: 96px; top: -14px; transform: rotate(12deg);
+  background: var(--smol-cyan); right: 190px; bottom: -18px; transform: rotate(12deg);
   border-radius: 50%; width: 40px; height: 40px; padding: 0;
   display: grid; place-items: center; font-size: 18px; animation-delay: -2.2s;
 }
