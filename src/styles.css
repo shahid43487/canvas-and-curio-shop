@@ -530,8 +530,8 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 @media (max-width: 520px) {
   .grid { grid-template-columns: 1fr; }
   .hero { padding-top: 38px; }
-  .sticker-badge { left: -12px; top: 2px; }
-  .sticker-star { right: -20px; top: 2px; }
+  .sticker-badge { left: 6px; top: 2px; }
+  .sticker-star { right: 6px; top: 2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
