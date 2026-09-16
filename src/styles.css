@@ -338,7 +338,7 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
 .grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
   border: 3px solid var(--smol-ink);
-  width: 100%; max-width: 100%; overflow: hidden;
+  width: 100%; max-width: 100%;
 }
 .grid > * { min-width: 0; }
 .grid .card { border-right: 3px solid var(--smol-ink); border-bottom: 3px solid var(--smol-ink); }
