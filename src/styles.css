@@ -395,6 +395,29 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
 .footer-col h4 { display: inline-block; font: 400 14px var(--smol-display); text-transform: uppercase; color: var(--smol-paper); background: var(--smol-ink); padding: 4px 9px; margin-bottom: 12px; transform: rotate(-2deg); }
 .footer-col a { display: block; font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--smol-ink); text-decoration: none; transition: transform .2s ease, color .2s ease; }
 .footer-col a:hover { color: var(--smol-red); transform: translateX(6px) rotate(-2deg); }
+.footer-social-icons { display: flex; gap: 12px; flex-wrap: wrap; }
+.social-sticker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  color: var(--smol-ink);
+  border: 3px solid var(--smol-ink);
+  box-shadow: 4px 4px 0 var(--smol-ink);
+  transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s ease;
+}
+.sticker-ig { background: var(--smol-pink); transform: rotate(-6deg); }
+.sticker-fb { background: var(--smol-cyan); transform: rotate(4deg); }
+.sticker-tt { background: var(--smol-yellow); transform: rotate(-3deg); }
+.sticker-mail { background: var(--smol-red); color: var(--smol-paper); transform: rotate(6deg); }
+.social-sticker:hover {
+  transform: rotate(0deg) translateY(-4px) scale(1.08);
+  box-shadow: 6px 7px 0 var(--smol-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .social-sticker { transition: none; }
+}
 .footer-bottom {
   padding: 32px 0 20px; display: flex; justify-content: space-between; font-size: 12px;
   font-weight: 700; flex-wrap: wrap; gap: 10px;
