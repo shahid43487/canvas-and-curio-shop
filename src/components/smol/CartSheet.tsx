@@ -25,7 +25,7 @@ export function CartSheet() {
         <SheetHeader className="cart-sheet-header">
           <span className="cart-tape" aria-hidden="true" />
           <SheetTitle className="cart-sheet-title">
-            Your smol haul
+            Your Basta
           </SheetTitle>
           <span className="cart-count-sticker">{totalItems} item{totalItems === 1 ? "" : "s"}</span>
         </SheetHeader>
@@ -33,7 +33,7 @@ export function CartSheet() {
         {items.length === 0 ? (
           <div className="cart-empty">
             <ShoppingBag size={48} strokeWidth={1.5} />
-            <p>Your cart is empty.</p>
+            <p>Kuch to kharid le bawa re bawa !!!</p>
             <Button asChild className="btn-primary">
               <Link to="/shop" onClick={() => setIsOpen(false)}>
                 Shop the drop
