@@ -335,7 +335,16 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
 .section-head p { max-width: 340px; font-size: 14px; opacity: 0.75; }
 
 /* ---------- PRODUCT GRID ---------- */
-.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-left: 3px solid var(--smol-ink); }
+.grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+  border: 3px solid var(--smol-ink);
+  width: 100%; max-width: 100%; overflow: hidden;
+}
+.grid > * { min-width: 0; }
+.grid .card { border-right: 3px solid var(--smol-ink); border-bottom: 3px solid var(--smol-ink); }
+.grid .card:nth-child(3n) { border-right: none; }
+@media (max-width: 760px) { .grid .card:nth-child(3n) { border-right: 3px solid var(--smol-ink); } .grid .card:nth-child(2n) { border-right: none; } }
+@media (max-width: 520px) { .grid .card { border-right: none !important; } }
 .card {
   border-right: 3px solid var(--smol-ink); border-bottom: 3px solid var(--smol-ink);
   padding: 22px; cursor: pointer; background: var(--smol-white);
