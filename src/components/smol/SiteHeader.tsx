@@ -26,6 +26,15 @@ export function SiteHeader() {
         <button className="cart-btn button-spring" type="button" onClick={() => setIsOpen(true)}>
           Cart · {totalItems}
         </button>
+        <span className="header-sticker hs-drop" aria-hidden="true">
+          BATCH 04 ✓
+        </span>
+        <span className="header-sticker hs-smol" aria-hidden="true">
+          SMOL THINGS. BIG MOOD.
+        </span>
+        <span className="header-sticker hs-star" aria-hidden="true">
+          ✦
+        </span>
       </div>
       <CartSheet />
     </header>
