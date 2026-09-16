@@ -1,11 +1,20 @@
 import { Link } from "@tanstack/react-router";
+import fireKaiju from "@/assets/fire-kaiju-sticker.png";
 
 export function SiteFooter() {
   return (
     <footer className="smol-footer">
-      <div className="wrap">
+      <div className="footer-sky" aria-hidden="true"><span>✦</span><span>★</span><span>✦</span></div>
+      <div className="footer-flame" aria-hidden="true" />
+      <div className="wrap footer-stage">
+        <div className="footer-monster-wrap" aria-hidden="true">
+          <img className="footer-monster" src={fireKaiju} alt="" loading="lazy" width={1280} height={1024} />
+        </div>
+        <div className="footer-city" aria-hidden="true">
+          <i /><i /><i /><i /><i /><i /><i />
+        </div>
         <div className="footer-top">
-          <div className="footer-brand">SMOL STUUF</div>
+          <div className="footer-brand"><span>SMOL</span> STUUF <small>BIG MOOD SINCE FOREVER</small></div>
           <div className="footer-cols">
             <div className="footer-col">
               <h4>Shop</h4>
@@ -35,6 +44,7 @@ export function SiteFooter() {
           <span>© 2026 SMOL STUUF. SMOL THINGS. BIG MOOD.</span>
           <span>Made in small batches.</span>
         </div>
+        <div className="footer-marquee" aria-hidden="true"><span>SMOL ROAR! • GOOD STUUF! • CITY-SIZED MOOD! • SMOL ROAR! • GOOD STUUF! • CITY-SIZED MOOD! • </span></div>
       </div>
     </footer>
   );

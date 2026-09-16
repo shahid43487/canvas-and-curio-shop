@@ -15,10 +15,11 @@ import { SiteFooter } from "@/components/smol/SiteFooter";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
 import { createOrder } from "@/lib/orders.functions";
+import logo from "@/assets/smol-stuuf-logo.png.asset.json";
 
 const checkoutSchema = z.object({
   shipping_name: z.string().min(2, "Name is required"),
-  shipping_email: z.string().email("Valid email required"),
+  shipping_email: z.union([z.literal(""), z.string().email("Enter a valid email")]),
   shipping_phone: z.string().min(8, "Phone number is required"),
   shipping_address: z.string().min(5, "Address is required"),
   shipping_city: z.string().min(2, "City is required"),
@@ -56,7 +57,7 @@ function Checkout() {
     formState: { errors },
   } = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
-    defaultValues: { payment_method: "cod" },
+    defaultValues: { payment_method: "cod", shipping_email: "" },
   });
 
   const paymentMethod = watch("payment_method");
@@ -113,47 +114,57 @@ function Checkout() {
   return (
     <>
       <SiteHeader />
-      <main className="wrap checkout-view">
-        <h1 className="checkout-title">Checkout</h1>
+      <main className="checkout-view">
+        <div className="checkout-confetti" aria-hidden="true">
+          <span>★</span><span>SMOL</span><span>✦</span><span>GOOD STUUF</span>
+        </div>
+        <div className="wrap checkout-wrap">
+        <header className="checkout-heading-sticker">
+          <div>
+            <span className="checkout-kicker">Almost yours!</span>
+            <h1 className="checkout-title">SMOL STUUF / CHECKOUT</h1>
+          </div>
+          <img src={logo.url} alt="" className="checkout-floating-logo" width={320} height={224} />
+        </header>
         <div className="checkout-layout">
           <form onSubmit={handleSubmit(onSubmit)} className="checkout-form">
             <section className="checkout-section">
-              <h2>Shipping details</h2>
+              <h2><span>Shipping deets</span></h2>
               <div className="form-grid">
                 <div className="form-field">
-                  <Label htmlFor="shipping_name">Full name</Label>
-                  <Input id="shipping_name" {...register("shipping_name")} />
+                  <Label className="field-sticker sticker-red" htmlFor="shipping_name">Your good name</Label>
+                  <Input id="shipping_name" placeholder="Who gets the stuuf?" {...register("shipping_name")} />
                   {errors.shipping_name && <span className="form-error">{errors.shipping_name.message}</span>}
                 </div>
                 <div className="form-field">
-                  <Label htmlFor="shipping_email">Email</Label>
-                  <Input id="shipping_email" type="email" {...register("shipping_email")} />
+                  <Label className="field-sticker sticker-yellow" htmlFor="shipping_email">Email · optional</Label>
+                  <Input id="shipping_email" type="email" placeholder="Only if you want updates" {...register("shipping_email")} />
                   {errors.shipping_email && <span className="form-error">{errors.shipping_email.message}</span>}
                 </div>
                 <div className="form-field">
-                  <Label htmlFor="shipping_phone">Phone</Label>
-                  <Input id="shipping_phone" {...register("shipping_phone")} />
+                  <Label className="field-sticker sticker-cyan" htmlFor="shipping_phone">Ring ring</Label>
+                  <Input id="shipping_phone" placeholder="Your phone number" {...register("shipping_phone")} />
                   {errors.shipping_phone && <span className="form-error">{errors.shipping_phone.message}</span>}
                 </div>
                 <div className="form-field">
-                  <Label htmlFor="shipping_city">City</Label>
-                  <Input id="shipping_city" {...register("shipping_city")} />
+                  <Label className="field-sticker sticker-pink" htmlFor="shipping_city">Your city</Label>
+                  <Input id="shipping_city" placeholder="Dhaka? Chattogram?" {...register("shipping_city")} />
                   {errors.shipping_city && <span className="form-error">{errors.shipping_city.message}</span>}
                 </div>
                 <div className="form-field full">
-                  <Label htmlFor="shipping_address">Address</Label>
-                  <Textarea id="shipping_address" rows={3} {...register("shipping_address")} />
+                  <Label className="field-sticker sticker-yellow" htmlFor="shipping_address">Drop zone</Label>
+                  <Textarea id="shipping_address" rows={3} placeholder="House, road, area — the whole story" {...register("shipping_address")} />
                   {errors.shipping_address && <span className="form-error">{errors.shipping_address.message}</span>}
                 </div>
                 <div className="form-field full">
-                  <Label htmlFor="shipping_notes">Order notes (optional)</Label>
-                  <Textarea id="shipping_notes" rows={2} {...register("shipping_notes")} />
+                  <Label className="field-sticker sticker-cyan" htmlFor="shipping_notes">Secret note · optional</Label>
+                  <Textarea id="shipping_notes" rows={2} placeholder="Gate color, landmark, tiny request..." {...register("shipping_notes")} />
                 </div>
               </div>
             </section>
 
             <section className="checkout-section">
-              <h2>Payment method</h2>
+              <h2><span>How are we paying?</span></h2>
               <Controller
                 name="payment_method"
                 control={control}
@@ -165,11 +176,11 @@ function Checkout() {
                   >
                     <div className="payment-option">
                       <RadioGroupItem value="cod" id="cod" />
-                      <Label htmlFor="cod">Cash on delivery</Label>
+                       <Label htmlFor="cod">Cash on delivery <small>pay at your door</small></Label>
                     </div>
                     <div className="payment-option">
                       <RadioGroupItem value="bkash" id="bkash" />
-                      <Label htmlFor="bkash">bKash transfer</Label>
+                       <Label htmlFor="bkash">bKash transfer <small>send it, then add the ID</small></Label>
                     </div>
                   </RadioGroup>
                 )}
@@ -178,7 +189,7 @@ function Checkout() {
 
               {paymentMethod === "bkash" && (
                 <div className="form-field bkash-field">
-                  <Label htmlFor="bkash_transaction_id">bKash transaction ID</Label>
+                   <Label className="field-sticker sticker-pink" htmlFor="bkash_transaction_id">bKash transaction ID</Label>
                   <Input id="bkash_transaction_id" {...register("bkash_transaction_id")} />
                   {errors.bkash_transaction_id && (
                     <span className="form-error">{errors.bkash_transaction_id.message}</span>
@@ -193,6 +204,8 @@ function Checkout() {
           </form>
 
           <aside className="checkout-summary">
+            <span className="summary-tape" aria-hidden="true" />
+            <div className="summary-stamp">YOUR HAUL</div>
             <h2>Order summary</h2>
             <div className="summary-items">
               {items.map((item) => (
@@ -209,7 +222,9 @@ function Checkout() {
               <span>{formatPrice(totalPrice)}</span>
             </div>
             <p className="summary-note">Shipping calculated after order confirmation.</p>
+            <div className="summary-badge" aria-hidden="true">YAY!</div>
           </aside>
+        </div>
         </div>
       </main>
       <SiteFooter />
