@@ -8,31 +8,36 @@ export function ProductCard({ product }: { product: Product }) {
   const { addItem, setIsOpen } = useCart();
   const dark = product.tag === "LIMITED" || product.tag === "WEIRD ONE";
 
-  const handleAdd = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleAdd = () => {
     addItem(product);
     setIsOpen(true);
   };
 
   return (
-    <Link to="/product/$id" params={{ id: String(product.id) }} className="card">
-      <span className={dark ? "card-tag dark" : "card-tag"}>{product.tag}</span>
-      <div className="swatch">
-        <span className="num">{product.num}</span>
-        <ProductImage id={product.id} name={product.name} />
-        <span className="card-sticker" aria-hidden="true">
-          ✦
-        </span>
-      </div>
-      <h3>{product.name}</h3>
-      <div className="meta">
-        <span>{product.material.split(",")[0]}</span>
-        <span className="price">{formatPrice(product.price)}</span>
-      </div>
+    <div className="card">
+      <Link
+        to="/product/$id"
+        params={{ id: String(product.id) }}
+        className="card-link"
+        aria-label={`View ${product.name}`}
+      >
+        <span className={dark ? "card-tag dark" : "card-tag"}>{product.tag}</span>
+        <div className="swatch">
+          <span className="num">{product.num}</span>
+          <ProductImage id={product.id} name={product.name} />
+          <span className="card-sticker" aria-hidden="true">
+            ✦
+          </span>
+        </div>
+        <h3>{product.name}</h3>
+        <div className="meta">
+          <span>{product.material.split(",")[0]}</span>
+          <span className="price">{formatPrice(product.price)}</span>
+        </div>
+      </Link>
       <button type="button" className="card-add button-spring" onClick={handleAdd}>
         Add · {formatPrice(product.price)}
       </button>
-    </Link>
+    </div>
   );
 }
