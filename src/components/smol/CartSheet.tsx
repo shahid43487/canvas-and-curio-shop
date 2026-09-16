@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
+import { ProductImage } from "./ProductImage";
+import comedyLandlord from "@/assets/comedy-landlord-sticker.png";
 
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, isOpen, setIsOpen } = useCart();
@@ -12,10 +14,20 @@ export function CartSheet() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent className="cart-sheet">
+        <img
+          className="cart-comedy-sticker"
+          src={comedyLandlord}
+          alt="A surprised comedy landlord peeking into the cart"
+          loading="lazy"
+          width={1024}
+          height={1024}
+        />
         <SheetHeader className="cart-sheet-header">
+          <span className="cart-tape" aria-hidden="true" />
           <SheetTitle className="cart-sheet-title">
-            Your cart · {totalItems} item{totalItems === 1 ? "" : "s"}
+            Your smol haul
           </SheetTitle>
+          <span className="cart-count-sticker">{totalItems} item{totalItems === 1 ? "" : "s"}</span>
         </SheetHeader>
 
         {items.length === 0 ? (
@@ -33,36 +45,43 @@ export function CartSheet() {
             <div className="cart-items">
               {items.map((item) => (
                 <div key={item.product.id} className="cart-item">
+                  <div className="cart-item-image"><ProductImage id={item.product.id} name={item.product.name} /></div>
                   <div className="cart-item-main">
                     <span className="cart-item-name">{item.product.name}</span>
                     <span className="cart-item-price">{formatPrice(item.product.price)}</span>
                   </div>
                   <div className="cart-item-actions">
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="icon"
                       className="qty-btn"
                       onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
                       aria-label="Decrease quantity"
                     >
                       <Minus size={14} />
-                    </button>
+                    </Button>
                     <span className="qty-value">{item.quantity}</span>
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="icon"
                       className="qty-btn"
                       onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                       aria-label="Increase quantity"
                     >
                       <Plus size={14} />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="icon"
                       className="cart-remove"
                       onClick={() => removeItem(item.product.id)}
                       aria-label="Remove item"
                     >
                       <Trash2 size={16} />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -73,6 +92,7 @@ export function CartSheet() {
                 <span>Subtotal</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
+              <p className="cart-blooper">Arrey! One more tiny thing won't hurt.</p>
               <Button asChild className="add-cart button-spring w-full">
                 <Link to="/checkout" onClick={() => setIsOpen(false)}>
                   Checkout
