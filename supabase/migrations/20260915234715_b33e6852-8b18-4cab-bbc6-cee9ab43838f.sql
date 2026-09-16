@@ -1,1 +1,0 @@
-REVOKE EXECUTE ON FUNCTION public.create_order_with_items(jsonb, jsonb) FROM anon, authenticated, public;
