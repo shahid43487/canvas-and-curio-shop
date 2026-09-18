@@ -4,6 +4,7 @@ import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { ProductCard } from "@/components/smol/ProductCard";
+import { GrandpaPopup } from "@/components/smol/GrandpaPopup";
 import { listProducts } from "@/lib/products.functions";
 
 const productsQueryOptions = queryOptions({
@@ -49,6 +50,7 @@ function Shop() {
         </div>
       </main>
       <SiteFooter />
+      <GrandpaPopup />
     </>
   );
 }

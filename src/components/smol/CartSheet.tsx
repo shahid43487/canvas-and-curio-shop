@@ -10,6 +10,7 @@ import comedyLandlord from "@/assets/comedy-landlord-sticker.png";
 
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, isOpen, setIsOpen } = useCart();
+  const isSecretCart = items.some((item) => item.product.is_hidden === true);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>

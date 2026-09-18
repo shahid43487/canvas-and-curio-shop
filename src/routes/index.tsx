@@ -1,10 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 
 import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { ProductCard } from "@/components/smol/ProductCard";
 import { StickerField } from "@/components/smol/StickerField";
+import { ManifestoPanel } from "@/components/smol/ManifestoPanel";
+import { SECRET_ACCESS_KEY } from "@/components/smol/SecretGate";
 import logo from "@/assets/smol-stuuf-logo.png.asset.json";
 import { listProducts } from "@/lib/products.functions";
 
@@ -38,6 +41,17 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { data } = useSuspenseQuery(productsQueryOptions);
   const featured = data.products.slice(0, 3);
+  const navigate = useNavigate();
+  const [logoClicks, setLogoClicks] = useState(0);
+
+  const handleSecretClick = () => {
+    const next = logoClicks + 1;
+    setLogoClicks(next);
+    if (next === 5) {
+      window.sessionStorage.setItem(SECRET_ACCESS_KEY, "open");
+      navigate({ to: "/secret-transition" });
+    }
+  };
 
   return (
     <>
@@ -70,7 +84,9 @@ function Home() {
               </div>
             </div>
             <div className="hero-logo-art">
-              <img src={logo.url} alt="SMOL STUUF hand-drawn logo" />
+              <button type="button" className="hero-secret-trigger" onClick={handleSecretClick} aria-label="SMOL STUUF hand-drawn logo">
+                <img src={logo.url} alt="" />
+              </button>
               <span className="sticker red s2">DROP 04</span>
             </div>
           </div>
@@ -96,6 +112,7 @@ function Home() {
             ))}
           </div>
         </div>
+        <ManifestoPanel />
       </main>
       <SiteFooter />
     </>

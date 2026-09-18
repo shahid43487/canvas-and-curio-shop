@@ -11,18 +11,20 @@ const lines = [
 
 export function GrandpaPopup() {
   const [visible, setVisible] = useState(false);
+  const [lineIndex, setLineIndex] = useState(0);
 
   useEffect(() => {
     if (window.sessionStorage.getItem("smol-grandpa-seen")) return;
     const timer = window.setTimeout(() => {
       window.sessionStorage.setItem("smol-grandpa-seen", "1");
+      setLineIndex(Math.floor(Math.random() * lines.length));
       setVisible(true);
     }, 7000);
     return () => window.clearTimeout(timer);
   }, []);
 
   if (!visible) return null;
-  const line = lines[Math.floor(Date.now() / 1000) % lines.length];
+  const line = lines[lineIndex] ?? lines[0];
 
   return (
     <aside className="grandpa-popup" aria-live="polite">
