@@ -4,6 +4,9 @@ import littleGuyHook from "@/assets/product-little-guy-hook.jpg";
 import stackRings from "@/assets/product-stack-rings.jpg";
 import sunCoasters from "@/assets/product-sun-coasters.jpg";
 import squiggleBookend from "@/assets/product-squiggle-bookend.jpg";
+import prankExcuseButton from "@/assets/prank-excuse-button.jpg";
+import prankSpillCoaster from "@/assets/prank-spill-coaster.jpg";
+import prankDeskWhistle from "@/assets/prank-desk-whistle.jpg";
 
 const PRODUCT_IMAGES: Record<number, string> = {
   1: blobLamp,
@@ -12,6 +15,9 @@ const PRODUCT_IMAGES: Record<number, string> = {
   4: stackRings,
   5: sunCoasters,
   6: squiggleBookend,
+  101: prankExcuseButton,
+  102: prankSpillCoaster,
+  103: prankDeskWhistle,
 };
 
 export function ProductImage({ id, name, eager = false }: { id: number; name: string; eager?: boolean }) {

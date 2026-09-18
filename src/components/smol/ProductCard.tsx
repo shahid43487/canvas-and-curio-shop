@@ -4,7 +4,7 @@ import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
 import { ProductImage } from "./ProductImage";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, secret = false }: { product: Product; secret?: boolean }) {
   const { addItem, setIsOpen } = useCart();
   const dark = product.tag === "LIMITED" || product.tag === "WEIRD ONE";
 
@@ -16,7 +16,7 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="card">
       <Link
-        to="/product/$id"
+        to={secret ? "/secret/product/$id" : "/product/$id"}
         params={{ id: String(product.id) }}
         className="card-link"
         aria-label={`View ${product.name}`}

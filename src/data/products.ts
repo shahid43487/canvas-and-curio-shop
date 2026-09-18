@@ -12,6 +12,8 @@ export type Product = {
   colors: string[];
   stock: number;
   image_key: string;
+  is_hidden?: boolean;
+  requires_advance_payment?: boolean;
   created_at?: string;
   updated_at?: string;
 };
