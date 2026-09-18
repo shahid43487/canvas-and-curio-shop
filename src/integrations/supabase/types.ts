@@ -61,6 +61,7 @@ export type Database = {
           bkash_transaction_id: string | null
           created_at: string
           id: string
+          order_source: string
           payment_method: Database["public"]["Enums"]["payment_method"]
           payment_status: Database["public"]["Enums"]["payment_status"]
           shipping_address: string
@@ -77,6 +78,7 @@ export type Database = {
           bkash_transaction_id?: string | null
           created_at?: string
           id?: string
+          order_source?: string
           payment_method: Database["public"]["Enums"]["payment_method"]
           payment_status?: Database["public"]["Enums"]["payment_status"]
           shipping_address: string
@@ -93,6 +95,7 @@ export type Database = {
           bkash_transaction_id?: string | null
           created_at?: string
           id?: string
+          order_source?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
           payment_status?: Database["public"]["Enums"]["payment_status"]
           shipping_address?: string
@@ -117,10 +120,12 @@ export type Database = {
           dims: string
           id: number
           image_key: string
+          is_hidden: boolean
           material: string
           name: string
           num: string
           price: number
+          requires_advance_payment: boolean
           stock: number
           tag: string
           updated_at: string
@@ -134,10 +139,12 @@ export type Database = {
           dims: string
           id: number
           image_key: string
+          is_hidden?: boolean
           material: string
           name: string
           num: string
           price: number
+          requires_advance_payment?: boolean
           stock?: number
           tag: string
           updated_at?: string
@@ -151,10 +158,12 @@ export type Database = {
           dims?: string
           id?: number
           image_key?: string
+          is_hidden?: boolean
           material?: string
           name?: string
           num?: string
           price?: number
+          requires_advance_payment?: boolean
           stock?: number
           tag?: string
           updated_at?: string

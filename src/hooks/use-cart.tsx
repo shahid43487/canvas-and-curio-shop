@@ -43,6 +43,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addItem = useCallback((product: Product, quantity = 1) => {
     setItems((prev) => {
+      const currentMode = prev[0]?.product.is_hidden === true;
+      const nextMode = product.is_hidden === true;
+      if (prev.length > 0 && currentMode !== nextMode) {
+        return [{ product, quantity }];
+      }
       const existing = prev.find((i) => i.product.id === product.id);
       if (existing) {
         return prev.map((i) =>

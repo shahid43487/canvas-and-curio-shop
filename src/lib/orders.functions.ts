@@ -16,6 +16,7 @@ export type OrderInput = {
   shipping_city: string;
   shipping_notes?: string | undefined;
   total_amount: number;
+  order_source?: "regular" | "secret" | undefined;
 };
 
 export const createOrder = createServerFn({ method: "POST" })

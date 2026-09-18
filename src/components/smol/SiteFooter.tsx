@@ -1,15 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Mail, Music2 } from "lucide-react";
-import fireKaiju from "@/assets/fire-kaiju-sticker.png";
+import dancingDragon from "@/assets/dancing-dragon.png";
 
 export function SiteFooter() {
   return (
     <footer className="smol-footer">
       <div className="footer-sky" aria-hidden="true"><span>✦</span><span>★</span><span>✦</span></div>
-      <div className="footer-flame" aria-hidden="true" />
       <div className="wrap footer-stage">
         <div className="footer-monster-wrap" aria-hidden="true">
-          <img className="footer-monster" src={fireKaiju} alt="" loading="lazy" width={1280} height={1024} />
+          <img className="footer-monster" src={dancingDragon} alt="" loading="lazy" width={1024} height={1024} />
         </div>
         <div className="footer-city" aria-hidden="true">
           <i /><i /><i /><i /><i /><i /><i />
@@ -52,7 +51,7 @@ export function SiteFooter() {
           <span>© 2026 SMOL STUUF. SMOL THINGS. BIG MOOD.</span>
           <span>Made in small batches.</span>
         </div>
-        <div className="footer-marquee" aria-hidden="true"><span>SMOL ROAR! • GOOD STUUF! • CITY-SIZED MOOD! • SMOL ROAR! • GOOD STUUF! • CITY-SIZED MOOD! • </span></div>
+        <div className="footer-marquee" aria-hidden="true"><span>WIGGLE MODE! • GOOD STUUF! • CITY-SIZED MOOD! • WIGGLE MODE! • GOOD STUUF! • CITY-SIZED MOOD! • </span></div>
       </div>
     </footer>
   );

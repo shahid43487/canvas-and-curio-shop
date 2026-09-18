@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
+import { GrandpaPopup } from "@/components/smol/GrandpaPopup";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -59,6 +60,7 @@ function About() {
         </div>
       </main>
       <SiteFooter />
+      <GrandpaPopup />
     </>
   );
 }

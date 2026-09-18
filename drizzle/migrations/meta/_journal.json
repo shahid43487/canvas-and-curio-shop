@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789769122427,
+      "tag": "0000_add_hidden_advance_products_and_secure_orders",
+      "breakpoints": true
+    }
+  ]
+}
