@@ -19,7 +19,15 @@ export const getProduct = createServerFn({ method: "GET" })
       .eq("is_hidden", false)
       .single();
     if (error) throw error;
-    return { product };
+    const { data: recommendations, error: recommendationsError } = await supabase
+      .from("products")
+      .select("*")
+      .eq("is_hidden", false)
+      .neq("id", Number(data.id))
+      .order("id", { ascending: true })
+      .limit(3);
+    if (recommendationsError) throw recommendationsError;
+    return { product, recommendations: recommendations ?? [] };
   });
 
 export const listSecretProducts = createServerFn({ method: "GET" })

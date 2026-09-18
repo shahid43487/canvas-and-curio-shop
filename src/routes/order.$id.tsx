@@ -20,10 +20,10 @@ export const Route = createFileRoute("/order/$id")({
   validateSearch: (search: { phone?: string }) => search,
   head: ({ params }) => ({
     meta: [
-      { title: "Order confirmed — SMOL STUUF" },
-      { name: "description", content: "Your SMOL STUUF order confirmation." },
-      { property: "og:title", content: "Order confirmed — SMOL STUUF" },
-      { property: "og:description", content: "Your SMOL STUUF order confirmation." },
+      { title: "Order received — SMOL STUUF" },
+      { name: "description", content: "Your SMOL STUUF order details." },
+      { property: "og:title", content: "Order received — SMOL STUUF" },
+      { property: "og:description", content: "Your SMOL STUUF order details." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -47,6 +47,7 @@ function OrderConfirmation() {
   const { data } = useSuspenseQuery(orderQueryOptions(id, phone ?? ""));
   const order = data.order;
   const items = (order.order_items ?? []) as unknown as OrderItemWithProduct[];
+  const awaitingPaymentCheck = order.payment_method === "bkash" && order.payment_status === "pending";
 
   return (
     <>
@@ -54,14 +55,18 @@ function OrderConfirmation() {
       <main className="wrap order-view">
         <div className="order-hero">
           <CircleCheck size={56} strokeWidth={2} />
-          <h1>Order placed</h1>
-          <p>Thanks for ordering some smol stuuf. We&apos;ll be in touch soon.</p>
+          <h1>{awaitingPaymentCheck ? "Transfer submitted" : "Order placed"}</h1>
+          <p>{awaitingPaymentCheck ? "We received your order and transaction ID. It stays pending until the bKash transfer is checked." : "Thanks for ordering some smol stuuf. We’ll be in touch soon."}</p>
         </div>
 
         <div className="order-card">
           <div className="order-row">
             <span className="order-label">Order number</span>
             <span className="order-value">{order.id.slice(0, 8).toUpperCase()}</span>
+          </div>
+          <div className="order-row">
+            <span className="order-label">Payment status</span>
+            <span className="order-value status">{order.payment_status}</span>
           </div>
           <div className="order-row">
             <span className="order-label">Status</span>

@@ -7,6 +7,8 @@ import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { ProductImage } from "@/components/smol/ProductImage";
 import { StickerField } from "@/components/smol/StickerField";
+import { ProductCard } from "@/components/smol/ProductCard";
+import { GrandpaPopup } from "@/components/smol/GrandpaPopup";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
 import { getProduct } from "@/lib/products.functions";
@@ -132,9 +134,19 @@ function ProductPage() {
               <p className="edition-note">Small batch. Once it's gone, it's gone until the next drop.</p>
             </div>
           </div>
+          <section className="related-products" aria-labelledby="related-title">
+            <div className="section-head">
+              <h2 id="related-title">More smol suspects</h2>
+              <p>Same tiny energy, different corner of the room.</p>
+            </div>
+            <div className="related-grid">
+              {data.recommendations.map((product) => <ProductCard key={product.id} product={product} />)}
+            </div>
+          </section>
         </div>
       </main>
       <SiteFooter />
+      <GrandpaPopup />
     </>
   );
 }

@@ -26,6 +26,10 @@ const checkoutSchema = z.object({
   shipping_notes: z.string().optional(),
   payment_method: z.enum(["cod", "bkash"]),
   bkash_transaction_id: z.string().optional(),
+}).superRefine((values, context) => {
+  if (values.payment_method === "bkash" && !values.bkash_transaction_id?.trim()) {
+    context.addIssue({ code: "custom", path: ["bkash_transaction_id"], message: "Transaction ID is required" });
+  }
 });
 
 type CheckoutForm = z.infer<typeof checkoutSchema>;
@@ -46,6 +50,7 @@ export const Route = createFileRoute("/checkout")({
 
 function Checkout() {
   const { items, totalPrice, clearCart } = useCart();
+  const isSecretOrder = items.some((item) => item.product.is_hidden === true);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -57,7 +62,7 @@ function Checkout() {
     formState: { errors },
   } = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
-    defaultValues: { payment_method: "cod", shipping_email: "" },
+    defaultValues: { payment_method: isSecretOrder ? "bkash" : "cod", shipping_email: "" },
   });
 
   const paymentMethod = watch("payment_method");
@@ -92,6 +97,7 @@ function Checkout() {
           order: {
             ...values,
             total_amount: totalPrice,
+            order_source: isSecretOrder ? "secret" : "regular",
           },
           items: orderItems,
         },
@@ -174,18 +180,19 @@ function Checkout() {
                     onValueChange={field.onChange}
                     className="payment-options"
                   >
-                    <div className="payment-option">
-                      <RadioGroupItem value="cod" id="cod" />
+                     <div className={`payment-option${isSecretOrder ? " payment-disabled" : ""}`}>
+                       <RadioGroupItem value="cod" id="cod" disabled={isSecretOrder} />
                        <Label htmlFor="cod">Cash on delivery ( I don't trust you !!!) <small>Pehle Mal fir paiso ka dhamal</small></Label>
                     </div>
                     <div className="payment-option">
                       <RadioGroupItem value="bkash" id="bkash" />
-                       <Label htmlFor="bkash">Bkash transfer ( Paise to hanto ka mail Hain) <small>send it, then add the ID</small></Label>
+                        <Label htmlFor="bkash">Bkash transfer ( Paise to hanto ka mail Hain) <small>01600053340 (personal-send money) · send it, then add the ID</small></Label>
                     </div>
                   </RadioGroup>
                 )}
               />
               {errors.payment_method && <span className="form-error">{errors.payment_method.message}</span>}
+              {isSecretOrder && <p className="advance-note">Secret stuuf requires advance payment. Your order stays pending until the transfer is checked.</p>}
 
               {paymentMethod === "bkash" && (
                 <div className="form-field bkash-field">
@@ -199,7 +206,7 @@ function Checkout() {
             </section>
 
             <Button type="submit" disabled={isSubmitting} className="add-cart button-spring checkout-submit">
-              {isSubmitting ? "Placing order..." : `Place order · ${formatPrice(totalPrice)}`}
+              {isSubmitting ? "Submitting order..." : `${isSecretOrder ? "Submit for verification" : "Place order"} · ${formatPrice(totalPrice)}`}
             </Button>
           </form>
 
