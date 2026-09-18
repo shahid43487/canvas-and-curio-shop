@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as SecretRouteImport } from './routes/secret'
+import { Route as SecretTransitionRouteImport } from './routes/secret-transition'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
+import { Route as SecretProductIdRouteImport } from './routes/secret.product.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,6 +32,16 @@ const AboutRoute = AboutRouteImport.update({
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecretRoute = SecretRouteImport.update({
+  id: '/secret',
+  path: '/secret',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecretTransitionRoute = SecretTransitionRouteImport.update({
+  id: '/secret-transition',
+  path: '/secret-transition',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShopRoute = ShopRouteImport.update({
@@ -46,52 +59,88 @@ const ProductIdRoute = ProductIdRouteImport.update({
   path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SecretProductIdRoute = SecretProductIdRouteImport.update({
+  id: '/product/$id',
+  path: '/product/$id',
+  getParentRoute: () => SecretRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/checkout': typeof CheckoutRoute
+  '/secret': typeof SecretRouteWithChildren
+  '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
+  '/secret/product/$id': typeof SecretProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/checkout': typeof CheckoutRoute
+  '/secret': typeof SecretRouteWithChildren
+  '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
+  '/secret/product/$id': typeof SecretProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/checkout': typeof CheckoutRoute
+  '/secret': typeof SecretRouteWithChildren
+  '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
+  '/secret/product/$id': typeof SecretProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/about' | '/checkout' | '/shop' | '/order/$id' | '/product/$id'
+    | '/'
+    | '/about'
+    | '/checkout'
+    | '/secret'
+    | '/secret-transition'
+    | '/shop'
+    | '/order/$id'
+    | '/product/$id'
+    | '/secret/product/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/checkout' | '/shop' | '/order/$id' | '/product/$id'
+  to:
+    | '/'
+    | '/about'
+    | '/checkout'
+    | '/secret'
+    | '/secret-transition'
+    | '/shop'
+    | '/order/$id'
+    | '/product/$id'
+    | '/secret/product/$id'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/checkout'
+    | '/secret'
+    | '/secret-transition'
     | '/shop'
     | '/order/$id'
     | '/product/$id'
+    | '/secret/product/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   CheckoutRoute: typeof CheckoutRoute
+  SecretRoute: typeof SecretRouteWithChildren
+  SecretTransitionRoute: typeof SecretTransitionRoute
   ShopRoute: typeof ShopRoute
   OrderIdRoute: typeof OrderIdRoute
   ProductIdRoute: typeof ProductIdRoute
@@ -120,6 +169,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/secret': {
+      id: '/secret'
+      path: '/secret'
+      fullPath: '/secret'
+      preLoaderRoute: typeof SecretRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/secret-transition': {
+      id: '/secret-transition'
+      path: '/secret-transition'
+      fullPath: '/secret-transition'
+      preLoaderRoute: typeof SecretTransitionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
@@ -141,13 +204,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/secret/product/$id': {
+      id: '/secret/product/$id'
+      path: '/product/$id'
+      fullPath: '/secret/product/$id'
+      preLoaderRoute: typeof SecretProductIdRouteImport
+      parentRoute: typeof SecretRoute
+    }
   }
 }
+
+interface SecretRouteChildren {
+  SecretProductIdRoute: typeof SecretProductIdRoute
+}
+
+const SecretRouteChildren: SecretRouteChildren = {
+  SecretProductIdRoute: SecretProductIdRoute,
+}
+
+const SecretRouteWithChildren =
+  SecretRoute._addFileChildren(SecretRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CheckoutRoute: CheckoutRoute,
+  SecretRoute: SecretRouteWithChildren,
+  SecretTransitionRoute: SecretTransitionRoute,
   ShopRoute: ShopRoute,
   OrderIdRoute: OrderIdRoute,
   ProductIdRoute: ProductIdRoute,
