@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,6 +59,7 @@ function Checkout() {
     handleSubmit,
     watch,
     control,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
@@ -66,6 +67,10 @@ function Checkout() {
   });
 
   const paymentMethod = watch("payment_method");
+
+  useEffect(() => {
+    if (isSecretOrder) setValue("payment_method", "bkash");
+  }, [isSecretOrder, setValue]);
 
   if (items.length === 0) {
     return (

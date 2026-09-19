@@ -96,7 +96,7 @@ export function CartSheet() {
               <p className="cart-blooper">Arrey! One more tiny thing won't hurt.</p>
               <Button asChild className="add-cart button-spring w-full">
                 <Link to="/checkout" onClick={() => setIsOpen(false)}>
-                  Checkout
+                  {isSecretCart ? "Advance checkout" : "Checkout"}
                 </Link>
               </Button>
             </SheetFooter>
