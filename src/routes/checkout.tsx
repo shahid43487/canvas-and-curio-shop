@@ -49,7 +49,7 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function Checkout() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice } = useCart();
   const isSecretOrder = items.some((item) => item.product.is_hidden === true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
