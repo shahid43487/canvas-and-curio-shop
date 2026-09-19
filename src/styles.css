@@ -457,6 +457,7 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
 .secret-store-head span { display: inline-block; padding: 6px 11px; border: 2px solid var(--smol-ink); background: var(--smol-neon); box-shadow: 3px 3px 0 var(--smol-ink); font-weight: 800; transform: rotate(-3deg); }
 .secret-store-head h1 { max-width: 800px; margin: 18px 0 12px; color: var(--smol-neon); font: clamp(42px, 8vw, 86px)/.92 var(--smol-display); overflow-wrap: anywhere; }
 .secret-store-head p { max-width: 580px; font-size: 17px; line-height: 1.5; }
+.secret-store .card { color: var(--smol-ink); }
 .secret-loading, .secret-error { padding: 32px; border: 3px solid var(--smol-ink); background: var(--smol-paper); font-weight: 700; }
 .advance-note { margin-top: 16px; padding: 10px 12px; border: 2px solid var(--smol-ink); background: var(--smol-pink); font-weight: 700; }
 .payment-disabled { opacity: .48; cursor: not-allowed; }
