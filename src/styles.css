@@ -187,10 +187,29 @@ main {
 /* ---------- NAV ---------- */
 .smol-header {
   position: sticky; top: 0; z-index: 50;
-  background: var(--smol-header);
+  background: var(--smol-ink);
+  color: var(--smol-paper);
   border-bottom: 4px solid var(--smol-neon);
-  box-shadow: 0 3px 0 var(--smol-ink);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--smol-ink) 55%, transparent);
 }
+/* secret vault header: reverse contrast — paper bar, ink logo, ink accents */
+.smol-header-secret {
+  background: var(--smol-paper);
+  color: var(--smol-ink);
+  border-bottom: 4px solid var(--smol-ink);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--smol-neon) 70%, transparent);
+}
+.smol-header-secret nav.links a {
+  border-color: var(--smol-ink);
+  box-shadow: 3px 4px 0 var(--smol-ink);
+}
+.smol-header-secret nav.links a:nth-child(2) { background: var(--smol-yellow); }
+.smol-header-secret nav.links a.active { background: var(--smol-red); color: var(--smol-paper); }
+.smol-header-secret .cart-btn {
+  border-color: var(--smol-ink); background: var(--smol-red); color: var(--smol-paper);
+  box-shadow: 4px 5px 0 color-mix(in srgb, var(--smol-ink) 45%, transparent);
+}
+.smol-header-secret .cart-btn:hover { background: var(--smol-neon); color: var(--smol-ink); box-shadow: 5px 7px 0 var(--smol-ink); }
 .navbar {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 14px 28px; max-width: 1180px; margin: 0 auto; position: relative;

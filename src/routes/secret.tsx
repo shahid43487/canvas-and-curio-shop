@@ -29,7 +29,7 @@ function SecretStore() {
       .catch(() => setError("The prank shelf is hiding. Try the secret door again."));
   }, []);
 
-  return <SecretGate><SiteHeader /><main className="secret-store">
+  return <SecretGate><SiteHeader secret /><main className="secret-store">
     <header className="wrap secret-store-head"><span>ABSOLUTELY NOT A SHOP</span><h1>The secret prank shelf</h1><p>Small objects for harmless confusion. Advance bKash only; every transfer is checked before confirmation.</p></header>
     <section className="wrap secret-products" aria-label="Secret prank products">
       {error && <p className="secret-error">{error}</p>}
