@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import logoInk from "@/assets/smol-stuuf-logo.png.asset.json";
-import logoPaper from "@/assets/smol-stuuf-logo-paper.png";
+import headerLogo from "@/assets/smol-header-logo.png.asset.json";
+import headerTexture from "@/assets/smol-header-texture.png.asset.json";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheet } from "./CartSheet";
 
@@ -9,9 +10,10 @@ export function SiteHeader({ secret = false }: { secret?: boolean }) {
 
   return (
     <header className={secret ? "smol-header smol-header-secret" : "smol-header"}>
+      {!secret && <img className="smol-header-texture" src={headerTexture.url} alt="" aria-hidden="true" />}
       <div className="navbar">
         <Link to="/" className="brandmark">
-          <img className="logo-lockup" src={secret ? logoInk.url : logoPaper} alt="SMOL STUUF" />
+          <img className="logo-lockup" src={secret ? logoInk.url : headerLogo.url} alt="SMOL STUUF" />
         </Link>
         <nav className="links">
           <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "active" }}>

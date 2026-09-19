@@ -188,9 +188,15 @@ main {
 .smol-header {
   position: sticky; top: 0; z-index: 50;
   background: var(--smol-ink);
-  color: var(--smol-paper);
+  color: var(--smol-ink);
   border-bottom: 4px solid var(--smol-neon);
   box-shadow: 0 3px 0 color-mix(in srgb, var(--smol-ink) 55%, transparent);
+  overflow: visible;
+}
+.smol-header-texture {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  pointer-events: none;
 }
 /* secret vault header: reverse contrast — paper bar, ink logo, ink accents */
 .smol-header-secret {
@@ -253,7 +259,7 @@ nav.links a.active { background: var(--smol-neon); color: var(--smol-ink); }
   padding: 6px 13px; box-shadow: 4px 4px 0 var(--smol-ink);
   animation: sticker-drift 5s ease-in-out infinite;
 }
-.header-sticker.hs-drop { background: var(--smol-red); color: var(--smol-white); left: 118px; bottom: -20px; transform: rotate(-8deg); }
+.header-sticker.hs-drop { background: var(--smol-red); color: var(--smol-ink); left: 118px; bottom: -20px; transform: rotate(-8deg); }
 .header-sticker.hs-smol { background: var(--smol-neon); left: 50%; bottom: -18px; transform: translateX(-50%) rotate(5deg); animation-delay: -1.4s; }
 .header-sticker.hs-star {
   background: var(--smol-cyan); right: 190px; bottom: -18px; transform: rotate(12deg);
