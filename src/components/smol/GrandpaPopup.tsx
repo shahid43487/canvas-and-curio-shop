@@ -40,7 +40,7 @@ export function GrandpaPopup() {
   }, []);
 
   if (!visible) return null;
-  const joke = jokes[jokeIndex] ?? jokes[0];
+  const joke = jokes[jokeIndex] ?? jokes[0]!;
 
   return (
     <aside className="grandpa-popup" aria-live="polite">
