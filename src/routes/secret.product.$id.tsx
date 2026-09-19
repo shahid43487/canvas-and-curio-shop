@@ -26,7 +26,9 @@ function SecretProduct() {
   const [error, setError] = useState("");
   const { addItem, setIsOpen } = useCart();
   useEffect(() => {
-    getSecretProduct({ data: { id, access: window.sessionStorage.getItem(SECRET_ACCESS_KEY) ?? "" } })
+    const access = window.sessionStorage.getItem(SECRET_ACCESS_KEY) ?? "";
+    if (access !== "open") return;
+    getSecretProduct({ data: { id, access } })
       .then((result) => setProduct(result.product))
       .catch(() => setError("This prank has escaped."));
   }, [id]);
