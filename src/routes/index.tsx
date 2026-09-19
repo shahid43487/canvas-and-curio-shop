@@ -102,7 +102,7 @@ function Home() {
         <div className="wrap">
           <div className="section-head">
             <h2>Featured stuuf</h2>
-            <p>Four fresh pieces from Batch 04. Limited runs, numbered, gone when they're gone.</p>
+            <p>Three fresh pieces from Batch 04. Limited runs, numbered, gone when they&apos;re gone.</p>
           </div>
         </div>
         <div className="wrap" style={{ paddingBottom: 20 }}>

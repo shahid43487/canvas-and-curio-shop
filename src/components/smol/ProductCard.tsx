@@ -15,8 +15,22 @@ export function ProductCard({ product, secret = false }: { product: Product; sec
 
   return (
     <div className="card">
-      <Link
-        to={secret ? "/secret/product/$id" : "/product/$id"}
+      {secret ? <Link
+        to="/secret/product/$id"
+        params={{ id: String(product.id) }}
+        className="card-link"
+        aria-label={`View ${product.name}`}
+      >
+        <span className={dark ? "card-tag dark" : "card-tag"}>{product.tag}</span>
+        <div className="swatch">
+          <span className="num">{product.num}</span>
+          <ProductImage id={product.id} name={product.name} />
+          <span className="card-sticker" aria-hidden="true">✦</span>
+        </div>
+        <h3>{product.name}</h3>
+        <div className="meta"><span>{product.material.split(",")[0]}</span><span className="price">{formatPrice(product.price)}</span></div>
+      </Link> : <Link
+        to="/product/$id"
         params={{ id: String(product.id) }}
         className="card-link"
         aria-label={`View ${product.name}`}
@@ -34,7 +48,7 @@ export function ProductCard({ product, secret = false }: { product: Product; sec
           <span>{product.material.split(",")[0]}</span>
           <span className="price">{formatPrice(product.price)}</span>
         </div>
-      </Link>
+      </Link>}
       <button type="button" className="card-add button-spring" onClick={handleAdd}>
         Add · {formatPrice(product.price)}
       </button>

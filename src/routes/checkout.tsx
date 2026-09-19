@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -49,9 +49,8 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function Checkout() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice } = useCart();
   const isSecretOrder = items.some((item) => item.product.is_hidden === true);
-  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -59,6 +58,7 @@ function Checkout() {
     handleSubmit,
     watch,
     control,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
@@ -66,6 +66,10 @@ function Checkout() {
   });
 
   const paymentMethod = watch("payment_method");
+
+  useEffect(() => {
+    if (isSecretOrder) setValue("payment_method", "bkash");
+  }, [isSecretOrder, setValue]);
 
   if (items.length === 0) {
     return (
@@ -103,12 +107,8 @@ function Checkout() {
         },
       });
 
-      clearCart();
-      navigate({
-        to: "/order/$id",
-        params: { id: orderId },
-        search: { phone: values.shipping_phone },
-      });
+      window.localStorage.setItem("smol-cart", "[]");
+      window.location.assign(`/order/${orderId}?phone=${encodeURIComponent(values.shipping_phone)}`);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Could not place order";
       toast.error(message);
