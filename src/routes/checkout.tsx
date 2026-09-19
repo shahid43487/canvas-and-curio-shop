@@ -108,12 +108,12 @@ function Checkout() {
         },
       });
 
-      clearCart();
-      navigate({
+      await navigate({
         to: "/order/$id",
         params: { id: orderId },
         search: { phone: values.shipping_phone },
       });
+      clearCart();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Could not place order";
       toast.error(message);
