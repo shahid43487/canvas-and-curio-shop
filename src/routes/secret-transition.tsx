@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import babuRaoSticker from "@/assets/babu-rao-surprised.png";
+import babuRaoSticker from "@/assets/babu-shush.png";
 import { SECRET_ACCESS_KEY } from "@/components/smol/SecretGate";
 
 export const Route = createFileRoute("/secret-transition")({
