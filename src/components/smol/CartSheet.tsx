@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/com
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
 import { ProductImage } from "./ProductImage";
-import comedyLandlord from "@/assets/comedy-landlord-sticker.png";
+import babuRaoSticker from "@/assets/babu-rao-surprised.png";
 
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, isOpen, setIsOpen } = useCart();
@@ -17,8 +17,8 @@ export function CartSheet() {
       <SheetContent className="cart-sheet">
         <img
           className="cart-comedy-sticker"
-          src={comedyLandlord}
-          alt="A surprised comedy landlord peeking into the cart"
+          src={babuRaoSticker}
+          alt="A surprised Babu Rao sticker peeking into the cart"
           loading="lazy"
           width={1024}
           height={1024}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import grandpaAsset from "@/assets/funny-grandpa.webp.asset.json";
+import babuRaoSticker from "@/assets/babu-rao-surprised.png";
 
 const lines = [
   "Cart ko dekha? It is feeling emotionally empty.",
@@ -31,7 +31,7 @@ export function GrandpaPopup() {
       <Button className="grandpa-close" variant="ghost" size="icon" onClick={() => setVisible(false)} aria-label="Dismiss joke">
         <X size={17} />
       </Button>
-      <img src={grandpaAsset.url} alt="A puzzled grandpa sticker" width={600} height={600} loading="lazy" />
+      <img src={babuRaoSticker} alt="A surprised Babu Rao sticker" width={1024} height={1024} loading="lazy" />
       <p>{line}</p>
     </aside>
   );
