@@ -24,7 +24,9 @@ function SecretStore() {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState("");
   useEffect(() => {
-    listSecretProducts({ data: { access: window.sessionStorage.getItem(SECRET_ACCESS_KEY) ?? "" } })
+    const access = window.sessionStorage.getItem(SECRET_ACCESS_KEY) ?? "";
+    if (access !== "open") return;
+    listSecretProducts({ data: { access } })
       .then((result) => setProducts(result.products))
       .catch(() => setError("The prank shelf is hiding. Try the secret door again."));
   }, []);
