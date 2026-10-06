@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, type ErrorComponentProps } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { CircleCheck } from "lucide-react";
 
@@ -128,7 +128,7 @@ function OrderConfirmation() {
   );
 }
 
-function OrderError({ error }: { error: Error }) {
+function OrderError({ error }: ErrorComponentProps) {
   return (
     <>
       <SiteHeader />
