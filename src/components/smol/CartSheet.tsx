@@ -63,9 +63,9 @@ export function CartSheet() {
 
   let line: string;
   if (override) line = override;
-  else if (totalItems === 0) line = EMPTY[tick % EMPTY.length];
+  else if (totalItems === 0) line = EMPTY[tick % EMPTY.length]!;
   else if (totalPrice >= 50) line = HIGH;
-  else if (totalItems === 1) line = totalPrice < 18 && tick % 3 === 2 ? LOW : ONE[tick % ONE.length];
+  else if (totalItems === 1) line = totalPrice < 18 && tick % 3 === 2 ? LOW : ONE[tick % ONE.length]!;
   else line = TWO;
 
   return (

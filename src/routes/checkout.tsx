@@ -83,7 +83,7 @@ function Checkout() {
         : items.length === 1
           ? ["একটা জিনিস নিয়া যাবেন?", "আরেকটা নিলে খারাপ কী?", "ভাই, একটা দিয়ে কী হবে?"]
           : ["ভাই… আর কত ভাববেন?", "নিবেন যখন, তখন নেন।", "সিদ্ধান্ত নিতে এত সময় লাগে?"];
-      say(lines[idleIndex.current++ % lines.length]);
+      say(lines[idleIndex.current++ % lines.length] ?? "");
       poke();
     }, 20000);
   };
