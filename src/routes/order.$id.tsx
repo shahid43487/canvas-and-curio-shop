@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { CircleCheck } from "lucide-react";
@@ -41,12 +42,16 @@ function orderQueryOptions(id: string, phone: string) {
   });
 }
 
+const CHEERS = ["এইবার নিশ্চিন্ত।", "ভালো choice ভাই।", "দেখেন, পরে যেন কন না বলি নাই।", "অর্ডার হইছে। এখন অপেক্ষা করেন।", "ভাই, আমরাও খুশি! 😭"];
+
 function OrderConfirmation() {
   const { id } = Route.useParams();
   const { phone } = Route.useSearch();
   const { data } = useSuspenseQuery(orderQueryOptions(id, phone ?? ""));
   const order = data.order;
   const items = (order.order_items ?? []) as unknown as OrderItemWithProduct[];
+  const [cheer, setCheer] = useState(CHEERS[0]);
+  useEffect(() => setCheer(CHEERS[Math.floor(Math.random() * CHEERS.length)]), []);
   const awaitingPaymentCheck = order.payment_method === "bkash" && order.payment_status === "pending";
 
   return (
@@ -55,7 +60,9 @@ function OrderConfirmation() {
       <main className="wrap order-view">
         <div className="order-hero">
           <CircleCheck size={56} strokeWidth={2} />
-          <h1>{awaitingPaymentCheck ? "Transfer submitted" : "Order placed"}</h1>
+          <h1>Hoise! 🎉</h1>
+          <p lang="bn">আপনার জিনিসপত্র রওনা দেওয়ার প্রস্তুতি নিচ্ছে।</p>
+          <span className="speech-bubble" lang="bn">{cheer}</span>
           <p>{awaitingPaymentCheck ? "We received your order and transaction ID. It stays pending until the bKash transfer is checked." : "Thanks for ordering some smol stuuf. We’ll be in touch soon."}</p>
         </div>
 
