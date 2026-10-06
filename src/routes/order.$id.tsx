@@ -135,7 +135,7 @@ function OrderError({ error }: ErrorComponentProps) {
       <main className="wrap order-view">
         <div className="order-hero">
           <h1>Couldn&apos;t find that order</h1>
-          <p>{error.message}</p>
+          <p>{(error as Error).message}</p>
           <Link to="/shop" className="btn-primary order-back">
             Back to shop
           </Link>
