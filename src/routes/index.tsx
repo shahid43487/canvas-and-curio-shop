@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { ProductCard } from "@/components/smol/ProductCard";
 import { StickerField } from "@/components/smol/StickerField";
+import { MarqueeAlongSvgPath } from "@/components/smol/MarqueeAlongSvgPath";
 import { ManifestoPanel } from "@/components/smol/ManifestoPanel";
 import { SECRET_ACCESS_KEY } from "@/components/smol/SecretGate";
 import logo from "@/assets/smol-stuuf-logo.png.asset.json";
@@ -90,6 +91,7 @@ function Home() {
               <span className="sticker red s2">DROP 04</span>
             </div>
           </div>
+          <MarqueeAlongSvgPath />
         </div>
 
         <div className="marquee">

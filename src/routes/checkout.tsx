@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,6 +71,35 @@ function Checkout() {
     if (isSecretOrder) setValue("payment_method", "bkash");
   }, [isSecretOrder, setValue]);
 
+  const [bubble, setBubble] = useState("এইবার আর পেছনে তাকাইয়েন না।");
+  const say = (line: string) => setBubble(line);
+  const idle = useRef<number | undefined>(undefined);
+  const idleIndex = useRef(0);
+  const poke = () => {
+    window.clearTimeout(idle.current);
+    idle.current = window.setTimeout(() => {
+      const lines = totalPrice >= 50
+        ? ["ভাই… হিসাবটা আরেকবার দেখবেন?", "এতগুলা জিনিস লাগবে আপনার?", "ভাই, বাজেটের ভিতরে আছেন তো?", "টাকা আছে তো?"]
+        : items.length === 1
+          ? ["একটা জিনিস নিয়া যাবেন?", "আরেকটা নিলে খারাপ কী?", "ভাই, একটা দিয়ে কী হবে?"]
+          : ["ভাই… আর কত ভাববেন?", "নিবেন যখন, তখন নেন।", "সিদ্ধান্ত নিতে এত সময় লাগে?"];
+      say(lines[idleIndex.current++ % lines.length] ?? "");
+      poke();
+    }, 20000);
+  };
+  useEffect(() => {
+    poke();
+    return () => window.clearTimeout(idle.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const prevPay = useRef(paymentMethod);
+  useEffect(() => {
+    if (prevPay.current === paymentMethod) return;
+    if (paymentMethod === "bkash") say("ওহ! আগেই মিটায় ফেললেন? বাহ, বিশ্বাস আছে দেখতেছি!");
+    else say("আগে দিতে চাইলেন, এখন আবার পরে? সিদ্ধান্তটা একটু নড়বড়ে মনে হইতেছে।");
+    prevPay.current = paymentMethod;
+  }, [paymentMethod]);
+
   if (items.length === 0) {
     return (
       <>
@@ -133,33 +162,34 @@ function Checkout() {
           <img src={logo.url} alt="" className="checkout-floating-logo" width={320} height={224} />
         </header>
         <div className="checkout-layout">
-          <form onSubmit={handleSubmit(onSubmit)} className="checkout-form">
+          <form onSubmit={handleSubmit(onSubmit, () => say("ভাই, কিছু তথ্য তো লাগবো। নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?"))} className="checkout-form" onInput={poke}>
+            <p key={bubble} className="speech-bubble" lang="bn" aria-live="polite">{bubble}</p>
             <section className="checkout-section">
               <h2><span>Shipping deets</span></h2>
               <div className="form-grid">
                 <div className="form-field">
-                  <Label className="field-sticker sticker-red" htmlFor="shipping_name">Your good name</Label>
-                  <Input id="shipping_name" placeholder="Who gets the stuuf?" {...register("shipping_name")} />
+                  <Label className="field-sticker sticker-red" htmlFor="shipping_name">নামটা দেন</Label>
+                  <Input id="shipping_name" placeholder="Who gets the stuuf?" {...register("shipping_name", { onBlur: () => say("নামটা সুন্দর হইছে।") })} />
                   {errors.shipping_name && <span className="form-error">{errors.shipping_name.message}</span>}
                 </div>
                 <div className="form-field">
-                  <Label className="field-sticker sticker-yellow" htmlFor="shipping_email">Email · optional</Label>
-                  <Input id="shipping_email" type="email" placeholder="Only if you want updates" {...register("shipping_email")} />
+                  <Label className="field-sticker sticker-yellow" htmlFor="shipping_email">ইমেইল</Label>
+                  <Input id="shipping_email" type="email" placeholder="ইমেইল থাকলে দেন, না থাকলেও জীবন থেমে থাকবে না" {...register("shipping_email")} />
                   {errors.shipping_email && <span className="form-error">{errors.shipping_email.message}</span>}
                 </div>
                 <div className="form-field">
-                  <Label className="field-sticker sticker-cyan" htmlFor="shipping_phone">Ring ring</Label>
-                  <Input id="shipping_phone" placeholder="Your phone number" {...register("shipping_phone")} />
+                  <Label className="field-sticker sticker-cyan" htmlFor="shipping_phone">যে নাম্বারে ফোন ধরবেন</Label>
+                  <Input id="shipping_phone" placeholder="01XXXXXXXXX" {...register("shipping_phone", { onBlur: () => say("এই নাম্বারেই ধরবেন কিন্তু।") })} />
                   {errors.shipping_phone && <span className="form-error">{errors.shipping_phone.message}</span>}
                 </div>
                 <div className="form-field">
-                  <Label className="field-sticker sticker-pink" htmlFor="shipping_city">Your city</Label>
+                  <Label className="field-sticker sticker-pink" htmlFor="shipping_city">শহরের নাম দেন</Label>
                   <Input id="shipping_city" placeholder="Dhaka? Chattogram?" {...register("shipping_city")} />
                   {errors.shipping_city && <span className="form-error">{errors.shipping_city.message}</span>}
                 </div>
                 <div className="form-field full">
-                  <Label className="field-sticker sticker-yellow" htmlFor="shipping_address">Yaahi !! yaahi par bam fod do!!!</Label>
-                  <Textarea id="shipping_address" rows={3} placeholder="House, road, area — the whole story" {...register("shipping_address")} />
+                  <Label className="field-sticker sticker-yellow" htmlFor="shipping_address">কোথায় পাঠামু?</Label>
+                  <Textarea id="shipping_address" rows={3} placeholder="বাড়ি, রাস্তা, এলাকা — পুরা কাহিনী" {...register("shipping_address", { onBlur: () => say("এইবার বুঝলাম কই পাঠামু।") })} />
                   {errors.shipping_address && <span className="form-error">{errors.shipping_address.message}</span>}
                 </div>
                 <div className="form-field full">
@@ -213,7 +243,8 @@ function Checkout() {
           <aside className="checkout-summary">
             <span className="summary-tape" aria-hidden="true" />
             <div className="summary-stamp">YOUR BASTA</div>
-            <h2>Baste ka vau</h2>
+            <h2>একবার হিসাবটা দেখি</h2>
+            <p className="summary-note">জিনিস: {items.reduce((n, i) => n + i.quantity, 0)}টা</p>
             <div className="summary-items">
               {items.map((item) => (
                 <div key={item.product.id} className="summary-item">
@@ -229,7 +260,7 @@ function Checkout() {
               <span>{formatPrice(totalPrice)}</span>
             </div>
             <p className="summary-note">Shipping calculated after order confirmation.</p>
-            <div className="summary-badge" aria-hidden="true">YAY!</div>
+            <div className="summary-badge" aria-hidden="true">এই হিসাব ঠিকঠাক তো?</div>
           </aside>
         </div>
         </div>

@@ -1024,3 +1024,44 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
   color: inherit;
   text-decoration: none;
 }
+
+/* ===== Master plan: dark mode, bubbles, zine manifesto, path marquee ===== */
+.theme-btn { padding: 8px 14px; border: 3px solid var(--smol-ink); border-radius: 999px; background: var(--smol-cyan); color: var(--smol-ink); font: 13px var(--smol-display); box-shadow: 3px 3px 0 var(--smol-ink); transform: rotate(-3deg); cursor: pointer; }
+.smol-header .links a:nth-child(1) { transform: rotate(-4deg); }
+.smol-header .links a:nth-child(2) { transform: rotate(3deg); }
+.smol-header .links a:nth-child(3) { transform: rotate(-2deg); }
+.smol-header .cart-btn { transform: rotate(2deg); }
+html.smol-dark body { background: #0E1238; }
+html.smol-dark main, html.smol-dark .cart-sheet { filter: invert(.92) hue-rotate(180deg); }
+html.smol-dark main img, html.smol-dark .cart-sheet img, html.smol-dark main video { filter: invert(1) hue-rotate(180deg); }
+.speech-bubble { position: relative; display: block; margin: 10px 0 14px; padding: 12px 16px; border: 3px solid var(--smol-ink); border-radius: 18px; background: var(--smol-white); color: var(--smol-ink); font-weight: 700; font-size: 16px; line-height: 1.4; box-shadow: 4px 4px 0 var(--smol-ink); animation: bubble-pop .45s cubic-bezier(.3,1.6,.5,1); }
+.speech-bubble::after { content: ""; position: absolute; right: 36px; top: -12px; width: 18px; height: 18px; background: var(--smol-white); border-left: 3px solid var(--smol-ink); border-top: 3px solid var(--smol-ink); transform: rotate(45deg); }
+@keyframes bubble-pop { from { opacity: 0; transform: scale(.8) rotate(-2deg); } to { opacity: 1; transform: none; } }
+.order-hero .speech-bubble { display: inline-block; margin-top: 14px; }
+.zine-board { position: relative; padding: clamp(24px, 5vw, 56px); border: 3px solid var(--smol-ink); background: var(--smol-white) linear-gradient(90deg, transparent 49.6%, rgba(22,27,83,.07) 50%, transparent 50.4%); box-shadow: 8px 10px 0 var(--smol-ink); transform: rotate(-.6deg); }
+.zine-board > h2 { margin-bottom: 30px; font: clamp(28px, 6vw, 46px) var(--smol-display); }
+.zine-board > h2 span { color: var(--smol-red); }
+.zine-tape { position: absolute; width: 120px; height: 30px; opacity: .85; }
+.zine-tape.t1 { top: -14px; left: 24px; background: var(--smol-yellow); transform: rotate(-6deg); }
+.zine-tape.t2 { bottom: -14px; right: 30px; background: var(--smol-cyan); transform: rotate(5deg); }
+.zine-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 28px; }
+.zine-item { position: relative; padding: 18px 4px 0; border-top: 3px dashed var(--smol-ink); }
+.zine-item:nth-child(2) { transform: rotate(1deg); }
+.zine-stamp { display: inline-block; margin-bottom: 10px; padding: 2px 12px; border: 3px solid var(--smol-red); border-radius: 6px; color: var(--smol-red); font: 34px var(--smol-display); transform: rotate(-8deg); opacity: .9; }
+.zine-item h3 { margin-bottom: 8px; font: 20px var(--smol-display); }
+.zine-item p { line-height: 1.5; overflow-wrap: anywhere; }
+.zine-note { display: block; margin-top: 8px; color: var(--smol-red); font-style: italic; transform: rotate(-1.5deg); }
+.zine-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.zine-badges span { padding: 8px 14px; border: 3px solid var(--smol-ink); border-radius: 999px; background: var(--smol-pink); font: 13px var(--smol-display); box-shadow: 3px 3px 0 var(--smol-ink); }
+.zine-badges span:nth-child(2) { background: var(--smol-yellow); transform: rotate(3deg); }
+.zine-badges span:nth-child(3) { background: var(--smol-cyan); transform: rotate(-3deg); }
+.path-marquee { display: block; width: 100%; height: 110px; margin-top: 18px; overflow: visible; }
+.path-marquee-track { fill: none; stroke: var(--smol-yellow); stroke-width: 34; stroke-linecap: round; }
+.path-marquee-text { fill: var(--smol-ink); font: 20px var(--smol-display); dominant-baseline: middle; }
+@media (max-width: 640px) {
+  .checkout-floating-logo { width: 120px; height: 84px; max-width: 34vw; }
+  .checkout-heading-sticker { overflow: hidden; }
+  .theme-btn { padding: 6px 10px; font-size: 11px; }
+  .path-marquee { height: 70px; }
+}
+@media (prefers-reduced-motion: reduce) { .speech-bubble { animation: none; } }

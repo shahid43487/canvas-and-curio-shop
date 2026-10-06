@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import logoInk from "@/assets/smol-stuuf-logo.png.asset.json";
 import headerLogo from "@/assets/smol-header-logo.png.asset.json";
@@ -7,6 +8,14 @@ import { CartSheet } from "./CartSheet";
 
 export function SiteHeader({ secret = false }: { secret?: boolean }) {
   const { totalItems, setIsOpen } = useCart();
+  const [dark, setDark] = useState(false);
+  useEffect(() => setDark(document.documentElement.classList.contains("smol-dark")), []);
+  const toggleTheme = () => {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("smol-dark", next);
+    window.localStorage.setItem("smol-theme", next ? "dark" : "light");
+  };
 
   return (
     <header className={secret ? "smol-header smol-header-secret" : "smol-header"}>
@@ -26,6 +35,9 @@ export function SiteHeader({ secret = false }: { secret?: boolean }) {
             About
           </Link>
         </nav>
+        <button className="theme-btn button-spring" type="button" onClick={toggleTheme} aria-label="Toggle dark mode">
+          MODE {dark ? "☾" : "☼"}
+        </button>
         <button className="cart-btn button-spring" type="button" onClick={() => setIsOpen(true)}>
           Cart · {totalItems}
         </button>
