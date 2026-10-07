@@ -1,3 +1,5 @@
+import { MarqueeAlongSvgPath } from "./MarqueeAlongSvgPath";
+
 const statements = [
   {
     number: "01",
@@ -24,7 +26,7 @@ const stamps = ["100% NOT BORING", "HUMAN-ASSEMBLED", "ZERO SHARP CORNERS"];
 export function ManifestoPanel() {
   return (
     <section className="manifesto wrap" aria-labelledby="manifesto-title">
-      <p className="manifesto-ribbon">HANDMADE — WITH CHAOS — AND LOVE — SMOL STUUF —</p>
+      <div className="manifesto-moving-ribbon"><MarqueeAlongSvgPath text="HANDMADE — WITH CHAOS — AND LOVE — SMOL STUUF — " /></div>
       <div className="zine-board">
         <span className="zine-tape t1" aria-hidden="true" />
         <span className="zine-tape t2" aria-hidden="true" />

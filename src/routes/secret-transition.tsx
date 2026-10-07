@@ -23,7 +23,7 @@ function SecretTransition() {
       navigate({ to: "/", replace: true });
       return;
     }
-    const timer = window.setTimeout(() => navigate({ to: "/secret" }), 2600);
+    const timer = window.setTimeout(() => navigate({ to: "/secret" }), 6000);
     return () => window.clearTimeout(timer);
   }, [navigate]);
 
