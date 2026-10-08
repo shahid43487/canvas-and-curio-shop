@@ -44,6 +44,7 @@ export function CartSheet() {
   const { dialogue, say } = useDialogue({ line: EMPTY[0] ?? "", expression: "hmm" });
   const tick = useRef(0);
   const prevCount = useRef(totalItems);
+  const wasOpen = useRef(false);
 
   useEffect(() => {
     if (totalItems < prevCount.current) say(REMOVED, "hmm", true);
@@ -51,18 +52,20 @@ export function CartSheet() {
   }, [totalItems, say]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) { wasOpen.current = false; return; }
+    const justOpened = !wasOpen.current;
+    wasOpen.current = true;
     let timer: ReturnType<typeof setTimeout>;
-    const cycle = () => {
+    const cycle = (opening = false) => {
       const index = tick.current++;
       const line = totalItems === 0 ? EMPTY[index % EMPTY.length] ?? ""
         : totalPrice >= 50 ? HIGH
         : totalItems === 1 ? totalPrice < 18 && index % 3 === 2 ? LOW : ONE[index % ONE.length] ?? ""
         : TWO;
-      say(line);
-      timer = setTimeout(cycle, dialogueReadingTime(line));
+      say(line, "hmm", opening);
+      timer = setTimeout(() => cycle(), dialogueReadingTime(line));
     };
-    cycle();
+    cycle(justOpened);
     return () => clearTimeout(timer);
   }, [isOpen, totalItems, totalPrice, say]);
 

@@ -1084,6 +1084,7 @@ html.smol-dark main img, html.smol-dark .cart-sheet img, html.smol-dark main vid
 .smol-header .hs-star { display: grid; right: 170px; bottom: -18px; transform: rotate(-12deg); }
 .smol-header-secret { border-bottom-color: var(--smol-neon); }
 .smol-header-secret .links a { border-color: var(--smol-ink); }
+.smol-header-secret nav.links a:nth-child(2) { background: var(--smol-cyan); }
 .smol-header-secret .cart-btn { border-color: var(--smol-ink); }
 .smol-header .links a:hover, .smol-header .cart-btn:hover { transform: translateY(-2px); box-shadow: 4px 6px 0 var(--smol-ink); }
 .smol-header .links a:active, .smol-header .cart-btn:active { transform: translateY(2px) scale(.96); }
@@ -1151,7 +1152,7 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
   .checkout-title { font-size: 28px; overflow-wrap: anywhere; }
   .checkout-floating-logo { flex-shrink: 0; width: 86px; }
   .checkout-section { padding: 28px 16px 20px; }
-  .cart-sheet-header { min-height: 178px; padding-right: 162px; }
+  .cart-sheet-header { min-height: 178px; padding-right: 148px; }
   .cart-comedy-sticker { width: 166px; height: 166px; top: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {

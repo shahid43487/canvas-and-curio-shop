@@ -26,10 +26,21 @@ export function CheckoutSpeaker({ dialogue }: { dialogue: Dialogue }) {
       // Runtime viewport geometry, not theme styling; keeps the speaker above the keyboard.
       ref.current?.style.setProperty("--keyboard-inset", `${bottom}px`);
     };
+    const keepFieldClear = () => {
+      const field = document.activeElement;
+      if (!(field instanceof HTMLElement) || !field.matches("input, textarea, [role=radio]")) return;
+      const bubble = ref.current?.getBoundingClientRect();
+      if (!bubble) return;
+      const rect = field.getBoundingClientRect();
+      if (rect.bottom > bubble.top - 16) window.scrollBy({ top: rect.bottom - bubble.top + 24, behavior: "auto" });
+    };
+    const onFocus = () => requestAnimationFrame(() => { adjust(); keepFieldClear(); });
+    const onResize = () => { adjust(); keepFieldClear(); };
     adjust();
-    viewport?.addEventListener("resize", adjust);
+    document.addEventListener("focusin", onFocus);
+    viewport?.addEventListener("resize", onResize);
     viewport?.addEventListener("scroll", adjust);
-    return () => { viewport?.removeEventListener("resize", adjust); viewport?.removeEventListener("scroll", adjust); };
+    return () => { document.removeEventListener("focusin", onFocus); viewport?.removeEventListener("resize", onResize); viewport?.removeEventListener("scroll", adjust); };
   }, [ready]);
   if (!ready) return null;
   return createPortal(
