@@ -32,7 +32,7 @@ function SecretProduct() {
       .then((result) => setProduct(result.product))
       .catch(() => setError("This prank has escaped."));
   }, [id]);
-  return <SecretGate><SiteHeader /><main><div className="wrap product-view">
+  return <SecretGate><SiteHeader secret /><main><div className="wrap product-view">
     <Link to="/secret" className="back-link">← Back to the secret shelf</Link>
     {error && <p className="secret-error">{error}</p>}
     {!product && !error && <p className="secret-loading">Finding the prank…</p>}

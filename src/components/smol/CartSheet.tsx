@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
+import { dialogueReadingTime, useDialogue } from "@/hooks/use-dialogue";
 import { ProductImage } from "./ProductImage";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 
@@ -40,33 +41,33 @@ const LOW = "এই টাকায় তো ঠিকমতো নাশতা
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, isOpen, setIsOpen } = useCart();
   const isSecretCart = items.some((item) => item.product.is_hidden === true);
-  const [tick, setTick] = useState(0);
-  const [override, setOverride] = useState<string | null>(null);
+  const { dialogue, say } = useDialogue({ line: EMPTY[0] ?? "", expression: "hmm" });
+  const tick = useRef(0);
   const prevCount = useRef(totalItems);
-  const timer = useRef<number | undefined>(undefined);
+  const wasOpen = useRef(false);
 
   useEffect(() => {
-    const id = window.setInterval(() => setTick((t) => t + 1), 5000);
-    return () => window.clearInterval(id);
-  }, []);
-
-  const flash = (line: string | null, ms = 4000) => {
-    window.clearTimeout(timer.current);
-    setOverride(line);
-    if (line) timer.current = window.setTimeout(() => setOverride(null), ms);
-  };
-
-  useEffect(() => {
-    if (totalItems < prevCount.current) flash(REMOVED);
+    if (totalItems < prevCount.current) say(REMOVED, "hmm", true);
     prevCount.current = totalItems;
-  }, [totalItems]);
+  }, [totalItems, say]);
 
-  let line: string;
-  if (override) line = override;
-  else if (totalItems === 0) line = EMPTY[tick % EMPTY.length]!;
-  else if (totalPrice >= 50) line = HIGH;
-  else if (totalItems === 1) line = totalPrice < 18 && tick % 3 === 2 ? LOW : ONE[tick % ONE.length]!;
-  else line = TWO;
+  useEffect(() => {
+    if (!isOpen) { wasOpen.current = false; return; }
+    const justOpened = !wasOpen.current;
+    wasOpen.current = true;
+    let timer: ReturnType<typeof setTimeout>;
+    const cycle = (opening = false) => {
+      const index = tick.current++;
+      const line = totalItems === 0 ? EMPTY[index % EMPTY.length] ?? ""
+        : totalPrice >= 50 ? HIGH
+        : totalItems === 1 ? totalPrice < 18 && index % 3 === 2 ? LOW : ONE[index % ONE.length] ?? ""
+        : TWO;
+      say(line, "hmm", opening);
+      timer = setTimeout(() => cycle(), dialogueReadingTime(line));
+    };
+    cycle(justOpened);
+    return () => clearTimeout(timer);
+  }, [isOpen, totalItems, totalPrice, say]);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -79,11 +80,11 @@ export function CartSheet() {
         />
         <SheetHeader className="cart-sheet-header">
           <span className="cart-tape" aria-hidden="true" />
-          <SheetTitle className="cart-sheet-title">Your Basta</SheetTitle>
+          <SheetTitle className="cart-sheet-title" lang="bn">কি কি নিলেন দেখি ?</SheetTitle>
           <span className="cart-count-sticker">{totalItems} item{totalItems === 1 ? "" : "s"}</span>
         </SheetHeader>
 
-        <p key={line} className="speech-bubble" lang="bn" aria-live="polite">{line}</p>
+        <p key={dialogue.line} className="speech-bubble" lang="bn" aria-live="polite">{dialogue.line}</p>
 
         {items.length === 0 ? (
           <div className="cart-empty">
@@ -123,7 +124,7 @@ export function CartSheet() {
                 <span>Subtotal</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
-              <Button asChild className="add-cart button-spring w-full" onMouseEnter={() => flash(ALMOST, 3000)} onFocus={() => flash(ALMOST, 3000)}>
+              <Button asChild className="add-cart button-spring w-full" onMouseEnter={() => say(ALMOST)} onFocus={() => say(ALMOST)}>
                 <Link to="/checkout" onClick={() => setIsOpen(false)}>
                   {isSecretCart ? "Advance checkout" : "Checkout"}
                 </Link>

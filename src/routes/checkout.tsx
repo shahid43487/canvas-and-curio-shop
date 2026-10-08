@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,8 @@ import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
+import { useDialogue } from "@/hooks/use-dialogue";
+import { CheckoutSpeaker } from "@/components/smol/CheckoutSpeaker";
 import { createOrder } from "@/lib/orders.functions";
 import logo from "@/assets/smol-stuuf-logo.png.asset.json";
 
@@ -71,11 +73,10 @@ function Checkout() {
     if (isSecretOrder) setValue("payment_method", "bkash");
   }, [isSecretOrder, setValue]);
 
-  const [bubble, setBubble] = useState("এইবার আর পেছনে তাকাইয়েন না।");
-  const say = (line: string) => setBubble(line);
+  const { dialogue, say } = useDialogue({ line: "এইবার আর পেছনে তাকাইয়েন না।", expression: "shush" });
   const idle = useRef<number | undefined>(undefined);
   const idleIndex = useRef(0);
-  const poke = () => {
+  const poke = useCallback(() => {
     window.clearTimeout(idle.current);
     idle.current = window.setTimeout(() => {
       const lines = totalPrice >= 50
@@ -83,22 +84,21 @@ function Checkout() {
         : items.length === 1
           ? ["একটা জিনিস নিয়া যাবেন?", "আরেকটা নিলে খারাপ কী?", "ভাই, একটা দিয়ে কী হবে?"]
           : ["ভাই… আর কত ভাববেন?", "নিবেন যখন, তখন নেন।", "সিদ্ধান্ত নিতে এত সময় লাগে?"];
-      say(lines[idleIndex.current++ % lines.length] ?? "");
+      say(lines[idleIndex.current++ % lines.length] ?? "", totalPrice >= 50 ? "nervous" : items.length === 1 ? "pointing" : "unimpressed");
       poke();
     }, 20000);
-  };
+  }, [totalPrice, items.length, say]);
   useEffect(() => {
     poke();
     return () => window.clearTimeout(idle.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [poke]);
   const prevPay = useRef(paymentMethod);
   useEffect(() => {
     if (prevPay.current === paymentMethod) return;
-    if (paymentMethod === "bkash") say("ওহ! আগেই মিটায় ফেললেন? বাহ, বিশ্বাস আছে দেখতেছি!");
-    else say("আগে দিতে চাইলেন, এখন আবার পরে? সিদ্ধান্তটা একটু নড়বড়ে মনে হইতেছে।");
+    if (paymentMethod === "bkash") say("ওহ! আগেই মিটায় ফেললেন? বাহ, বিশ্বাস আছে দেখতেছি!", "laugh");
+    else say("আগে দিতে চাইলেন, এখন আবার পরে? সিদ্ধান্তটা একটু নড়বড়ে মনে হইতেছে।", "hmm");
     prevPay.current = paymentMethod;
-  }, [paymentMethod]);
+  }, [paymentMethod, say]);
 
   if (items.length === 0) {
     return (
@@ -141,6 +141,7 @@ function Checkout() {
     } catch (error) {
       const message = error instanceof Error ? error.message : "Could not place order";
       toast.error(message);
+      say(message, "facepalm", true);
     } finally {
       setIsSubmitting(false);
     }
@@ -148,7 +149,7 @@ function Checkout() {
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader secret={isSecretOrder} />
       <main className="checkout-view">
         <div className="checkout-confetti" aria-hidden="true">
           <span>★</span><span>SMOL</span><span>✦</span><span>GOOD STUUF</span>
@@ -162,14 +163,13 @@ function Checkout() {
           <img src={logo.url} alt="" className="checkout-floating-logo" width={320} height={224} />
         </header>
         <div className="checkout-layout">
-          <form onSubmit={handleSubmit(onSubmit, () => say("ভাই, কিছু তথ্য তো লাগবো। নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?"))} className="checkout-form" onInput={poke}>
-            <p key={bubble} className="speech-bubble" lang="bn" aria-live="polite">{bubble}</p>
+          <form onSubmit={handleSubmit(onSubmit, () => say("ভাই, কিছু তথ্য তো লাগবো। নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?", "facepalm", true))} className="checkout-form" onInput={poke}>
             <section className="checkout-section">
               <h2><span>Shipping deets</span></h2>
               <div className="form-grid">
                 <div className="form-field">
                   <Label className="field-sticker sticker-red" htmlFor="shipping_name">নামটা দেন</Label>
-                  <Input id="shipping_name" placeholder="Who gets the stuuf?" {...register("shipping_name", { onBlur: () => say("নামটা সুন্দর হইছে।") })} />
+                  <Input id="shipping_name" placeholder="Who gets the stuuf?" {...register("shipping_name", { onBlur: (e) => { if (e.target.value.trim().length >= 2) say("নামটা সুন্দর হইছে।", "laugh"); } })} />
                   {errors.shipping_name && <span className="form-error">{errors.shipping_name.message}</span>}
                 </div>
                 <div className="form-field">
@@ -179,7 +179,7 @@ function Checkout() {
                 </div>
                 <div className="form-field">
                   <Label className="field-sticker sticker-cyan" htmlFor="shipping_phone">যে নাম্বারে ফোন ধরবেন</Label>
-                  <Input id="shipping_phone" placeholder="01XXXXXXXXX" {...register("shipping_phone", { onBlur: () => say("এই নাম্বারেই ধরবেন কিন্তু।") })} />
+                  <Input id="shipping_phone" placeholder="01XXXXXXXXX" {...register("shipping_phone", { onBlur: (e) => { if (e.target.value.trim().length >= 8) say("এই নাম্বারেই ধরবেন কিন্তু।", "phone"); } })} />
                   {errors.shipping_phone && <span className="form-error">{errors.shipping_phone.message}</span>}
                 </div>
                 <div className="form-field">
@@ -189,7 +189,7 @@ function Checkout() {
                 </div>
                 <div className="form-field full">
                   <Label className="field-sticker sticker-yellow" htmlFor="shipping_address">কোথায় পাঠামু?</Label>
-                  <Textarea id="shipping_address" rows={3} placeholder="বাড়ি, রাস্তা, এলাকা — পুরা কাহিনী" {...register("shipping_address", { onBlur: () => say("এইবার বুঝলাম কই পাঠামু।") })} />
+                  <Textarea id="shipping_address" rows={3} placeholder="বাড়ি, রাস্তা, এলাকা — পুরা কাহিনী" {...register("shipping_address", { onBlur: (e) => { if (e.target.value.trim().length >= 5) say("এইবার বুঝলাম কই পাঠামু।", "praying"); } })} />
                   {errors.shipping_address && <span className="form-error">{errors.shipping_address.message}</span>}
                 </div>
                 <div className="form-field full">
@@ -260,11 +260,12 @@ function Checkout() {
               <span>{formatPrice(totalPrice)}</span>
             </div>
             <p className="summary-note">Shipping calculated after order confirmation.</p>
-            <div className="summary-badge" aria-hidden="true">এই হিসাব ঠিকঠাক তো?</div>
+            <div className="summary-badge" lang="bn">এই হিসাব ঠিকঠাক তো?</div>
           </aside>
         </div>
         </div>
       </main>
+      <CheckoutSpeaker dialogue={dialogue} />
       <SiteFooter />
     </>
   );
