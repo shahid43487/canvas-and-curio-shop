@@ -8,7 +8,7 @@ import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
 import { dialogueReadingTime, useDialogue } from "@/hooks/use-dialogue";
 import { ProductImage } from "./ProductImage";
-import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
+import character from "@/assets/shop-character.png";
 
 const EMPTY = [
   "ভাই, কার্টে বাতাস ছাড়া আর কিছু নাই!",
@@ -74,8 +74,8 @@ export function CartSheet() {
       <SheetContent className="cart-sheet">
         <img
           className="cart-comedy-sticker"
-          src={fierceCharacter.url}
-          alt="A fierce bearded sticker character judging your cart"
+          src={character}
+          alt="Shop character judging your cart"
           loading="lazy"
         />
         <SheetHeader className="cart-sheet-header">

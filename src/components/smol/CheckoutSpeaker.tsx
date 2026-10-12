@@ -1,18 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Dialogue } from "@/hooks/use-dialogue";
-import hmm from "@/assets/babu-hmm.png";
-import laugh from "@/assets/babu-laugh.png";
-import praying from "@/assets/babu-praying.png";
-import nervous from "@/assets/babu-nervous.png";
-import facepalm from "@/assets/babu-facepalm.png";
-import phone from "@/assets/babu-phone-confused.png";
-import shocked from "@/assets/babu-shocked-open.png";
-import shush from "@/assets/babu-shush.png";
-import pointing from "@/assets/babu-pointing-laugh.png";
-import unimpressed from "@/assets/babu-unimpressed.png";
-
-const expressions: Record<string, string> = { hmm, laugh, praying, nervous, facepalm, phone, shocked, shush, pointing, unimpressed };
+import character from "@/assets/shop-character.png";
 
 export function CheckoutSpeaker({ dialogue }: { dialogue: Dialogue }) {
   const [ready, setReady] = useState(false);
@@ -46,7 +35,7 @@ export function CheckoutSpeaker({ dialogue }: { dialogue: Dialogue }) {
   return createPortal(
     <aside ref={ref} className="checkout-speaker" aria-label="Checkout character">
       <p key={dialogue.line} className="checkout-speaker-bubble" lang="bn" aria-live="polite" aria-atomic="true">{dialogue.line}</p>
-      <img src={expressions[dialogue.expression] ?? hmm} alt="Babu Rao reacting to your checkout" width={140} height={140} />
+      <img src={character} alt="Shop character reacting to your checkout" width={140} height={140} />
     </aside>, document.body,
   );
 }
