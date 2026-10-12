@@ -2,7 +2,7 @@
 @source "../src";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *, .smol-dark, .smol-dark *));
 
 /*
  * Design system definition.
@@ -1031,9 +1031,62 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 .smol-header .links a:nth-child(2) { transform: rotate(3deg); }
 .smol-header .links a:nth-child(3) { transform: rotate(-2deg); }
 .smol-header .cart-btn { transform: rotate(2deg); }
-html.smol-dark body { background: #0E1238; }
-html.smol-dark main, html.smol-dark .cart-sheet { filter: invert(.92) hue-rotate(180deg); }
-html.smol-dark main img, html.smol-dark .cart-sheet img, html.smol-dark main video { filter: invert(1) hue-rotate(180deg); }
+/* Charcoal theme: explicit surface roles keep artwork and sticker colors intact. */
+html.smol-dark {
+  --background: oklch(.19 .004 270);
+  --foreground: oklch(.94 .006 90);
+  --card: oklch(.245 .004 270);
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(.93 .19 110);
+  --primary-foreground: oklch(.20 .004 270);
+  --secondary: oklch(.30 .005 270);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--secondary);
+  --muted-foreground: oklch(.75 .005 90);
+  --accent: var(--secondary);
+  --accent-foreground: var(--foreground);
+  --border: oklch(.43 .005 270);
+  --input: var(--border);
+  --ring: var(--smol-cyan);
+  --smol-night: var(--background);
+  --smol-night-panel: var(--card);
+  --smol-night-text: var(--foreground);
+  --smol-night-line: var(--border);
+  --smol-night-shadow: oklch(.12 .003 270);
+  --smol-night-highlight: oklch(.75 .17 15);
+}
+html.smol-dark body { background: var(--smol-night); color: var(--smol-night-text); }
+html.smol-dark main, html.smol-dark .checkout-view, html.smol-dark .cart-sheet {
+  background-color: var(--smol-night); color: var(--smol-night-text);
+  background-image: radial-gradient(circle, color-mix(in oklab, var(--smol-night-text) 7%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+html.smol-dark :is(.card, .zine-board, .checkout-section, .checkout-summary, .order-card, .cart-item, .cart-item:nth-child(even), .qty-row, .qty-btn, .speech-bubble, .secret-loading, .secret-error) {
+  background: var(--smol-night-panel); color: var(--smol-night-text); border-color: var(--smol-night-line);
+}
+html.smol-dark :is(.grid, .related-grid, .section-head, .spec-table, .spec-row, .zine-item, .summary-total, .order-row.total, .tag-pill) { border-color: var(--smol-night-line); }
+html.smol-dark :is(.card, .zine-board, .checkout-section, .order-card, .cart-item, .speech-bubble) { box-shadow: 5px 5px 0 var(--smol-night-shadow); }
+html.smol-dark :is(.hero-title .accent, .product-info .price, .zine-board > h2 span, .zine-note, .zine-stamp, .form-error, .cart-remove) { color: var(--smol-night-highlight); }
+html.smol-dark .zine-stamp { border-color: var(--smol-night-highlight); }
+html.smol-dark :is(.checkout-heading-sticker, .cart-sheet-header, .cart-footer, .smol-footer, .grandpa-popup, .manifesto-item, .summary-badge, .zine-badges, .sticker, .swatch .num, .num-badge) { color: var(--smol-ink); }
+html.smol-dark .checkout-summary { border-top-color: var(--smol-yellow); box-shadow: 7px 7px 0 var(--smol-night-shadow); }
+html.smol-dark .checkout-section:nth-child(2) { border-top-color: var(--smol-cyan); }
+html.smol-dark :is(.form-field input, .form-field textarea) { background: var(--smol-night); color: var(--smol-night-text); border-color: var(--smol-night-line); }
+html.smol-dark :is(.form-field input, .form-field textarea)::placeholder { color: var(--muted-foreground); }
+html.smol-dark :is(.form-field input, .form-field textarea):focus { border-color: var(--smol-cyan); box-shadow: 0 0 0 2px var(--smol-cyan); }
+html.smol-dark .payment-option { border-color: var(--smol-night-line); }
+html.smol-dark .payment-option:has([data-state="checked"]) { background: var(--smol-yellow); color: var(--smol-ink); }
+html.smol-dark .payment-option:hover { background: color-mix(in oklab, var(--smol-cyan) 12%, var(--smol-night-panel)); }
+html.smol-dark .payment-option:has([data-state="checked"]):hover { background: var(--smol-yellow); }
+html.smol-dark :is(.btn-outline, .cart-empty) { color: var(--smol-night-text); border-color: var(--smol-cyan); }
+html.smol-dark .btn-outline:hover { background: var(--smol-cyan); color: var(--smol-ink); }
+html.smol-dark .card-add { background: var(--smol-cyan); color: var(--smol-ink); }
+html.smol-dark :is(.eyebrow-tag, .card-tag.dark, .marquee) { background: var(--smol-night-panel); color: var(--smol-neon); border-color: var(--smol-night-line); }
+html.smol-dark .speech-bubble::after { background: var(--smol-night-panel); border-color: var(--smol-night-line); }
+html.smol-dark .advance-note, html.smol-dark .secret-store-head > span { color: var(--smol-ink); }
+
 .speech-bubble { position: relative; display: block; margin: 10px 0 14px; padding: 12px 16px; border: 3px solid var(--smol-ink); border-radius: 18px; background: var(--smol-white); color: var(--smol-ink); font-weight: 700; font-size: 16px; line-height: 1.4; box-shadow: 4px 4px 0 var(--smol-ink); animation: bubble-pop .45s cubic-bezier(.3,1.6,.5,1); }
 .speech-bubble::after { content: ""; position: absolute; right: 36px; top: -12px; width: 18px; height: 18px; background: var(--smol-white); border-left: 3px solid var(--smol-ink); border-top: 3px solid var(--smol-ink); transform: rotate(45deg); }
 @keyframes bubble-pop { from { opacity: 0; transform: scale(.8) rotate(-2deg); } to { opacity: 1; transform: none; } }
@@ -1110,8 +1163,8 @@ html.smol-dark main img, html.smol-dark .cart-sheet img, html.smol-dark main vid
 .checkout-speaker img { width: 120px; height: 140px; object-fit: contain; }
 .checkout-speaker-bubble { position: relative; margin: 0 0 16px; padding: 14px 16px; border: 3px solid var(--smol-ink); border-radius: 8px; background: var(--smol-white); color: var(--smol-ink); box-shadow: 4px 4px 0 var(--smol-ink); font: 700 17px/1.5 var(--smol-body); overflow-wrap: anywhere; animation: dialogue-reveal 180ms ease-out; }
 .checkout-speaker-bubble::after { content: ""; position: absolute; right: -9px; bottom: 22px; width: 13px; height: 13px; border-right: 3px solid var(--smol-ink); border-top: 3px solid var(--smol-ink); background: var(--smol-white); transform: rotate(45deg); }
-html.smol-dark .checkout-speaker-bubble { background: var(--smol-ink); color: var(--smol-paper); border-color: var(--smol-neon); box-shadow: 4px 4px 0 var(--smol-cyan); }
-html.smol-dark .checkout-speaker-bubble::after { background: var(--smol-ink); border-color: var(--smol-neon); }
+html.smol-dark .checkout-speaker-bubble { background: var(--smol-night-panel); color: var(--smol-night-text); border-color: var(--smol-neon); box-shadow: 4px 4px 0 var(--smol-cyan); }
+html.smol-dark .checkout-speaker-bubble::after { background: var(--smol-night-panel); border-color: var(--smol-neon); }
 body:has(.checkout-speaker) { padding-bottom: 180px; }
 .checkout-view { padding-bottom: 210px; }
 .checkout-layout { grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); }

@@ -1,28 +1,19 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import babuLaugh from "@/assets/babu-laugh.png";
-import babuShockedOpen from "@/assets/babu-shocked-open.png";
-import babuPhoneConfused from "@/assets/babu-phone-confused.png";
-import babuUnimpressed from "@/assets/babu-unimpressed.png";
-import babuPointingLaugh from "@/assets/babu-pointing-laugh.png";
-import babuPraying from "@/assets/babu-praying.png";
-import babuShush from "@/assets/babu-shush.png";
-import babuNervous from "@/assets/babu-nervous.png";
-import babuHmm from "@/assets/babu-hmm.png";
-import babuFacepalm from "@/assets/babu-facepalm.png";
+import character from "@/assets/shop-character.png";
 
 const jokes = [
-  { line: "Cart ko dekha? It is feeling emotionally empty.", sticker: babuShockedOpen },
-  { line: "Tiny object, giant explanation. Excellent choice.", sticker: babuPointingLaugh },
-  { line: "I inspected the vibes. Approved with mild confusion.", sticker: babuHmm },
-  { line: "My glasses say yes. My back says think about it.", sticker: babuFacepalm },
-  { line: "Wallet called. I told it we don't take calls from strangers.", sticker: babuPhoneConfused },
-  { line: "Such a small thing. Such a big problem for my pocket.", sticker: babuPraying },
-  { line: "I am not saying don't buy it. I am saying don't tell anyone.", sticker: babuShush },
-  { line: "Everyone has this. Except everyone. Only you have this.", sticker: babuLaugh },
-  { line: "I checked the quality. Twice. Then I checked the price and sat down.", sticker: babuNervous },
-  { line: "Hmm. Suspiciously good. Nobody is this generous. Buy two.", sticker: babuUnimpressed },
+  { line: "Cart ko dekha? It is feeling emotionally empty.", sticker: character },
+  { line: "Tiny object, giant explanation. Excellent choice.", sticker: character },
+  { line: "I inspected the vibes. Approved with mild confusion.", sticker: character },
+  { line: "My glasses say yes. My back says think about it.", sticker: character },
+  { line: "Wallet called. I told it we don't take calls from strangers.", sticker: character },
+  { line: "Such a small thing. Such a big problem for my pocket.", sticker: character },
+  { line: "I am not saying don't buy it. I am saying don't tell anyone.", sticker: character },
+  { line: "Everyone has this. Except everyone. Only you have this.", sticker: character },
+  { line: "I checked the quality. Twice. Then I checked the price and sat down.", sticker: character },
+  { line: "Hmm. Suspiciously good. Nobody is this generous. Buy two.", sticker: character },
 ];
 
 export function GrandpaPopup() {
@@ -40,14 +31,15 @@ export function GrandpaPopup() {
   }, []);
 
   if (!visible) return null;
-  const joke = jokes[jokeIndex] ?? jokes[0]!;
+  const joke = jokes[jokeIndex] ?? jokes[0];
+  if (!joke) return null;
 
   return (
     <aside className="grandpa-popup" aria-live="polite">
       <Button className="grandpa-close" variant="ghost" size="icon" onClick={() => setVisible(false)} aria-label="Dismiss joke">
         <X size={17} />
       </Button>
-      <img src={joke.sticker} alt="A Babu Rao sticker reacting to the shop" width={1024} height={1024} loading="lazy" />
+      <img src={joke.sticker} alt="Shop character reacting to the shop" width={1024} height={1024} loading="lazy" />
       <p>{joke.line}</p>
     </aside>
   );
