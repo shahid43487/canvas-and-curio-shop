@@ -1,9 +1,9 @@
 # Roadmap
 
 ## Current request
-- [ ] Replace all Babu Rao character images with the uploaded sticker
-- [ ] Rework dark mode with charcoal surfaces and colorful sticker accents
-- [ ] Verify character rendering, theme persistence, and checkout visibility
+- [x] Replace all Babu Rao character images with the uploaded sticker
+- [x] Rework dark mode with charcoal surfaces and colorful sticker accents
+- [x] Verify character rendering, theme persistence, and checkout visibility
 
 ## Next refinements — awaiting plan approval
 - [ ] Rebuild both headers from the supplied dual-header reference

@@ -1083,6 +1083,12 @@ html.smol-dark .payment-option:has([data-state="checked"]):hover { background: v
 html.smol-dark :is(.btn-outline, .cart-empty) { color: var(--smol-night-text); border-color: var(--smol-cyan); }
 html.smol-dark .btn-outline:hover { background: var(--smol-cyan); color: var(--smol-ink); }
 html.smol-dark .card-add { background: var(--smol-cyan); color: var(--smol-ink); }
+html.smol-dark .card-add:hover { background: var(--smol-yellow); color: var(--smol-ink); }
+html.smol-dark .smol-footer { background-color: var(--smol-night); color: var(--smol-night-text); border-color: var(--smol-night-line); background-image: none; }
+html.smol-dark .footer-top { background: var(--smol-night-panel); color: var(--smol-night-text); border-color: var(--smol-night-line); box-shadow: 7px 7px 0 var(--smol-night-shadow); }
+html.smol-dark .footer-col a { color: var(--smol-night-text); }
+html.smol-dark .footer-col a:hover { color: var(--smol-cyan); }
+html.smol-dark .footer-brand span { color: var(--smol-night-highlight); }
 html.smol-dark :is(.eyebrow-tag, .card-tag.dark, .marquee) { background: var(--smol-night-panel); color: var(--smol-neon); border-color: var(--smol-night-line); }
 html.smol-dark .speech-bubble::after { background: var(--smol-night-panel); border-color: var(--smol-night-line); }
 html.smol-dark .advance-note, html.smol-dark .secret-store-head > span { color: var(--smol-ink); }
