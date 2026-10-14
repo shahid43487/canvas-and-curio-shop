@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { formatPrice } from "@/data/products";
-import { useCart } from "@/hooks/use-cart";
+import { useCart, itemKey, unitPrice } from "@/hooks/use-cart";
 import { useDialogue } from "@/hooks/use-dialogue";
 import { CheckoutSpeaker } from "@/components/smol/CheckoutSpeaker";
 import { createOrder } from "@/lib/orders.functions";
@@ -121,8 +121,9 @@ function Checkout() {
     try {
       const orderItems = items.map((item) => ({
         product_id: item.product.id,
+        variation_id: item.variation?.id,
         quantity: item.quantity,
-        unit_price: item.product.price,
+        unit_price: unitPrice(item),
       }));
 
       const { orderId } = await createOrder({
@@ -247,11 +248,11 @@ function Checkout() {
             <p className="summary-note">জিনিস: {items.reduce((n, i) => n + i.quantity, 0)}টা</p>
             <div className="summary-items">
               {items.map((item) => (
-                <div key={item.product.id} className="summary-item">
+                <div key={itemKey(item)} className="summary-item">
                   <span>
-                    {item.product.name} × {item.quantity}
+                    {item.product.name}{item.variation ? ` · ${item.variation.name}` : ""} × {item.quantity}
                   </span>
-                  <span>{formatPrice(item.product.price * item.quantity)}</span>
+                  <span>{formatPrice(unitPrice(item) * item.quantity)}</span>
                 </div>
               ))}
             </div>

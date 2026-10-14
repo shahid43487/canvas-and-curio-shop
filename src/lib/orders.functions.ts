@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 export type OrderItemInput = {
   product_id: number;
+  variation_id?: string | undefined;
   quantity: number;
   unit_price: number;
 };

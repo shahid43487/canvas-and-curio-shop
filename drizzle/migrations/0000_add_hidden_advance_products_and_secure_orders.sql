@@ -7,6 +7,7 @@ ALTER TABLE public.orders
     CHECK (order_source IN ('regular', 'secret'));
 
 DROP POLICY IF EXISTS "Product catalog is public" ON public.products;
+DROP POLICY IF EXISTS "Public catalog excludes hidden products" ON public.products;
 CREATE POLICY "Public catalog excludes hidden products"
 ON public.products
 FOR SELECT

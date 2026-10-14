@@ -27,7 +27,13 @@ export const getProduct = createServerFn({ method: "GET" })
       .order("id", { ascending: true })
       .limit(3);
     if (recommendationsError) throw recommendationsError;
-    return { product, recommendations: recommendations ?? [] };
+    const { data: variations, error: variationsError } = await supabase
+      .from("product_variations")
+      .select("id, name, sku, price, compare_at_price, stock, bundle_quantity, image_key, button_config")
+      .eq("product_id", Number(data.id))
+      .order("display_order", { ascending: true });
+    if (variationsError) throw variationsError;
+    return { product, recommendations: recommendations ?? [], variations: variations ?? [] };
   });
 
 export const listSecretProducts = createServerFn({ method: "GET" })

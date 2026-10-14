@@ -5,7 +5,7 @@ import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatPrice } from "@/data/products";
-import { useCart } from "@/hooks/use-cart";
+import { useCart, itemKey, unitPrice } from "@/hooks/use-cart";
 import { useDialogue } from "@/hooks/use-dialogue";
 import { ProductImage } from "./ProductImage";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
@@ -97,21 +97,21 @@ export function CartSheet() {
           <>
             <div className="cart-items">
               {items.map((item) => (
-                <div key={item.product.id} className="cart-item">
+                <div key={itemKey(item)} className="cart-item">
                   <div className="cart-item-image"><ProductImage id={item.product.id} name={item.product.name} /></div>
                   <div className="cart-item-main">
-                    <span className="cart-item-name">{item.product.name}</span>
-                    <span className="cart-item-price">{formatPrice(item.product.price)}</span>
+                    <span className="cart-item-name">{item.product.name}{item.variation ? ` · ${item.variation.name}` : ""}</span>
+                    <span className="cart-item-price">{formatPrice(unitPrice(item))}</span>
                   </div>
                   <div className="cart-item-actions">
-                    <Button type="button" variant="ghost" size="icon" className="qty-btn" onClick={() => updateQuantity(item.product.id, item.quantity - 1)} aria-label="Decrease quantity">
+                    <Button type="button" variant="ghost" size="icon" className="qty-btn" onClick={() => updateQuantity(itemKey(item), item.quantity - 1)} aria-label="Decrease quantity">
                       <Minus size={14} />
                     </Button>
                     <span className="qty-value">{item.quantity}</span>
-                    <Button type="button" variant="ghost" size="icon" className="qty-btn" onClick={() => updateQuantity(item.product.id, item.quantity + 1)} aria-label="Increase quantity">
+                    <Button type="button" variant="ghost" size="icon" className="qty-btn" onClick={() => updateQuantity(itemKey(item), item.quantity + 1)} aria-label="Increase quantity">
                       <Plus size={14} />
                     </Button>
-                    <Button type="button" variant="ghost" size="icon" className="cart-remove" onClick={() => removeItem(item.product.id)} aria-label="Remove item">
+                    <Button type="button" variant="ghost" size="icon" className="cart-remove" onClick={() => removeItem(itemKey(item))} aria-label="Remove item">
                       <Trash2 size={16} />
                     </Button>
                   </div>
