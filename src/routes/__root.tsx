@@ -115,6 +115,11 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: `try{if(localStorage.getItem("smol-theme")==="dark")document.documentElement.classList.add("smol-dark")}catch(e){}` }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){function r(){try{var k="smol-chunk-reload",t=+sessionStorage.getItem(k)||0;if(Date.now()-t<10000)return;sessionStorage.setItem(k,String(Date.now()))}catch(e){}location.reload()}window.addEventListener("vite:preloadError",function(e){e.preventDefault();r()});window.addEventListener("unhandledrejection",function(e){var m=e.reason&&e.reason.message||"";if(/Failed to fetch dynamically imported module|Importing a module script failed/.test(m)){e.preventDefault();r()}})})();`,
+          }}
+        />
       </head>
       <body>
         {children}
