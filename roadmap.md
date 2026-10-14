@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Current request
-- [ ] Use both approved character stickers for distinct panels and contextual reactions
+- [x] Use both approved character stickers for distinct panels and contextual reactions
 - [x] Replace all Babu Rao character images with the uploaded sticker
 - [x] Rework dark mode with charcoal surfaces and colorful sticker accents
 - [x] Verify character rendering, theme persistence, and checkout visibility
