@@ -14,4 +14,4 @@
 - Portal the checkout speaker outside filtered page content and track visualViewport geometry so scrolling and mobile keyboards cannot clip it.
 
 - Use explicit charcoal surface and foreground tokens for dark mode; never invert page or image colors because product photography must remain accurate.
-- Use the shared shop-character image for every contextual character surface so artwork replacements stay consistent.
+- Select between the two approved character assets by panel and dialogue context, keeping existing dialogue timing and positioning shared so artwork changes do not disrupt reactions.
