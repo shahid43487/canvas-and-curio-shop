@@ -6,6 +6,8 @@
 - [x] Rework dark mode with charcoal surfaces and colorful sticker accents
 - [x] Verify character rendering, theme persistence, and checkout visibility
 
+- [x] Re-time dialogue: priority tiers, short-beat pacing, two-beat sequences, 15s idle
+
 ## Next refinements — awaiting plan approval
 - [ ] Rebuild both headers from the supplied dual-header reference
 - [ ] Move the animated ribbon above the manifesto with requested wording

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
-import { dialogueReadingTime, useDialogue } from "@/hooks/use-dialogue";
+import { useDialogue } from "@/hooks/use-dialogue";
 import { ProductImage } from "./ProductImage";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 
@@ -47,7 +47,7 @@ export function CartSheet() {
   const wasOpen = useRef(false);
 
   useEffect(() => {
-    if (totalItems < prevCount.current) say(REMOVED, "hmm", true);
+    if (totalItems < prevCount.current) say(REMOVED, "facepalm", 2);
     prevCount.current = totalItems;
   }, [totalItems, say]);
 
@@ -62,8 +62,8 @@ export function CartSheet() {
         : totalPrice >= 50 ? HIGH
         : totalItems === 1 ? totalPrice < 18 && index % 3 === 2 ? LOW : ONE[index % ONE.length] ?? ""
         : TWO;
-      say(line, "hmm", opening);
-      timer = setTimeout(() => cycle(), dialogueReadingTime(line));
+      say(line, "hmm", opening ? 1 : 0);
+      timer = setTimeout(() => cycle(), totalItems === 0 ? 6000 : 6500);
     };
     cycle(justOpened);
     return () => clearTimeout(timer);
@@ -124,7 +124,7 @@ export function CartSheet() {
                 <span>Subtotal</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
-              <Button asChild className="add-cart button-spring w-full" onMouseEnter={() => say(ALMOST)} onFocus={() => say(ALMOST)}>
+              <Button asChild className="add-cart button-spring w-full" onMouseEnter={() => say(ALMOST, "shush")} onFocus={() => say(ALMOST, "shush")}>
                 <Link to="/checkout" onClick={() => setIsOpen(false)}>
                   {isSecretCart ? "Advance checkout" : "Checkout"}
                 </Link>

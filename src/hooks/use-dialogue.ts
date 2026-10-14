@@ -1,47 +1,48 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export const dialogueReadingTime = (line: string) => line.length > 65 ? 16000 : 12000;
+// Short punchy beats read fast; long lines get more time.
+export const dialogueReadingTime = (line: string) => line.length < 30 ? 4000 : line.length <= 60 ? 5500 : 7000;
 export type Dialogue = { line: string; expression: string };
+/** 0 ambient (only when idle), 1 interaction (shows now), 2 critical (interrupts anything). */
+export type Priority = 0 | 1 | 2;
+type Beat = Dialogue & { priority: Priority };
 
-// One reader-owned clock: ordinary reactions wait, important errors interrupt.
 export function useDialogue(initial: Dialogue) {
   const [dialogue, setDialogue] = useState(initial);
-  const current = useRef(initial);
+  const current = useRef<Beat>({ ...initial, priority: 1 });
   const until = useRef(0);
-  const pending = useRef<Dialogue[]>([]);
+  const pending = useRef<Beat[]>([]);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const mounted = useRef(false);
 
-  const drain = useCallback(function next() {
+  const show = useCallback(function show(beat: Beat) {
+    if (!mounted.current) return;
     clearTimeout(timer.current);
-    const delay = until.current - Date.now();
-    if (delay > 0) {
-      timer.current = setTimeout(next, delay);
-      return;
-    }
-    const message = pending.current.shift();
-    if (!message || !mounted.current) return;
-    current.current = message;
-    setDialogue(message);
-    until.current = Date.now() + dialogueReadingTime(message.line);
-    if (pending.current.length) timer.current = setTimeout(next, dialogueReadingTime(message.line));
+    current.current = beat;
+    setDialogue({ line: beat.line, expression: beat.expression });
+    const ms = dialogueReadingTime(beat.line);
+    until.current = Date.now() + ms;
+    timer.current = setTimeout(() => {
+      const next = pending.current.shift();
+      if (next) show(next);
+    }, ms);
   }, []);
 
-  const say = useCallback((line: string, expression = "hmm", urgent = false) => {
-    if (!line || current.current.line === line || pending.current.some((d) => d.line === line)) return;
-    const message = { line, expression };
-    if (urgent) {
-      clearTimeout(timer.current);
-      pending.current = [];
-      current.current = message;
-      setDialogue(message);
-      until.current = Date.now() + dialogueReadingTime(line);
+  const saySequence = useCallback((steps: Dialogue[], priority: Priority = 1) => {
+    const [first, ...rest] = steps.filter((s) => s.line);
+    if (!first || current.current.line === first.line) return;
+    const busy = Date.now() < until.current;
+    if (priority === 0 && busy) return; // ambient never stomps an unread line
+    if (busy && priority < current.current.priority) {
+      pending.current = steps.map((s) => ({ ...s, priority }));
       return;
     }
-    // Keep the latest few relevant actions, never a long backlog of stale jokes.
-    pending.current = [...pending.current.slice(-2), message];
-    drain();
-  }, [drain]);
+    pending.current = rest.map((s) => ({ ...s, priority }));
+    show({ ...first, priority });
+  }, [show]);
+
+  const say = useCallback((line: string, expression = "hmm", priority: Priority = 1) =>
+    saySequence([{ line, expression }], priority), [saySequence]);
 
   useEffect(() => {
     mounted.current = true;
@@ -49,5 +50,5 @@ export function useDialogue(initial: Dialogue) {
     return () => { mounted.current = false; clearTimeout(timer.current); pending.current = []; };
   }, []);
 
-  return { dialogue, say };
+  return { dialogue, say, saySequence, isBusy: () => Date.now() < until.current };
 }

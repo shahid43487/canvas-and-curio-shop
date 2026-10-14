@@ -73,7 +73,7 @@ function Checkout() {
     if (isSecretOrder) setValue("payment_method", "bkash");
   }, [isSecretOrder, setValue]);
 
-  const { dialogue, say } = useDialogue({ line: "এইবার আর পেছনে তাকাইয়েন না।", expression: "shush" });
+  const { dialogue, say, saySequence } = useDialogue({ line: "এইবার আর পেছনে তাকাইয়েন না।", expression: "shush" });
   const idle = useRef<number | undefined>(undefined);
   const idleIndex = useRef(0);
   const poke = useCallback(() => {
@@ -84,9 +84,9 @@ function Checkout() {
         : items.length === 1
           ? ["একটা জিনিস নিয়া যাবেন?", "আরেকটা নিলে খারাপ কী?", "ভাই, একটা দিয়ে কী হবে?"]
           : ["ভাই… আর কত ভাববেন?", "নিবেন যখন, তখন নেন।", "সিদ্ধান্ত নিতে এত সময় লাগে?"];
-      say(lines[idleIndex.current++ % lines.length] ?? "", totalPrice >= 50 ? "nervous" : items.length === 1 ? "pointing" : "unimpressed");
+      say(lines[idleIndex.current++ % lines.length] ?? "", totalPrice >= 50 ? "nervous" : items.length === 1 ? "pointing" : "unimpressed", 0);
       poke();
-    }, 20000);
+    }, 15000);
   }, [totalPrice, items.length, say]);
   useEffect(() => {
     poke();
@@ -95,8 +95,8 @@ function Checkout() {
   const prevPay = useRef(paymentMethod);
   useEffect(() => {
     if (prevPay.current === paymentMethod) return;
-    if (paymentMethod === "bkash") say("ওহ! আগেই মিটায় ফেললেন? বাহ, বিশ্বাস আছে দেখতেছি!", "laugh");
-    else say("আগে দিতে চাইলেন, এখন আবার পরে? সিদ্ধান্তটা একটু নড়বড়ে মনে হইতেছে।", "hmm");
+    if (paymentMethod === "bkash") saySequence([{ line: "ওহ! আগেই মিটায় ফেললেন?", expression: "shocked" }, { line: "বাহ, বিশ্বাস আছে দেখতেছি!", expression: "laugh" }]);
+    else saySequence([{ line: "আগে দিতে চাইলেন, এখন আবার পরে?", expression: "hmm" }, { line: "সিদ্ধান্তটা একটু নড়বড়ে মনে হইতেছে।", expression: "unimpressed" }]);
     prevPay.current = paymentMethod;
   }, [paymentMethod, say]);
 
@@ -141,7 +141,7 @@ function Checkout() {
     } catch (error) {
       const message = error instanceof Error ? error.message : "Could not place order";
       toast.error(message);
-      say(message, "facepalm", true);
+      say(message, "facepalm", 2);
     } finally {
       setIsSubmitting(false);
     }
@@ -163,7 +163,7 @@ function Checkout() {
           <img src={logo.url} alt="" className="checkout-floating-logo" width={320} height={224} />
         </header>
         <div className="checkout-layout">
-          <form onSubmit={handleSubmit(onSubmit, () => say("ভাই, কিছু তথ্য তো লাগবো। নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?", "facepalm", true))} className="checkout-form" onInput={poke}>
+          <form onSubmit={handleSubmit(onSubmit, () => saySequence([{ line: "ভাই, কিছু তথ্য তো লাগবো।", expression: "nervous" }, { line: "নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?", expression: "facepalm" }], 2))} className="checkout-form" onInput={poke} onClick={poke}>
             <section className="checkout-section">
               <h2><span>Shipping deets</span></h2>
               <div className="form-grid">
