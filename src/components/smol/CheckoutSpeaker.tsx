@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Dialogue } from "@/hooks/use-dialogue";
 import character from "@/assets/shop-character.png";
+import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 
 export function CheckoutSpeaker({ dialogue }: { dialogue: Dialogue }) {
   const [ready, setReady] = useState(false);
@@ -35,7 +36,7 @@ export function CheckoutSpeaker({ dialogue }: { dialogue: Dialogue }) {
   return createPortal(
     <aside ref={ref} className="checkout-speaker" aria-label="Checkout character">
       <p key={dialogue.line} className="checkout-speaker-bubble" lang="bn" aria-live="polite" aria-atomic="true">{dialogue.line}</p>
-      <img src={character} alt="Shop character reacting to your checkout" width={140} height={140} />
+      <img src={["facepalm", "nervous", "unimpressed"].includes(dialogue.expression) ? fierceCharacter.url : character} alt="Shop character reacting to your checkout" width={140} height={140} />
     </aside>, document.body,
   );
 }
