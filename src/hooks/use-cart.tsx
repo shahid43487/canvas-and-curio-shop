@@ -6,7 +6,7 @@ export type CartVariation = { id: string; name: string; price: number };
 export type CartItem = {
   product: Product;
   quantity: number;
-  variation?: CartVariation;
+  variation?: CartVariation | undefined;
 };
 
 export const itemKey = (i: CartItem) => `${i.product.id}:${i.variation?.id ?? ""}`;
