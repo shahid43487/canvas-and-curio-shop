@@ -9,6 +9,8 @@ import { ProductImage } from "@/components/smol/ProductImage";
 import { StickerField } from "@/components/smol/StickerField";
 import { ProductCard } from "@/components/smol/ProductCard";
 import { GrandpaPopup } from "@/components/smol/GrandpaPopup";
+import { VariationSelector } from "@/components/smol/VariationSelector";
+import type { Variation } from "@/data/products";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
 import { getProduct } from "@/lib/products.functions";
@@ -46,10 +48,18 @@ function ProductPage() {
   const { product: p } = data;
   const { addItem, setIsOpen } = useCart();
   const [qty, setQty] = useState(1);
+  const variations = (data.variations ?? []) as unknown as Variation[];
+  const mode = variations.length ? (p?.selector_mode ?? "none") : "none";
+  const [selectedId, setSelectedId] = useState(
+    () => variations.find((v) => v.stock > 0)?.id,
+  );
 
   if (!p) throw notFound();
 
-  const outOfStock = p.stock <= 0;
+  const selected = mode !== "none" ? variations.find((v) => v.id === selectedId) : undefined;
+  const price = selected ? Number(selected.price) : p.price;
+  const stock = selected ? selected.stock : p.stock;
+  const outOfStock = stock <= 0;
 
   return (
     <>
@@ -68,7 +78,8 @@ function ProductPage() {
             <div className="product-info">
               <h1>{p.name}</h1>
               <div className="price-row">
-                <span className="price">{formatPrice(p.price)}</span>
+                <span className="price">{formatPrice(price)}</span>
+                {selected?.compare_at_price ? <s className="compare-price">{formatPrice(Number(selected.compare_at_price))}</s> : null}
                 <span className="card-tag">{p.tag}</span>
               </div>
               <p className="desc">{p.description}</p>
@@ -91,14 +102,18 @@ function ProductPage() {
                 </div>
                 <div className="spec-row">
                   <span className="k">Stock</span>
-                  <span>{outOfStock ? "Sold out" : `${p.stock} left`}</span>
+                  <span>{outOfStock ? "Sold out" : `${stock} left`}</span>
                 </div>
               </div>
-              <div className="colorways">
-                {p.colors.map((c) => (
-                  <span key={c} className="dotc" style={{ background: c }} />
-                ))}
-              </div>
+              {mode === "none" ? (
+                <div className="colorways">
+                  {p.colors.map((c) => (
+                    <span key={c} className="dotc" style={{ background: c }} />
+                  ))}
+                </div>
+              ) : (
+                <VariationSelector mode={mode} variations={variations} selectedId={selectedId} onSelect={setSelectedId} />
+              )}
 
               <div className="qty-row">
                 <button
@@ -125,11 +140,11 @@ function ProductPage() {
                 type="button"
                 disabled={outOfStock}
                 onClick={() => {
-                  addItem(p, qty);
+                  addItem(p, qty, selected ? { id: selected.id, name: selected.name, price } : undefined);
                   setIsOpen(true);
                 }}
               >
-                {outOfStock ? "Sold out" : `Add to cart — ${formatPrice(p.price * qty)}`}
+                {outOfStock ? "Sold out" : `Add to cart — ${formatPrice(price * qty)}`}
               </button>
               <p className="edition-note">Small batch. Once it's gone, it's gone until the next drop.</p>
             </div>
