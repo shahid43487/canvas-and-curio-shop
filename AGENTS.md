@@ -15,3 +15,4 @@
 
 - Use explicit charcoal surface and foreground tokens for dark mode; never invert page or image colors because product photography must remain accurate.
 - Select between the two approved character assets by panel and dialogue context, keeping existing dialogue timing and positioning shared so artwork changes do not disrupt reactions.
+- Product options live in product_variations (price/stock per option, visuals in button_config); the order function re-reads option price and stock server-side, so button visuals never decide price.
