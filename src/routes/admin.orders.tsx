@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -35,7 +35,7 @@ function Orders() {
         <thead><tr><th>When</th><th>Customer</th><th>Pay</th><th>TrxID</th><th>Total</th><th>Status</th><th /></tr></thead>
         <tbody>
           {orders.map((o) => (
-            <>
+            <Fragment key={o.id}>
               <tr key={o.id}>
                 <td>{new Date(o.created_at).toLocaleString()}{o.order_source === "secret" && " 🤫"}</td>
                 <td>{o.shipping_name}<br /><small>{o.shipping_phone}</small></td>
@@ -63,7 +63,7 @@ function Orders() {
                   <button className="admin-btn ghost" onClick={() => window.print()}>Print</button>
                 </td></tr>
               )}
-            </>
+            </Fragment>
           ))}
         </tbody>
       </table>

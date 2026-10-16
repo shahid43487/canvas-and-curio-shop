@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -27,7 +28,7 @@ function Products() {
         <thead><tr><th>#</th><th>Product</th><th>Price</th><th>Stock</th><th>Vault</th></tr></thead>
         <tbody>
           {(data?.products ?? []).map((p) => (
-            <>
+            <Fragment key={p.id}>
               <tr key={p.id}>
                 <td>{p.num}</td><td><b>{p.name}</b></td>
                 <td>{numField(Number(p.price), (price) => adminUpdateProduct({ data: { token, id: p.id, price } }))}</td>
@@ -42,7 +43,7 @@ function Products() {
                   <td />
                 </tr>
               ))}
-            </>
+            </Fragment>
           ))}
         </tbody>
       </table>
