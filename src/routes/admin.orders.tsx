@@ -36,7 +36,7 @@ function Orders() {
         <tbody>
           {orders.map((o) => (
             <Fragment key={o.id}>
-              <tr key={o.id}>
+              <tr>
                 <td>{new Date(o.created_at).toLocaleString()}{o.order_source === "secret" && " 🤫"}</td>
                 <td>{o.shipping_name}<br /><small>{o.shipping_phone}</small></td>
                 <td>{o.payment_method} · {o.payment_status}</td>
@@ -55,7 +55,7 @@ function Orders() {
                 </td>
               </tr>
               {open === o.id && (
-                <tr key={o.id + "-d"}><td colSpan={7} className="admin-slip">
+                <tr ><td colSpan={7} className="admin-slip">
                   <b>PACKING SLIP · SMOL STUUF</b>
                   <p>{o.shipping_name} · {o.shipping_phone}<br />{o.shipping_address}, {o.shipping_city}{o.shipping_notes && <><br />Note: {o.shipping_notes}</>}</p>
                   <ul>{o.order_items.map((it, i) => <li key={i}>{it.quantity} × {it.products?.name}{it.product_variations?.name ? ` · ${it.product_variations.name}` : ""} — {formatPrice(Number(it.unit_price) * it.quantity)}</li>)}</ul>

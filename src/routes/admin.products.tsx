@@ -29,7 +29,7 @@ function Products() {
         <tbody>
           {(data?.products ?? []).map((p) => (
             <Fragment key={p.id}>
-              <tr key={p.id}>
+              <tr>
                 <td>{p.num}</td><td><b>{p.name}</b></td>
                 <td>{numField(Number(p.price), (price) => adminUpdateProduct({ data: { token, id: p.id, price } }))}</td>
                 <td>{numField(p.stock, (stock) => adminUpdateProduct({ data: { token, id: p.id, stock } }))}</td>

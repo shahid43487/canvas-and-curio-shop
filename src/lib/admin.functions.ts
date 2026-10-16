@@ -81,7 +81,7 @@ export const adminUpdateProduct = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const patch: { price?: number; stock?: number; is_hidden?: boolean } = {};
-    if (num(data.price) !== undefined) patch.price = data.price;
+    if (num(data.price) !== undefined) patch.price = data.price!;
     if (num(data.stock) !== undefined) patch.stock = Math.floor(data.stock!);
     if (typeof data.is_hidden === "boolean") patch.is_hidden = data.is_hidden;
     const { error } = await db.from("products").update(patch).eq("id", data.id);
@@ -94,7 +94,7 @@ export const adminUpdateVariation = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const patch: { price?: number; stock?: number } = {};
-    if (num(data.price) !== undefined) patch.price = data.price;
+    if (num(data.price) !== undefined) patch.price = data.price!;
     if (num(data.stock) !== undefined) patch.stock = Math.floor(data.stock!);
     const { error } = await db.from("product_variations").update(patch).eq("id", data.id);
     if (error) throw error;
