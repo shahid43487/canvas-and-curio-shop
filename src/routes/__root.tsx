@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { StickerBurst } from "@/components/smol/StickerBurst";
 import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/hooks/use-cart";
+import { SoundBar } from "@/components/smol/SoundBar";
 import { useGsapTactile } from "@/hooks/use-gsap-tactile";
 
 function NotFoundComponent() {
@@ -138,6 +139,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <StickerBurst />
+        <SoundBar />
         <Toaster position="bottom-right" richColors />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />

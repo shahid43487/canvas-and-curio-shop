@@ -24,7 +24,7 @@ export function ProductCard({ product, secret = false }: { product: Product; sec
         <span className={dark ? "card-tag dark" : "card-tag"}>{product.tag}</span>
         <div className="swatch">
           <span className="num">{product.num}</span>
-          <ProductImage id={product.id} name={product.name} />
+          <ProductImage id={product.id} src={product.image_key} name={product.name} />
           <span className="card-sticker" aria-hidden="true">✦</span>
         </div>
         <h3>{product.name}</h3>
@@ -38,7 +38,7 @@ export function ProductCard({ product, secret = false }: { product: Product; sec
         <span className={dark ? "card-tag dark" : "card-tag"}>{product.tag}</span>
         <div className="swatch">
           <span className="num">{product.num}</span>
-          <ProductImage id={product.id} name={product.name} />
+          <ProductImage id={product.id} src={product.image_key} name={product.name} />
           <span className="card-sticker" aria-hidden="true">
             ✦
           </span>

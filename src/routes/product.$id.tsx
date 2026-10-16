@@ -72,7 +72,7 @@ function ProductPage() {
           <div className="product-layout">
             <div className="product-photo">
               <span className="num-badge">{p.num}</span>
-              <ProductImage id={p.id} name={p.name} eager />
+              <ProductImage id={p.id} src={p.image_key} name={p.name} eager />
               <StickerField compact />
             </div>
             <div className="product-info">

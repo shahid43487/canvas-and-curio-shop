@@ -60,9 +60,10 @@ function AdminShell() {
           <Link to="/admin" activeOptions={{ exact: true }}>Dashboard</Link>
           <Link to="/admin/orders">Orders</Link>
           <Link to="/admin/products">Products</Link>
-          <Link to="/admin/campaigns">Drops</Link>
+          <Link to="/admin/campaigns">Hero slides</Link>
           <Link to="/admin/media">Media</Link>
           <Link to="/admin/assets">Stickers</Link>
+          <Link to="/admin/settings">Settings</Link>
           <a href="/">← Store</a>
           <button className="admin-btn ghost" onClick={() => { sessionStorage.removeItem(KEY); setToken(""); }}>Power off</button>
         </nav>

@@ -11,7 +11,7 @@ async function admin(token: string) {
 }
 
 export const adminDashboard = createServerFn({ method: "POST" })
-  .inputValidator((d: Auth) => d)
+  .validator((d: Auth) => d)
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const since = new Date();
@@ -34,7 +34,7 @@ export const adminDashboard = createServerFn({ method: "POST" })
   });
 
 export const adminListOrders = createServerFn({ method: "POST" })
-  .inputValidator((d: Auth) => d)
+  .validator((d: Auth) => d)
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const { data: orders, error } = await db
@@ -47,7 +47,7 @@ export const adminListOrders = createServerFn({ method: "POST" })
   });
 
 export const adminUpdateOrder = createServerFn({ method: "POST" })
-  .inputValidator((d: Auth & { id: string; status?: string; payment_status?: "pending" | "paid" }) => {
+  .validator((d: Auth & { id: string; status?: string; payment_status?: "pending" | "paid" }) => {
     if (d.status && !ORDER_STATUS.includes(d.status as never)) throw new Error("Bad status");
     if (d.payment_status && !["pending", "paid"].includes(d.payment_status)) throw new Error("Bad payment status");
     return d;
@@ -63,7 +63,7 @@ export const adminUpdateOrder = createServerFn({ method: "POST" })
   });
 
 export const adminListProducts = createServerFn({ method: "POST" })
-  .inputValidator((d: Auth) => d)
+  .validator((d: Auth) => d)
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const { data: products, error } = await db
@@ -77,7 +77,7 @@ export const adminListProducts = createServerFn({ method: "POST" })
 const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : undefined);
 
 export const adminUpdateProduct = createServerFn({ method: "POST" })
-  .inputValidator((d: Auth & { id: number; price?: number; stock?: number; is_hidden?: boolean }) => d)
+  .validator((d: Auth & { id: number; price?: number; stock?: number; is_hidden?: boolean }) => d)
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const patch: { price?: number; stock?: number; is_hidden?: boolean } = {};
@@ -90,7 +90,7 @@ export const adminUpdateProduct = createServerFn({ method: "POST" })
   });
 
 export const adminUpdateVariation = createServerFn({ method: "POST" })
-  .inputValidator((d: Auth & { id: string; price?: number; stock?: number }) => d)
+  .validator((d: Auth & { id: string; price?: number; stock?: number }) => d)
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const patch: { price?: number; stock?: number } = {};
@@ -99,4 +99,113 @@ export const adminUpdateVariation = createServerFn({ method: "POST" })
     const { error } = await db.from("product_variations").update(patch).eq("id", data.id);
     if (error) throw error;
     return { ok: true };
+  });
+
+// ---------- Catalog CRUD ----------
+type ProductInput = {
+  id?: number; num: string; name: string; price: number; stock: number; tag: string; color: string;
+  material: string; dims: string; batch: string; description: string; image_key: string;
+  is_hidden: boolean; requires_advance_payment: boolean;
+};
+
+export const adminListCatalog = createServerFn({ method: "POST" })
+  .validator((d: Auth) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { data: products, error } = await db.from("products").select("*, product_variations(*)").order("id");
+    if (error) throw error;
+    return { products: products ?? [] };
+  });
+
+export const adminSaveProduct = createServerFn({ method: "POST" })
+  .validator((d: Auth & { product: ProductInput }) => {
+    if (!d.product.name?.trim()) throw new Error("Name is required");
+    if (!(Number(d.product.price) >= 0) || !(Number(d.product.stock) >= 0)) throw new Error("Price and stock must be 0 or more");
+    return d;
+  })
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { id, ...p } = data.product;
+    const row = { ...p, price: Number(p.price), stock: Math.floor(Number(p.stock)) };
+    if (id) {
+      const { error } = await db.from("products").update(row).eq("id", id);
+      if (error) throw error;
+      return { id };
+    }
+    const { data: max } = await db.from("products").select("id").order("id", { ascending: false }).limit(1).maybeSingle();
+    const newId = Math.max((max?.id ?? 0) + 1, row.is_hidden ? 101 : 1);
+    const { error } = await db.from("products").insert({ id: newId, ...row });
+    if (error) throw error;
+    return { id: newId };
+  });
+
+export const adminDeleteProduct = createServerFn({ method: "POST" })
+  .validator((d: Auth & { id: number }) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { count } = await db.from("order_items").select("id", { count: "exact", head: true }).eq("product_id", data.id);
+    if (count) throw new Error("This product is in past orders — set stock to 0 or move it to the vault instead.");
+    await db.from("product_variations").delete().eq("product_id", data.id);
+    const { error } = await db.from("products").delete().eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+export const adminSaveVariation = createServerFn({ method: "POST" })
+  .validator((d: Auth & { v: { id?: string | undefined; product_id: number; name: string; price: number; stock: number; display_order: number } }) => {
+    if (!d.v.name?.trim()) throw new Error("Option name is required");
+    return d;
+  })
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { id, ...v } = data.v;
+    const row = { ...v, price: Number(v.price), stock: Math.floor(Number(v.stock)) };
+    const { error } = id
+      ? await db.from("product_variations").update(row).eq("id", id)
+      : await db.from("product_variations").insert({ ...row, sku: `P${v.product_id}-${Date.now().toString(36)}` });
+    if (error) throw error;
+    await db.from("products").update({ selector_mode: "pacman" }).eq("id", v.product_id).eq("selector_mode", "none");
+    return { ok: true };
+  });
+
+export const adminDeleteVariation = createServerFn({ method: "POST" })
+  .validator((d: Auth & { id: string }) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { count } = await db.from("order_items").select("id", { count: "exact", head: true }).eq("variation_id", data.id);
+    const { error } = count
+      ? await db.from("product_variations").update({ is_active: false }).eq("id", data.id)
+      : await db.from("product_variations").delete().eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+// ---------- Site settings (slides, socials, sound, stickers) ----------
+export const adminSaveSetting = createServerFn({ method: "POST" })
+  .validator((d: Auth & { key: "slides" | "socials" | "sound" | "stickers"; value: unknown }) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { error } = await db.from("site_settings").upsert({ key: data.key, value: data.value as never, updated_at: new Date().toISOString() });
+    if (error) throw error;
+    return { ok: true };
+  });
+
+// Upload: client gets a one-time upload URL, then asks for a long-lived read URL.
+export const adminUploadUrl = createServerFn({ method: "POST" })
+  .validator((d: Auth & { filename: string }) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const path = `${Date.now().toString(36)}-${data.filename.replace(/[^\w.-]+/g, "_").slice(-60)}`;
+    const { data: up, error } = await db.storage.from("media").createSignedUploadUrl(path);
+    if (error) throw error;
+    return { path, token: up.token };
+  });
+
+export const adminFileUrl = createServerFn({ method: "POST" })
+  .validator((d: Auth & { path: string }) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { data: s, error } = await db.storage.from("media").createSignedUrl(data.path, 60 * 60 * 24 * 365 * 10);
+    if (error) throw error;
+    return { url: s.signedUrl };
   });
