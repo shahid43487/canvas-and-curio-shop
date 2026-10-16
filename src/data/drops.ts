@@ -13,7 +13,7 @@ export type Slide = {
   title: string;
   accent: string;
   sub: string;
-  cta: { label: string; to: "/shop" | "/about" };
+  cta: { label: string; to: string };
   sticker: string;
   preset: Preset;
   startsAt?: string;

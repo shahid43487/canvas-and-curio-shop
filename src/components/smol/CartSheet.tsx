@@ -98,7 +98,7 @@ export function CartSheet() {
             <div className="cart-items">
               {items.map((item) => (
                 <div key={itemKey(item)} className="cart-item">
-                  <div className="cart-item-image"><ProductImage id={item.product.id} name={item.product.name} /></div>
+                  <div className="cart-item-image"><ProductImage id={item.product.id} src={item.product.image_key} name={item.product.name} /></div>
                   <div className="cart-item-main">
                     <span className="cart-item-name">{item.product.name}{item.variation ? ` · ${item.variation.name}` : ""}</span>
                     <span className="cart-item-price">{formatPrice(unitPrice(item))}</span>

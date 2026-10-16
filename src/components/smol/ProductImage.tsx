@@ -20,8 +20,8 @@ const PRODUCT_IMAGES: Record<number, string> = {
   103: prankDeskWhistle,
 };
 
-export function ProductImage({ id, name, eager = false }: { id: number; name: string; eager?: boolean }) {
-  const src = PRODUCT_IMAGES[id];
+export function ProductImage({ id, name, eager = false, src: custom }: { id: number; name: string; eager?: boolean; src?: string | null }) {
+  const src = custom?.startsWith("http") ? custom : PRODUCT_IMAGES[id];
   if (!src) return null;
 
   return (

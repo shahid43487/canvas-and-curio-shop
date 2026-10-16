@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Mail, Music2 } from "lucide-react";
+import { Facebook, Instagram, Mail, Music2, Youtube } from "lucide-react";
+import { useSite, DEFAULT_SOCIALS } from "@/lib/site";
 import dancingDragon from "@/assets/dancing-dragon.png";
 
 export function SiteFooter() {
+  const so = useSite()?.socials ?? DEFAULT_SOCIALS;
   return (
     <footer className="smol-footer">
       <div className="footer-sky" aria-hidden="true"><span>✦</span><span>★</span><span>✦</span></div>
@@ -31,18 +33,17 @@ export function SiteFooter() {
             <div className="footer-col footer-social">
               <h4>Follow</h4>
               <div className="footer-social-icons">
-                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="social-sticker sticker-ig" aria-label="Instagram">
+                {so.instagram && <a href={so.instagram} target="_blank" rel="noreferrer" className="social-sticker sticker-ig" aria-label="Instagram">
                   <Instagram size={22} strokeWidth={2.4} />
-                </a>
-                <a href="https://facebook.com" target="_blank" rel="noreferrer" className="social-sticker sticker-fb" aria-label="Facebook">
+                </a>}
+                {so.facebook && <a href={so.facebook} target="_blank" rel="noreferrer" className="social-sticker sticker-fb" aria-label="Facebook">
                   <Facebook size={22} strokeWidth={2.4} />
-                </a>
-                <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="social-sticker sticker-tt" aria-label="TikTok">
+                </a>}
+                {so.tiktok && <a href={so.tiktok} target="_blank" rel="noreferrer" className="social-sticker sticker-tt" aria-label="TikTok">
                   <Music2 size={22} strokeWidth={2.4} />
-                </a>
-                <Link to="/about" className="social-sticker sticker-mail" aria-label="Newsletter">
-                  <Mail size={22} strokeWidth={2.4} />
-                </Link>
+                </a>}
+                {so.youtube && <a href={so.youtube} target="_blank" rel="noreferrer" className="social-sticker sticker-fb" aria-label="YouTube"><Youtube size={22} strokeWidth={2.4} /></a>}
+                {so.email ? <a href={`mailto:${so.email}`} className="social-sticker sticker-mail" aria-label="Email"><Mail size={22} strokeWidth={2.4} /></a> : <Link to="/about" className="social-sticker sticker-mail" aria-label="Newsletter"><Mail size={22} strokeWidth={2.4} /></Link>}
               </div>
             </div>
           </div>
