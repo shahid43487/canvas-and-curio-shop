@@ -17,6 +17,9 @@ import { Route as SecretRouteImport } from './routes/secret'
 import { Route as SecretTransitionRouteImport } from './routes/secret-transition'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAssetsRouteImport } from './routes/admin.assets'
+import { Route as AdminCampaignsRouteImport } from './routes/admin.campaigns'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
@@ -63,6 +66,21 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAssetsRoute = AdminAssetsRouteImport.update({
+  id: '/assets',
+  path: '/assets',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCampaignsRoute = AdminCampaignsRouteImport.update({
+  id: '/campaigns',
+  path: '/campaigns',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminOrdersRoute = AdminOrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
@@ -97,6 +115,9 @@ export interface FileRoutesByFullPath {
   '/secret': typeof SecretRouteWithChildren
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
+  '/admin/assets': typeof AdminAssetsRoute
+  '/admin/campaigns': typeof AdminCampaignsRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
   '/order/$id': typeof OrderIdRoute
@@ -111,6 +132,9 @@ export interface FileRoutesByTo {
   '/secret': typeof SecretRouteWithChildren
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
+  '/admin/assets': typeof AdminAssetsRoute
+  '/admin/campaigns': typeof AdminCampaignsRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
   '/order/$id': typeof OrderIdRoute
@@ -127,6 +151,9 @@ export interface FileRoutesById {
   '/secret': typeof SecretRouteWithChildren
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
+  '/admin/assets': typeof AdminAssetsRoute
+  '/admin/campaigns': typeof AdminCampaignsRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
   '/order/$id': typeof OrderIdRoute
@@ -144,6 +171,9 @@ export interface FileRouteTypes {
     | '/secret'
     | '/secret-transition'
     | '/shop'
+    | '/admin/assets'
+    | '/admin/campaigns'
+    | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
     | '/order/$id'
@@ -158,6 +188,9 @@ export interface FileRouteTypes {
     | '/secret'
     | '/secret-transition'
     | '/shop'
+    | '/admin/assets'
+    | '/admin/campaigns'
+    | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
     | '/order/$id'
@@ -173,6 +206,9 @@ export interface FileRouteTypes {
     | '/secret'
     | '/secret-transition'
     | '/shop'
+    | '/admin/assets'
+    | '/admin/campaigns'
+    | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
     | '/order/$id'
@@ -251,6 +287,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/assets': {
+      id: '/admin/assets'
+      path: '/assets'
+      fullPath: '/admin/assets'
+      preLoaderRoute: typeof AdminAssetsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/campaigns': {
+      id: '/admin/campaigns'
+      path: '/campaigns'
+      fullPath: '/admin/campaigns'
+      preLoaderRoute: typeof AdminCampaignsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/orders': {
       id: '/admin/orders'
       path: '/orders'
@@ -290,12 +347,18 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAssetsRoute: typeof AdminAssetsRoute
+  AdminCampaignsRoute: typeof AdminCampaignsRoute
+  AdminMediaRoute: typeof AdminMediaRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAssetsRoute: AdminAssetsRoute,
+  AdminCampaignsRoute: AdminCampaignsRoute,
+  AdminMediaRoute: AdminMediaRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRoute,
   AdminIndexRoute: AdminIndexRoute,

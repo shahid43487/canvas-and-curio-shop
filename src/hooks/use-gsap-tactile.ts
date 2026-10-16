@@ -11,7 +11,7 @@ export function useGsapTactile() {
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const down = (e: PointerEvent) => {
       const el = (e.target as Element).closest(PRESS);
-      if (el) playSfx((el as HTMLElement).className.includes("card-add") || (el as HTMLElement).className.includes("add-cart") ? "cart" : "click");
+      if (el) playSfx(el.matches(".card-add, .add-cart") ? "cart" : "click");
       if (el && !reduced) gsap.to(el, { scale: 0.94, duration: 0.08, ease: "power2.out", overwrite: true });
     };
     const up = (e: PointerEvent) => {
