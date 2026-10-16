@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/smol/SiteFooter";
 import { ProductCard } from "@/components/smol/ProductCard";
 import { StickerField } from "@/components/smol/StickerField";
 import { ManifestoPanel } from "@/components/smol/ManifestoPanel";
+import { DropsHero } from "@/components/smol/DropsHero";
 import { SECRET_ACCESS_KEY } from "@/components/smol/SecretGate";
 import logo from "@/assets/smol-stuuf-logo.png.asset.json";
 import { listProducts } from "@/lib/products.functions";
@@ -60,29 +61,7 @@ function Home() {
         <div className="hero dots">
           <StickerField />
           <div className="wrap hero-inner">
-            <div>
-              <span className="sticker s1">GOOD STUUF ✓</span>
-              <div className="eyebrow-tag">
-                <span className="dot" /> NEW DROP · BATCH 04 LIVE
-              </div>
-              <h1 className="hero-title">
-                SMOL THINGS.
-                <br />
-                <span className="accent">BIG MOOD.</span>
-              </h1>
-              <p className="hero-sub">
-                Small-batch objects, made a little weird on purpose. 3D-printed, cork-cut, and hand-finished — never
-                generic, never precious.
-              </p>
-              <div className="hero-ctas">
-                <Link to="/shop" className="btn-primary">
-                  Shop the drop
-                </Link>
-                <Link to="/about" className="btn-outline">
-                  Why so smol?
-                </Link>
-              </div>
-            </div>
+            <DropsHero />
             <div className="hero-logo-art">
               <button type="button" className="hero-secret-trigger" onClick={handleSecretClick} aria-label="SMOL STUUF hand-drawn logo">
                 <img src={logo.url} alt="" />
