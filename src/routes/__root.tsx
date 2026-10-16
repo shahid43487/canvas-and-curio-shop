@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { StickerBurst } from "@/components/smol/StickerBurst";
 import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/hooks/use-cart";
+import { useGsapTactile } from "@/hooks/use-gsap-tactile";
 
 function NotFoundComponent() {
   return (
@@ -131,6 +132,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useGsapTactile();
 
   return (
     <QueryClientProvider client={queryClient}>
