@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.17"
+    PostgrestVersion: "14.18"
   }
   public: {
     Tables: {
@@ -30,8 +30,8 @@ export type Database = {
           id?: string
           order_id: string
           product_id: number
-          quantity: number
-          unit_price: number
+          quantity?: number
+          unit_price?: number
           variation_id?: string | null
           variation_name?: string | null
         }
@@ -76,33 +76,31 @@ export type Database = {
           id: string
           order_source: string
           payment_method: Database["public"]["Enums"]["payment_method"]
-          payment_status: Database["public"]["Enums"]["payment_status"]
+          payment_status: string
           shipping_address: string
           shipping_city: string
-          shipping_email: string
+          shipping_email: string | null
           shipping_name: string
           shipping_notes: string | null
           shipping_phone: string
-          status: Database["public"]["Enums"]["order_status"]
+          status: string
           total_amount: number
-          updated_at: string
         }
         Insert: {
           bkash_transaction_id?: string | null
           created_at?: string
           id?: string
           order_source?: string
-          payment_method: Database["public"]["Enums"]["payment_method"]
-          payment_status?: Database["public"]["Enums"]["payment_status"]
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          payment_status?: string
           shipping_address: string
           shipping_city: string
-          shipping_email: string
+          shipping_email?: string | null
           shipping_name: string
           shipping_notes?: string | null
           shipping_phone: string
-          status?: Database["public"]["Enums"]["order_status"]
-          total_amount: number
-          updated_at?: string
+          status?: string
+          total_amount?: number
         }
         Update: {
           bkash_transaction_id?: string | null
@@ -110,16 +108,15 @@ export type Database = {
           id?: string
           order_source?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
-          payment_status?: Database["public"]["Enums"]["payment_status"]
+          payment_status?: string
           shipping_address?: string
           shipping_city?: string
-          shipping_email?: string
+          shipping_email?: string | null
           shipping_name?: string
           shipping_notes?: string | null
           shipping_phone?: string
-          status?: Database["public"]["Enums"]["order_status"]
+          status?: string
           total_amount?: number
-          updated_at?: string
         }
         Relationships: []
       }
@@ -204,23 +201,23 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          batch: string
-          color: string
+          batch?: string
+          color?: string
           colors?: string[]
           created_at?: string
-          description: string
-          dims: string
+          description?: string
+          dims?: string
           id: number
-          image_key: string
+          image_key?: string
           is_hidden?: boolean
-          material: string
+          material?: string
           name: string
-          num: string
-          price: number
+          num?: string
+          price?: number
           requires_advance_payment?: boolean
           selector_mode?: string
           stock?: number
-          tag: string
+          tag?: string
           updated_at?: string
         }
         Update: {
@@ -256,14 +253,7 @@ export type Database = {
       }
     }
     Enums: {
-      order_status:
-        | "pending"
-        | "confirmed"
-        | "shipped"
-        | "delivered"
-        | "cancelled"
       payment_method: "cod" | "bkash"
-      payment_status: "pending" | "paid"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -391,15 +381,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      order_status: [
-        "pending",
-        "confirmed",
-        "shipped",
-        "delivered",
-        "cancelled",
-      ],
       payment_method: ["cod", "bkash"],
-      payment_status: ["pending", "paid"],
     },
   },
 } as const
