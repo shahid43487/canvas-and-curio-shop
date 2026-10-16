@@ -103,7 +103,7 @@ function Editor({ token, p, onSave, onCancel }: { token: string; p: typeof BLANK
   );
 }
 
-type V = { id?: string; product_id: number; name: string; price: number; stock: number; display_order: number };
+type V = { id?: string | undefined; product_id: number; name: string; price: number; stock: number; display_order: number };
 function VariationRow({ token, v, run }: { token: string; v: V; run: (p: Promise<unknown>, m?: string) => Promise<boolean> }) {
   const [f, setF] = useState({ ...v, price: Number(v.price) });
   return (

@@ -26,7 +26,7 @@ export type Site = { slides: Slide[]; socials: Socials; sound: SoundSettings; st
 export const siteQuery = queryOptions({
   queryKey: ["site-settings"],
   queryFn: async (): Promise<Site> => {
-    const raw = await getSiteSettings();
+    const raw = (await getSiteSettings()) as Partial<Record<keyof Site, unknown>>;
     return {
       slides: Array.isArray(raw.slides) ? (raw.slides as Slide[]) : SLIDES,
       socials: { ...DEFAULT_SOCIALS, ...(raw.socials as Partial<Socials>) },

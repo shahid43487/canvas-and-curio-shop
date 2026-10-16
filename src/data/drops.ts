@@ -16,14 +16,14 @@ export type Slide = {
   cta: { label: string; to: string };
   sticker: string;
   preset: Preset;
-  startsAt?: string;
-  ctaUrl?: string;
-  secondary?: { label: string; to: string };
-  badge?: string;
-  image?: string;
-  rotation?: number;
-  hidden?: boolean;
-  endsAt?: string;
+  startsAt?: string | undefined;
+  ctaUrl?: string | undefined;
+  secondary?: { label: string | undefined; to: string };
+  badge?: string | undefined;
+  image?: string | undefined;
+  rotation?: number | undefined;
+  hidden?: boolean | undefined;
+  endsAt?: string | undefined;
 };
 
 export const STICKERS: { id: string; label: string; src: string }[] = [

@@ -26,7 +26,7 @@ export function DropsHero() {
   return <div ref={box}><SlideBody s={slides[i % slides.length]!} extra={site?.stickers.custom} dots={slides.length > 1 ? { n: slides.length, i, set: setI } : undefined} /></div>;
 }
 
-export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; src: string }[]; dots?: { n: number; i: number; set: (n: number) => void } }) {
+export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; src: string }[] | undefined; dots?: { n: number; i: number; set: (n: number) => void } | undefined }) {
   const img = stickerSrc(s.sticker, extra);
   const label = STICKER_TEXT[s.sticker];
   return (

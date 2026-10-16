@@ -152,7 +152,7 @@ export const adminDeleteProduct = createServerFn({ method: "POST" })
   });
 
 export const adminSaveVariation = createServerFn({ method: "POST" })
-  .validator((d: Auth & { v: { id?: string; product_id: number; name: string; price: number; stock: number; display_order: number } }) => {
+  .validator((d: Auth & { v: { id?: string | undefined; product_id: number; name: string; price: number; stock: number; display_order: number } }) => {
     if (!d.v.name?.trim()) throw new Error("Option name is required");
     return d;
   })
