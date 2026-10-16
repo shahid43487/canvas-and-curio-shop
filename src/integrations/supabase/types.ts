@@ -14,16 +14,246 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: number
+          quantity: number
+          unit_price: number
+          variation_id: string | null
+          variation_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id: number
+          quantity?: number
+          unit_price?: number
+          variation_id?: string | null
+          variation_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: number
+          quantity?: number
+          unit_price?: number
+          variation_id?: string | null
+          variation_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_variation_id_fkey"
+            columns: ["variation_id"]
+            isOneToOne: false
+            referencedRelation: "product_variations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          bkash_transaction_id: string | null
+          created_at: string
+          id: string
+          order_source: string
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          payment_status: string
+          shipping_address: string
+          shipping_city: string
+          shipping_email: string | null
+          shipping_name: string
+          shipping_notes: string | null
+          shipping_phone: string
+          status: string
+          total_amount: number
+        }
+        Insert: {
+          bkash_transaction_id?: string | null
+          created_at?: string
+          id?: string
+          order_source?: string
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          payment_status?: string
+          shipping_address: string
+          shipping_city: string
+          shipping_email?: string | null
+          shipping_name: string
+          shipping_notes?: string | null
+          shipping_phone: string
+          status?: string
+          total_amount?: number
+        }
+        Update: {
+          bkash_transaction_id?: string | null
+          created_at?: string
+          id?: string
+          order_source?: string
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          payment_status?: string
+          shipping_address?: string
+          shipping_city?: string
+          shipping_email?: string | null
+          shipping_name?: string
+          shipping_notes?: string | null
+          shipping_phone?: string
+          status?: string
+          total_amount?: number
+        }
+        Relationships: []
+      }
+      product_variations: {
+        Row: {
+          bundle_quantity: number
+          button_config: Json
+          compare_at_price: number | null
+          created_at: string
+          display_order: number
+          id: string
+          image_key: string | null
+          is_active: boolean
+          name: string
+          price: number
+          product_id: number
+          sku: string
+          stock: number
+          updated_at: string
+        }
+        Insert: {
+          bundle_quantity?: number
+          button_config?: Json
+          compare_at_price?: number | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_key?: string | null
+          is_active?: boolean
+          name: string
+          price: number
+          product_id: number
+          sku: string
+          stock?: number
+          updated_at?: string
+        }
+        Update: {
+          bundle_quantity?: number
+          button_config?: Json
+          compare_at_price?: number | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_key?: string | null
+          is_active?: boolean
+          name?: string
+          price?: number
+          product_id?: number
+          sku?: string
+          stock?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          batch: string
+          color: string
+          colors: string[]
+          created_at: string
+          description: string
+          dims: string
+          id: number
+          image_key: string
+          is_hidden: boolean
+          material: string
+          name: string
+          num: string
+          price: number
+          requires_advance_payment: boolean
+          selector_mode: string
+          stock: number
+          tag: string
+          updated_at: string
+        }
+        Insert: {
+          batch?: string
+          color?: string
+          colors?: string[]
+          created_at?: string
+          description?: string
+          dims?: string
+          id: number
+          image_key?: string
+          is_hidden?: boolean
+          material?: string
+          name: string
+          num?: string
+          price?: number
+          requires_advance_payment?: boolean
+          selector_mode?: string
+          stock?: number
+          tag?: string
+          updated_at?: string
+        }
+        Update: {
+          batch?: string
+          color?: string
+          colors?: string[]
+          created_at?: string
+          description?: string
+          dims?: string
+          id?: number
+          image_key?: string
+          is_hidden?: boolean
+          material?: string
+          name?: string
+          num?: string
+          price?: number
+          requires_advance_payment?: boolean
+          selector_mode?: string
+          stock?: number
+          tag?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_order_with_items: {
+        Args: { items: Json; order_data: Json }
+        Returns: string
+      }
     }
     Enums: {
-      [_ in never]: never
+      payment_method: "cod" | "bkash"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +380,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      payment_method: ["cod", "bkash"],
+    },
   },
 } as const

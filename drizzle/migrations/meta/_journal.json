@@ -15,6 +15,13 @@
       "when": 1791992127406,
       "tag": "0001_product_variations",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792152474711,
+      "tag": "0002_seed_batch04_drop",
+      "breakpoints": true
     }
   ]
 }
