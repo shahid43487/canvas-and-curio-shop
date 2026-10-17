@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 
 export type OrderItemInput = {
   product_id: number;
@@ -24,9 +25,18 @@ export const createOrder = createServerFn({ method: "POST" })
   .inputValidator((data: { order: OrderInput; items: OrderItemInput[] }) => data)
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: orderId, error } = await supabaseAdmin.rpc("create_order_with_items", {
+    const bearer = getRequestHeader("authorization");
+    let owner: string | null = null;
+    if (bearer) {
+      if (!bearer.startsWith("Bearer ")) throw new Error("Invalid sign-in session");
+      const { data: auth, error } = await supabaseAdmin.auth.getUser(bearer.slice(7));
+      if (error || !auth.user) throw new Error("Invalid sign-in session");
+      owner = auth.user.id;
+    }
+    const { data: orderId, error } = await supabaseAdmin.rpc("create_owned_order", {
       order_data: data.order as unknown as never,
       items: data.items as unknown as never,
+      ...(owner ? { owner_id: owner } : {}),
     });
     if (error) throw error;
     return { orderId: orderId as string };

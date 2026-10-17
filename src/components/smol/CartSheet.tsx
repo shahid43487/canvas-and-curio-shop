@@ -1,3 +1,4 @@
+import { assetUrl } from "@/lib/asset-url";
 import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
@@ -74,7 +75,7 @@ export function CartSheet() {
       <SheetContent className="cart-sheet">
         <img
           className="cart-comedy-sticker"
-          src={fierceCharacter.url}
+          src={assetUrl(fierceCharacter)}
           alt="Shop character judging your cart"
           loading="lazy"
         />

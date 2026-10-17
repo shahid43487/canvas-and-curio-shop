@@ -1299,3 +1299,26 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 .admin-sticker-pick img { width: 100%; height: 100%; object-fit: contain; }
 .admin-preview { border: 1px solid #d8d3c8; border-radius: 12px; padding: 1.25rem; background: #fff; max-width: 640px; }
 .admin-preview .hero-title { font-size: 2.2rem; }
+
+.admin-row { flex-wrap: wrap; }
+.variation-editor { border-bottom: 1px solid var(--border); padding-block: 1rem; }
+.pac-config { margin-block: .5rem; }
+.pac-config legend { font-weight: 700; }
+.pac-config .pac-selector { max-width: 280px; }
+.customer-page { width: min(960px, calc(100% - 40px)); margin: 3rem auto; color: var(--smol-ink); }
+.customer-page h1 { font: 32px "Archivo Black", sans-serif; margin-bottom: 1.5rem; }
+.customer-page h2 { font: 22px "Archivo Black", sans-serif; margin-block: 2rem 1rem; }
+.customer-page section { padding-bottom: 1.5rem; border-bottom: 2px solid var(--smol-ink); }
+.account-heading, .profile-form { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.account-heading { justify-content: space-between; }
+.account-order { border: 2px solid var(--smol-ink); border-radius: 8px; padding: 1rem; margin-block: 1rem; background: var(--card); }
+.account-order div { display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap; }
+.account-order p, .account-order ul { margin-block: .75rem; }
+.auth-page { max-width: 480px; min-height: 420px; }
+.auth-page form, .auth-page label { display: grid; gap: .5rem; }
+.auth-page form { gap: 1rem; margin-block: 1.5rem; }
+.auth-social { display: grid; gap: .75rem; }
+.auth-switch { display: flex; flex-wrap: wrap; }
+.smol-header .links { gap: 10px; }
+.smol-header .links a:nth-child(4) { background: var(--smol-yellow); }
+@media (max-width: 480px) { .smol-header .links { gap: 6px; } .smol-header .links a { min-width: 0; padding-inline: 9px; font-size: 11px; } }

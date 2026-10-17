@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { Fragment, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -6,7 +7,7 @@ import { adminListOrders, adminUpdateOrder } from "@/lib/admin.functions";
 import { formatPrice } from "@/data/products";
 import { useAdminToken } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin/orders")({ component: Orders });
+export const Route = createFileRoute("/admin/orders")({ head: () => pageHead("Orders", "SMOL STUUF orders administration."), component: Orders });
 
 const STATUSES = ["all", "pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
 

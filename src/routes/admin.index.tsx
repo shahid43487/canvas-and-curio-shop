@@ -1,10 +1,11 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { adminDashboard } from "@/lib/admin.functions";
 import { formatPrice } from "@/data/products";
 import { useAdminToken } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin/")({ component: Dashboard });
+export const Route = createFileRoute("/admin/")({ head: () => pageHead("Operations", "SMOL STUUF operations administration."), component: Dashboard });
 
 function Dashboard() {
   const token = useAdminToken();

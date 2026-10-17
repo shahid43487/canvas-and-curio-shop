@@ -1,3 +1,4 @@
+import { assetUrl } from "@/lib/asset-url";
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
@@ -64,7 +65,7 @@ function Home() {
             <DropsHero />
             <div className="hero-logo-art">
               <button type="button" className="hero-secret-trigger" onClick={handleSecretClick} aria-label="SMOL STUUF hand-drawn logo">
-                <img src={logo.url} alt="" />
+                <img src={assetUrl(logo)} alt="" />
               </button>
               <span className="sticker red s2">DROP 04</span>
             </div>

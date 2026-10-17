@@ -6,7 +6,7 @@ export function PacmanConfigurator({ value, onChange, name }: { value: PacmanCon
   const icons = value.icons?.length ? value.icons : [{ color: "#FFD23F", size: 22, rotation: 0, flip: false }];
   return <fieldset className="pac-config"><legend>Pac-Man sticker</legend>
     <div className="admin-row">
-      <label>Count <input aria-label="Pac-Man count" type="range" min={1} max={4} value={icons.length} onChange={e => onChange({ ...value, icons: Array.from({ length: Number(e.target.value) }, (_, i) => icons[i] ?? { ...icons[0] }) })} /> {icons.length}</label>
+      <label>Count <input aria-label="Pac-Man count" type="range" min={1} max={4} value={icons.length} onChange={e => onChange({ ...value, icons: Array.from({ length: Number(e.target.value) }, (_, i) => icons[i] ?? icons[0] ?? { color: "#FFD23F" }) })} /> {icons.length}</label>
       <label>Arrangement <select className="admin-input" value={value.arrangement ?? "row"} onChange={e => onChange({ ...value, arrangement: e.target.value as PacmanConfig["arrangement"] })}><option value="row">Row</option><option value="compact">Overlapping</option><option value="staggered">Scattered</option></select></label>
     </div>
     {icons.map((icon, i) => <div className="admin-row" key={i}>

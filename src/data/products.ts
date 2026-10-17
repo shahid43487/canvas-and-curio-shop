@@ -23,7 +23,7 @@ export function formatPrice(price: number) {
   return `$${price.toFixed(0)}`;
 }
 
-export type PacIcon = { color: string; size?: number; rotation?: number; flip?: boolean; delay?: number };
+export type PacIcon = { color: string; size?: number | undefined; rotation?: number | undefined; flip?: boolean | undefined; delay?: number | undefined };
 export type Variation = {
   id: string;
   name: string;
@@ -33,5 +33,5 @@ export type Variation = {
   stock: number;
   bundle_quantity: number;
   image_key: string | null;
-  button_config: { arrangement?: "row" | "compact" | "staggered"; icons?: PacIcon[]; color?: string };
+  button_config: { arrangement?: "row" | "compact" | "staggered" | undefined; icons?: PacIcon[] | undefined; color?: string | undefined };
 };

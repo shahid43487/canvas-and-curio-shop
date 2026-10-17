@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -7,7 +8,7 @@ import { useSite, type StickerSettings } from "@/lib/site";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { useAdminToken } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin/assets")({ component: Assets });
+export const Route = createFileRoute("/admin/assets")({ head: () => pageHead("Sticker library", "SMOL STUUF sticker library administration."), component: Assets });
 
 function Assets() {
   const token = useAdminToken();

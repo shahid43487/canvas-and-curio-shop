@@ -321,6 +321,10 @@ export type Database = {
         Args: { items: Json; order_data: Json }
         Returns: string
       }
+      create_owned_order: {
+        Args: { items: Json; order_data: Json; owner_id?: string }
+        Returns: string
+      }
     }
     Enums: {
       payment_method: "cod" | "bkash"

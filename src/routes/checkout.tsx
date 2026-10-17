@@ -1,3 +1,4 @@
+import { assetUrl } from "@/lib/asset-url";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
@@ -161,7 +162,7 @@ function Checkout() {
             <span className="checkout-kicker">Almost yours!</span>
             <h1 className="checkout-title">SMOL STUUF / CHECKOUT</h1>
           </div>
-          <img src={logo.url} alt="" className="checkout-floating-logo" width={320} height={224} />
+          <img src={assetUrl(logo)} alt="" className="checkout-floating-logo" width={320} height={224} />
         </header>
         <div className="checkout-layout">
           <form onSubmit={handleSubmit(onSubmit, () => saySequence([{ line: "ভাই, কিছু তথ্য তো লাগবো।", expression: "nervous" }, { line: "নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?", expression: "facepalm" }], 2))} className="checkout-form" onInput={poke} onClick={poke}>

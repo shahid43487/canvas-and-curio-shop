@@ -1,3 +1,4 @@
+import { assetUrl } from "@/lib/asset-url";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Moon, Sun } from "lucide-react";
@@ -8,8 +9,10 @@ import normalTexture from "@/assets/header-normal-reference.jpg.asset.json";
 import vaultTexture from "@/assets/header-vault-reference.jpg.asset.json";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheet } from "./CartSheet";
+import { useCustomer } from "@/hooks/use-customer";
 
 export function SiteHeader({ secret = false }: { secret?: boolean }) {
+  const customer = useCustomer();
   const { totalItems, setIsOpen } = useCart();
   const [dark, setDark] = useState(false);
   useEffect(() => setDark(document.documentElement.classList.contains("smol-dark")), []);
@@ -22,10 +25,10 @@ export function SiteHeader({ secret = false }: { secret?: boolean }) {
 
   return (
     <header className={secret ? "smol-header smol-header-secret" : "smol-header"}>
-      <img className="smol-header-texture" src={secret ? vaultTexture.url : normalTexture.url} alt="" aria-hidden="true" />
+      <img className="smol-header-texture" src={secret ? assetUrl(vaultTexture) : assetUrl(normalTexture)} alt="" aria-hidden="true" />
       <div className="navbar">
         <Link to="/" className="brandmark">
-          <img className="logo-lockup" src={secret ? logoInk.url : headerLogo.url} alt="SMOL STUUF" />
+          <img className="logo-lockup" src={secret ? assetUrl(logoInk) : assetUrl(headerLogo)} alt="SMOL STUUF" />
         </Link>
         <nav className="links" aria-label="Main navigation">
           <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "active" }}>
@@ -37,6 +40,7 @@ export function SiteHeader({ secret = false }: { secret?: boolean }) {
           <Link to="/about" activeProps={{ className: "active" }}>
             About
           </Link>
+          <Link to={customer ? "/account" : "/auth"} activeProps={{ className: "active" }}>{customer ? "Account" : "Sign in"}</Link>
         </nav>
         <Button className="theme-btn button-spring" variant="ghost" size="icon" type="button" onClick={toggleTheme} aria-label="Toggle dark mode" aria-pressed={dark} title={dark ? "Switch to light mode" : "Switch to dark mode"}>
           {dark ? <Moon size={18} /> : <Sun size={18} />}

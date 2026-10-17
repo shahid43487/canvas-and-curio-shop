@@ -10,12 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SecretRouteImport } from './routes/secret'
 import { Route as SecretTransitionRouteImport } from './routes/secret-transition'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAssetsRouteImport } from './routes/admin.assets'
 import { Route as AdminCampaignsRouteImport } from './routes/admin.campaigns'
@@ -32,6 +36,10 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -42,9 +50,19 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SecretRoute = SecretRouteImport.update({
@@ -61,6 +79,11 @@ const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -117,10 +140,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/secret': typeof SecretRouteWithChildren
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
   '/admin/media': typeof AdminMediaRoute
@@ -135,10 +161,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/secret': typeof SecretRouteWithChildren
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
   '/admin/media': typeof AdminMediaRoute
@@ -153,12 +182,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/secret': typeof SecretRouteWithChildren
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
   '/admin/media': typeof AdminMediaRoute
@@ -176,10 +209,13 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/auth'
     | '/checkout'
+    | '/reset-password'
     | '/secret'
     | '/secret-transition'
     | '/shop'
+    | '/account'
     | '/admin/assets'
     | '/admin/campaigns'
     | '/admin/media'
@@ -194,10 +230,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/auth'
     | '/checkout'
+    | '/reset-password'
     | '/secret'
     | '/secret-transition'
     | '/shop'
+    | '/account'
     | '/admin/assets'
     | '/admin/campaigns'
     | '/admin/media'
@@ -211,12 +250,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
     | '/admin'
+    | '/auth'
     | '/checkout'
+    | '/reset-password'
     | '/secret'
     | '/secret-transition'
     | '/shop'
+    | '/_authenticated/account'
     | '/admin/assets'
     | '/admin/campaigns'
     | '/admin/media'
@@ -231,9 +274,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRoute
   CheckoutRoute: typeof CheckoutRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SecretRoute: typeof SecretRouteWithChildren
   SecretTransitionRoute: typeof SecretTransitionRoute
   ShopRoute: typeof ShopRoute
@@ -250,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -264,11 +317,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout': {
       id: '/checkout'
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/secret': {
@@ -291,6 +358,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -365,6 +439,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountRoute: AuthenticatedAccountRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 interface AdminRouteChildren {
   AdminAssetsRoute: typeof AdminAssetsRoute
   AdminCampaignsRoute: typeof AdminCampaignsRoute
@@ -400,9 +485,12 @@ const SecretRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRoute,
   CheckoutRoute: CheckoutRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SecretRoute: SecretRouteWithChildren,
   SecretTransitionRoute: SecretTransitionRoute,
   ShopRoute: ShopRoute,
