@@ -21,7 +21,7 @@ export const DEFAULT_SOUND: SoundSettings = {
   library: [],
 };
 
-export type Site = { slides: Slide[]; socials: Socials; sound: SoundSettings; stickers: StickerSettings };
+export type Site = { slides: Slide[]; slideInterval: number; socials: Socials; sound: SoundSettings; stickers: StickerSettings };
 
 export const siteQuery = queryOptions({
   queryKey: ["site-settings"],
@@ -29,6 +29,7 @@ export const siteQuery = queryOptions({
     const raw = (await getSiteSettings()) as Partial<Record<keyof Site, unknown>>;
     return {
       slides: Array.isArray(raw.slides) ? (raw.slides as Slide[]) : SLIDES,
+      slideInterval: typeof raw.slideInterval === "number" ? Math.max(2, Math.min(15, raw.slideInterval)) : 6,
       socials: { ...DEFAULT_SOCIALS, ...(raw.socials as Partial<Socials>) },
       sound: { ...DEFAULT_SOUND, ...(raw.sound as Partial<SoundSettings>), music: { ...DEFAULT_SOUND.music, ...((raw.sound as SoundSettings | undefined)?.music) } },
       stickers: { custom: [], hidden: [], ...(raw.stickers as Partial<StickerSettings>) },

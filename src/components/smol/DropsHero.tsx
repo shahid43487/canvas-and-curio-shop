@@ -7,7 +7,8 @@ import { useSite } from "@/lib/site";
 // Rotates live STUUF DROPS slides (edited in /admin/campaigns) inside the hero markup.
 export function DropsHero() {
   const site = useSite();
-  const slides = (site ? liveSlides(site.slides) : []).length ? liveSlides(site!.slides) : SLIDES.slice(0, 1);
+  const live = site ? liveSlides(site.slides) : [];
+  const slides = live.length ? live : SLIDES.slice(0, 1);
   const [i, setI] = useState(0);
   const box = useRef<HTMLDivElement>(null);
 
@@ -16,14 +17,16 @@ export function DropsHero() {
     const id = setInterval(() => {
       if (!box.current) return;
       gsap.to(box.current, { opacity: 0, y: -12, duration: 0.25, onComplete: () => setI((n) => (n + 1) % slides.length) });
-    }, 6000);
+    }, (site?.slideInterval ?? 6) * 1000);
     return () => clearInterval(id);
-  }, [slides.length]);
+  }, [slides.length, site?.slideInterval]);
   useEffect(() => {
     if (box.current) gsap.fromTo(box.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.6)" });
   }, [i]);
 
-  return <div ref={box}><SlideBody s={slides[i % slides.length]!} extra={site?.stickers.custom} dots={slides.length > 1 ? { n: slides.length, i, set: setI } : undefined} /></div>;
+  const current = slides[i % slides.length];
+  if (!current) return null;
+  return <div ref={box}><SlideBody s={current} extra={site?.stickers.custom} dots={slides.length > 1 ? { n: slides.length, i, set: setI } : undefined} /></div>;
 }
 
 export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; src: string }[] | undefined; dots?: { n: number; i: number; set: (n: number) => void } | undefined }) {
