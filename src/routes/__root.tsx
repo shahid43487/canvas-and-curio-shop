@@ -8,7 +8,10 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import type { User } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+import { CustomerContext } from "@/hooks/use-customer";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -133,17 +136,30 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      if (event === "PASSWORD_RECOVERY") { sessionStorage.setItem("smol-recovery", "1"); return; }
+      if (!["SIGNED_IN", "SIGNED_OUT", "USER_UPDATED"].includes(event)) return;
+      void router.invalidate();
+      if (event !== "SIGNED_OUT") void queryClient.invalidateQueries();
+    });
+    void supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    return () => data.subscription.unsubscribe();
+  }, [router, queryClient]);
   useGsapTactile();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
+      <CustomerContext.Provider value={user}><CartProvider>
         <StickerBurst />
         <SoundBar />
         <Toaster position="bottom-right" richColors />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
-      </CartProvider>
+      </CartProvider></CustomerContext.Provider>
     </QueryClientProvider>
   );
 }

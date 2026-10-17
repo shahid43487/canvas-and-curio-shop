@@ -8,8 +8,10 @@ import normalTexture from "@/assets/header-normal-reference.jpg.asset.json";
 import vaultTexture from "@/assets/header-vault-reference.jpg.asset.json";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheet } from "./CartSheet";
+import { useCustomer } from "@/hooks/use-customer";
 
 export function SiteHeader({ secret = false }: { secret?: boolean }) {
+  const customer = useCustomer();
   const { totalItems, setIsOpen } = useCart();
   const [dark, setDark] = useState(false);
   useEffect(() => setDark(document.documentElement.classList.contains("smol-dark")), []);
@@ -37,6 +39,7 @@ export function SiteHeader({ secret = false }: { secret?: boolean }) {
           <Link to="/about" activeProps={{ className: "active" }}>
             About
           </Link>
+          <Link to={customer ? "/account" : "/auth"} activeProps={{ className: "active" }}>{customer ? "Account" : "Sign in"}</Link>
         </nav>
         <Button className="theme-btn button-spring" variant="ghost" size="icon" type="button" onClick={toggleTheme} aria-label="Toggle dark mode" aria-pressed={dark} title={dark ? "Switch to light mode" : "Switch to dark mode"}>
           {dark ? <Moon size={18} /> : <Sun size={18} />}
