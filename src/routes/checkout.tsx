@@ -17,7 +17,8 @@ import { formatPrice } from "@/data/products";
 import { useCart, itemKey, unitPrice } from "@/hooks/use-cart";
 import { useDialogue } from "@/hooks/use-dialogue";
 import { CheckoutSpeaker } from "@/components/smol/CheckoutSpeaker";
-import { createOrder } from "@/lib/orders.functions";
+import { createOrder, previewCoupon } from "@/lib/orders.functions";
+import { useCustomer } from "@/hooks/use-customer";
 import logo from "@/assets/smol-stuuf-logo.png.asset.json";
 
 const checkoutSchema = z.object({
@@ -55,6 +56,33 @@ function Checkout() {
   const { items, totalPrice } = useCart();
   const isSecretOrder = items.some((item) => item.product.is_hidden === true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const customer = useCustomer();
+  const [couponCode, setCouponCode] = useState("");
+  const [couponBusy, setCouponBusy] = useState(false);
+  const [coupon, setCoupon] = useState<{ code: string; discount: number; total: number } | null>(null);
+  // A changed cart invalidates the previewed discount.
+  useEffect(() => setCoupon(null), [totalPrice, items.length]);
+  const payable = coupon ? coupon.total : totalPrice;
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponBusy(true);
+    try {
+      const result = await previewCoupon({
+        data: {
+          code: couponCode,
+          items: items.map((i) => ({ product_id: i.product.id, ...(i.variation?.id ? { variation_id: i.variation.id } : {}), quantity: i.quantity })),
+        },
+      });
+      setCoupon({ code: result.code, discount: result.discount, total: result.total });
+      toast.success(`Coupon ${result.code} applied`);
+    } catch (error) {
+      setCoupon(null);
+      toast.error(error instanceof Error ? error.message : "Could not apply coupon");
+    } finally {
+      setCouponBusy(false);
+    }
+  };
 
   const {
     register,
@@ -131,7 +159,8 @@ function Checkout() {
         data: {
           order: {
             ...values,
-            total_amount: totalPrice,
+            total_amount: payable,
+            ...(coupon ? { coupon_code: coupon.code } : {}),
             order_source: isSecretOrder ? "secret" : "regular",
           },
           items: orderItems,
@@ -238,7 +267,7 @@ function Checkout() {
             </section>
 
             <Button type="submit" disabled={isSubmitting} className="add-cart button-spring checkout-submit">
-              {isSubmitting ? "Submitting order..." : `${isSecretOrder ? "Submit for verification" : "Place order"} · ${formatPrice(totalPrice)}`}
+              {isSubmitting ? "Submitting order..." : `${isSecretOrder ? "Submit for verification" : "Place order"} · ${formatPrice(payable)}`}
             </Button>
           </form>
 
@@ -257,9 +286,28 @@ function Checkout() {
                 </div>
               ))}
             </div>
+            <div className="summary-coupon">
+              {!customer ? (
+                <p className="summary-note"><Link to="/auth">Sign in</Link> to use a coupon.</p>
+              ) : coupon ? (
+                <div className="summary-item">
+                  <span>Coupon {coupon.code}</span>
+                  <span>
+                    −{formatPrice(coupon.discount)}{" "}
+                    <button type="button" className="coupon-remove" onClick={() => { setCoupon(null); setCouponCode(""); }}>remove</button>
+                  </span>
+                </div>
+              ) : (
+                <div className="coupon-row">
+                  <Input aria-label="Coupon code" placeholder="Coupon code" value={couponCode} maxLength={64} onChange={(e) => setCouponCode(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void applyCoupon(); } }} />
+                  <Button type="button" variant="outline" disabled={couponBusy || !couponCode.trim()} onClick={() => void applyCoupon()}>{couponBusy ? "…" : "Apply"}</Button>
+                </div>
+              )}
+            </div>
             <div className="summary-total">
               <span>Total</span>
-              <span>{formatPrice(totalPrice)}</span>
+              <span>{formatPrice(payable)}</span>
             </div>
             <p className="summary-note">Shipping calculated after order confirmation.</p>
             <div className="summary-badge" lang="bn">এই হিসাব ঠিকঠাক তো?</div>

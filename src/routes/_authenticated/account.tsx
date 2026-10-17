@@ -9,6 +9,7 @@ import { getAccount, cancelOrder, saveProfile } from "@/lib/account.functions";
 import { pageHead } from "@/lib/page-head";
 import { supabase } from "@/integrations/supabase/client";
 import { formatPrice } from "@/data/products";
+import { couponValueLabel } from "@/lib/coupon";
 
 const accountQuery = queryOptions({ queryKey: ["customer-account"], queryFn: () => getAccount() });
 export const Route = createFileRoute("/_authenticated/account")({
@@ -31,13 +32,13 @@ function Account() {
     <section><h2>Current orders</h2>{data.orders.filter(o => !["delivered", "cancelled"].includes(o.status)).length === 0 && <p>No current orders.</p>}
       {data.orders.filter(o => !["delivered", "cancelled"].includes(o.status)).map(o => <article className="account-order" key={o.id}>
         <div><strong>Order {o.id.slice(0, 8)}</strong><span>{o.status} · {o.payment_status}</span></div>
-        <p>{new Date(o.created_at).toLocaleDateString()} · {formatPrice(Number(o.total_amount))}</p>
+        <p>{new Date(o.created_at).toLocaleDateString()} · {formatPrice(Number(o.total_amount))}{Number(o.discount_amount) > 0 && ` (coupon −${formatPrice(Number(o.discount_amount))})`}</p>
         <ul>{o.order_items.map(item => <li key={item.id}>{item.quantity} × {item.variation_name || `Product #${item.product_id}`} · {formatPrice(Number(item.unit_price))}</li>)}</ul>
         <p>{o.shipping_address}, {o.shipping_city}</p>
         {o.status === "pending" && <Button variant="destructive" onClick={() => { if (confirm("Cancel this order?")) void run(cancel({ data: { id: o.id } })); }}>Cancel order</Button>}
       </article>)}
     </section>
     <section><h2>Order history</h2>{data.orders.filter(o => ["delivered", "cancelled"].includes(o.status)).map(o => <article className="account-order" key={o.id}><strong>Order {o.id.slice(0, 8)}</strong><p>{o.status} · {formatPrice(Number(o.total_amount))}</p></article>)}{!data.orders.some(o => ["delivered", "cancelled"].includes(o.status)) && <p>No past orders.</p>}</section>
-    <section><h2>Coupons</h2>{!data.coupons.length && <p>No coupons assigned yet.</p>}{data.coupons.map(c => <article className="account-order" key={c.id}><strong>{c.code}</strong><p>{c.description}</p><p>{c.used_at ? "Used" : c.expires_at && new Date(c.expires_at) < new Date() ? "Expired" : "Available"}</p><Button variant="outline" onClick={() => { void navigator.clipboard.writeText(c.code); toast.success("Copied"); }}>Copy code</Button></article>)}</section>
+    <section><h2>Coupons</h2>{!data.coupons.length && <p>No coupons assigned yet.</p>}{data.coupons.map(c => <article className="account-order" key={c.id}><strong>{c.code}</strong><p>{couponValueLabel(c, formatPrice)}{Number(c.min_order) > 0 && ` · min order ${formatPrice(Number(c.min_order))}`}{c.expires_at && ` · expires ${new Date(c.expires_at).toLocaleDateString()}`}</p><p>{c.description}</p><p>{c.used_at ? "Used" : c.expires_at && new Date(c.expires_at) < new Date() ? "Expired" : "Available"}</p><Button variant="outline" onClick={() => { void navigator.clipboard.writeText(c.code); toast.success("Copied"); }}>Copy code</Button></article>)}</section>
   </main><SiteFooter /></>;
 }

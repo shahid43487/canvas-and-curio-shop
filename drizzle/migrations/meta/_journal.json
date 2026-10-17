@@ -43,6 +43,13 @@
       "when": 1792219848746,
       "tag": "0005_atomic_customer_order_ownership",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792226000000,
+      "tag": "0006_coupon_discounts",
+      "breakpoints": true
     }
   ]
 }

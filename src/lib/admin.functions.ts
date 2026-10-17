@@ -223,3 +223,57 @@ export const adminFileUrl = createServerFn({ method: "POST" })
     if (error) throw error;
     return { url: s.signedUrl };
   });
+
+
+// ---------- Customer coupons ----------
+type CouponInput = { email: string; code: string; description: string; discount_type: "percent" | "fixed"; discount_value: number; min_order: number; expires_at: string | null };
+
+export const adminListCoupons = createServerFn({ method: "POST" })
+  .validator((d: Auth) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { data: coupons, error } = await db.from("customer_coupons").select("*").limit(200);
+    if (error) throw error;
+    const rows = coupons ?? [];
+    const emails = new Map<string, string>();
+    await Promise.all([...new Set(rows.map((c) => c.user_id))].map(async (id) => {
+      const { data: u } = await db.auth.admin.getUserById(id);
+      emails.set(id, u.user?.email ?? "unknown");
+    }));
+    return { coupons: rows.map((c) => ({ ...c, email: emails.get(c.user_id) ?? "unknown" })) };
+  });
+
+export const adminIssueCoupon = createServerFn({ method: "POST" })
+  .validator((d: Auth & { coupon: CouponInput }) => {
+    const c = d.coupon;
+    if (!c.email?.trim()) throw new Error("Customer email is required");
+    if (!/^[A-Za-z0-9_-]{3,32}$/.test(c.code ?? "")) throw new Error("Code must be 3–32 letters, numbers, - or _");
+    if (!["percent", "fixed"].includes(c.discount_type)) throw new Error("Bad discount type");
+    if (typeof c.discount_value !== "number" || !Number.isFinite(c.discount_value) || c.discount_value <= 0) throw new Error("Discount must be more than 0");
+    if (c.discount_type === "percent" && c.discount_value > 100) throw new Error("Percent discount cannot exceed 100");
+    if (num(c.min_order) === undefined) throw new Error("Minimum order must be 0 or more");
+    if (c.expires_at && Number.isNaN(Date.parse(c.expires_at))) throw new Error("Bad expiry date");
+    return d;
+  })
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const c = data.coupon;
+    const { data: userId, error: lookupError } = await db.rpc("admin_find_user_by_email", { lookup: c.email });
+    if (lookupError) throw lookupError;
+    if (!userId) throw new Error("No customer with that email — they need to sign up first");
+    const { error } = await db.from("customer_coupons").insert({
+      user_id: userId, code: c.code.toUpperCase(), description: c.description.trim().slice(0, 200),
+      discount_type: c.discount_type, discount_value: c.discount_value, min_order: c.min_order, expires_at: c.expires_at,
+    });
+    if (error) throw error;
+    return { ok: true };
+  });
+
+export const adminDeleteCoupon = createServerFn({ method: "POST" })
+  .validator((d: Auth & { id: string }) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { error } = await db.from("customer_coupons").delete().eq("id", data.id).is("used_at", null);
+    if (error) throw error;
+    return { ok: true };
+  });
