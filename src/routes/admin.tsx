@@ -1,10 +1,7 @@
-import { createContext, useContext, useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { adminDashboard } from "@/lib/admin.functions";
-
-const KEY = "smol-admin-key";
-const TokenCtx = createContext("");
-export const useAdminToken = () => useContext(TokenCtx);
+import { ADMIN_KEY as KEY, AdminTokenContext as TokenCtx } from "@/lib/admin-session";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
