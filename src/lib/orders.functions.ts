@@ -36,7 +36,7 @@ export const createOrder = createServerFn({ method: "POST" })
     const { data: orderId, error } = await supabaseAdmin.rpc("create_owned_order", {
       order_data: data.order as unknown as never,
       items: data.items as unknown as never,
-      owner_id: owner,
+      ...(owner ? { owner_id: owner } : {}),
     });
     if (error) throw error;
     return { orderId: orderId as string };
