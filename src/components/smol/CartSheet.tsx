@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatPrice } from "@/data/products";
 import { useCart, itemKey, unitPrice } from "@/hooks/use-cart";
-import { useDialogue } from "@/hooks/use-dialogue";
+import { useDialogue, dialogueReadingTime } from "@/hooks/use-dialogue";
 import { ProductImage } from "./ProductImage";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 
@@ -64,7 +64,7 @@ export function CartSheet() {
         : totalItems === 1 ? totalPrice < 18 && index % 3 === 2 ? LOW : ONE[index % ONE.length] ?? ""
         : TWO;
       say(line, "hmm", opening ? 1 : 0);
-      timer = setTimeout(() => cycle(), totalItems === 0 ? 6000 : 6500);
+      timer = setTimeout(() => cycle(), dialogueReadingTime(line) + 150);
     };
     cycle(justOpened);
     return () => clearTimeout(timer);

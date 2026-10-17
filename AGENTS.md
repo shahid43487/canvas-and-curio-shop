@@ -10,7 +10,7 @@
 <!-- LOVABLE:END -->
 
 - Keep normal-shop and reverse-vault headers as variants of the shared SiteHeader so navigation and cart behavior stay consistent.
-- Use useDialogue for queued contextual reactions and shared reading durations so competing timers cannot replace unread lines.
+- Use useDialogue for queued contextual reactions and shared reading durations so competing timers cannot replace unread lines. Every line is shown for 12–16s (dialogueReadingTime); the cart cycle and secret transition reuse it rather than their own timers.
 - Portal the checkout speaker outside filtered page content and track visualViewport geometry so scrolling and mobile keyboards cannot clip it.
 
 - Use explicit charcoal surface and foreground tokens for dark mode; never invert page or image colors because product photography must remain accurate.

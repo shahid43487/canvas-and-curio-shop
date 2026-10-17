@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 import { SECRET_ACCESS_KEY } from "@/components/smol/SecretGate";
+import { dialogueReadingTime } from "@/hooks/use-dialogue";
 
 export const Route = createFileRoute("/secret-transition")({
   head: () => ({ meta: [
@@ -24,7 +25,7 @@ function SecretTransition() {
       navigate({ to: "/", replace: true });
       return;
     }
-    const timer = window.setTimeout(() => navigate({ to: "/secret" }), 6000);
+    const timer = window.setTimeout(() => navigate({ to: "/secret" }), dialogueReadingTime("Hummm!!!! We're safe."));
     return () => window.clearTimeout(timer);
   }, [navigate]);
 

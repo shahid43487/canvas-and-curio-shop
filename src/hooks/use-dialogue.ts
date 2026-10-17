@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-// Short punchy beats read fast; long lines get more time.
-export const dialogueReadingTime = (line: string) => line.length < 30 ? 4000 : line.length <= 60 ? 5500 : 7000;
+// Every line stays up at least 12s so it can be read; longer lines get up to 16s.
+export const MIN_READ_MS = 12000;
+export const MAX_READ_MS = 16000;
+export const dialogueReadingTime = (line: string) =>
+  Math.min(MAX_READ_MS, MIN_READ_MS + Math.max(0, Array.from(line).length - 40) * 100);
 export type Dialogue = { line: string; expression: string };
 /** 0 ambient (only when idle), 1 interaction (shows now), 2 critical (interrupts anything). */
 export type Priority = 0 | 1 | 2;
@@ -14,11 +17,13 @@ export function useDialogue(initial: Dialogue) {
   const pending = useRef<Beat[]>([]);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const mounted = useRef(false);
+  const lastShown = useRef(new Map<string, number>());
 
   const show = useCallback(function show(beat: Beat) {
     if (!mounted.current) return;
     clearTimeout(timer.current);
     current.current = beat;
+    lastShown.current.set(beat.line, Date.now());
     setDialogue({ line: beat.line, expression: beat.expression });
     const ms = dialogueReadingTime(beat.line);
     until.current = Date.now() + ms;
@@ -29,12 +34,19 @@ export function useDialogue(initial: Dialogue) {
   }, []);
 
   const saySequence = useCallback((steps: Dialogue[], priority: Priority = 1) => {
-    const [first, ...rest] = steps.filter((s) => s.line);
+    const list = steps.filter((s) => s.line);
+    const [first, ...rest] = list;
     if (!first || current.current.line === first.line) return;
-    const busy = Date.now() < until.current;
+    const now = Date.now();
+    const busy = now < until.current;
     if (priority === 0 && busy) return; // ambient never stomps an unread line
-    if (busy && priority < current.current.priority) {
-      pending.current = steps.map((s) => ({ ...s, priority }));
+    // Hover/focus can fire repeatedly: don't replay a reaction still within its reading window.
+    const last = lastShown.current.get(first.line);
+    if (priority < 2 && last !== undefined && now - last < dialogueReadingTime(first.line)) return;
+    // Ordinary reactions wait their turn (newest wins); only errors (priority 2) and
+    // interactions over ambient lines may replace an unread line immediately.
+    if (busy && priority < 2 && priority <= current.current.priority) {
+      pending.current = list.map((s) => ({ ...s, priority }));
       return;
     }
     pending.current = rest.map((s) => ({ ...s, priority }));
@@ -46,9 +58,15 @@ export function useDialogue(initial: Dialogue) {
 
   useEffect(() => {
     mounted.current = true;
-    until.current = Date.now() + dialogueReadingTime(current.current.line);
+    const ms = dialogueReadingTime(current.current.line);
+    until.current = Date.now() + ms;
+    // The initial line needs a timer too, or reactions queued behind it would never play.
+    timer.current = setTimeout(() => {
+      const next = pending.current.shift();
+      if (next) show(next);
+    }, ms);
     return () => { mounted.current = false; clearTimeout(timer.current); pending.current = []; };
-  }, []);
+  }, [show]);
 
   return { dialogue, say, saySequence, isBusy: () => Date.now() < until.current };
 }
