@@ -7,7 +7,7 @@ import { adminSaveSetting } from "@/lib/admin.functions";
 import { useSite } from "@/lib/site";
 import { SlideBody } from "@/components/smol/DropsHero";
 import { AdminUpload } from "@/components/smol/AdminUpload";
-import { useAdminToken } from "./admin";
+import { useAdminToken } from "@/lib/admin-session";
 
 export const Route = createFileRoute("/admin/campaigns")({ component: Campaigns });
 

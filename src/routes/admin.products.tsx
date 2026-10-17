@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { adminDeleteProduct, adminDeleteVariation, adminListCatalog, adminSaveProduct, adminSaveVariation } from "@/lib/admin.functions";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { ProductImage } from "@/components/smol/ProductImage";
-import { useAdminToken } from "./admin";
+import { useAdminToken } from "@/lib/admin-session";
 
 export const Route = createFileRoute("/admin/products")({ component: Products });
 
@@ -15,7 +15,7 @@ const BLANK = { num: "", name: "", price: 0, stock: 0, tag: "NEW", color: "#FFD2
 function Products() {
   const token = useAdminToken();
   const qc = useQueryClient();
-  const { data, error, isLoading } = useQuery({ queryKey: ["admin", "catalog"], queryFn: () => adminListCatalog({ data: { token } }) });
+  const { data, error, isLoading } = useQuery({ queryKey: ["admin", "catalog", token], enabled: Boolean(token), retry: false, queryFn: () => adminListCatalog({ data: { token } }) });
   const [open, setOpen] = useState<number | "new" | null>(null);
 
   const run = async (p: Promise<unknown>, msg = "Saved") => {

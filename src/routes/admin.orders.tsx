@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { adminListOrders, adminUpdateOrder } from "@/lib/admin.functions";
 import { formatPrice } from "@/data/products";
-import { useAdminToken } from "./admin";
+import { useAdminToken } from "@/lib/admin-session";
 
 export const Route = createFileRoute("/admin/orders")({ component: Orders });
 
@@ -15,7 +15,7 @@ function Orders() {
   const qc = useQueryClient();
   const [filter, setFilter] = useState<string>("all");
   const [open, setOpen] = useState<string | null>(null);
-  const { data } = useQuery({ queryKey: ["admin", "orders"], queryFn: () => adminListOrders({ data: { token } }) });
+  const { data } = useQuery({ queryKey: ["admin", "orders", token], enabled: Boolean(token), retry: false, queryFn: () => adminListOrders({ data: { token } }) });
 
   const update = async (id: string, patch: { status?: string; payment_status?: "paid" }) => {
     try {

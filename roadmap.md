@@ -1,5 +1,14 @@
 # Roadmap
 
+## Approved October 17 work
+- [ ] Fix shared admin token and verify catalog plus all editors
+- [ ] Add Pac-Man option builder
+- [ ] Add slide duration control
+- [ ] Back up brand assets for portable use
+- [ ] Add customer sign-in, profiles, orders, coupons, and pending-only cancellation
+- [ ] Secure unified admin sign-in (no hardcoded credential bypass)
+- [ ] Verify central flows and rule checks
+
 ## Current request
 - [x] Use both approved character stickers for distinct panels and contextual reactions
 - [x] Replace all Babu Rao character images with the uploaded sticker

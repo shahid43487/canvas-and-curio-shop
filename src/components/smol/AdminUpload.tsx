@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { uploadMedia } from "@/lib/site";
 
-export function AdminUpload({ token, accept, label = "Upload", onDone }: { token: string; accept: string; label?: string; onDone: (url: string, file: File) => void }) {
+export function AdminUpload({ token, accept, label = "Upload", onDone }: { token: string; accept: string; label?: string; onDone: (url: string, file: File) => void | Promise<unknown> }) {
   const [busy, setBusy] = useState(false);
   return (
     <label className="admin-btn ghost" style={{ cursor: "pointer" }}>
@@ -12,7 +12,7 @@ export function AdminUpload({ token, accept, label = "Upload", onDone }: { token
         e.target.value = "";
         if (!f) return;
         setBusy(true);
-        try { onDone(await uploadMedia(token, f), f); }
+        try { await onDone(await uploadMedia(token, f), f); }
         catch (err) { toast.error(err instanceof Error ? err.message : "Upload failed"); }
         finally { setBusy(false); }
       }} />

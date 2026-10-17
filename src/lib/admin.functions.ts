@@ -1,11 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
+import { pacmanConfigSchema, type PacmanConfig } from "./pacman-config";
 
 type Auth = { token: string };
 const ORDER_STATUS = ["pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
 
 async function admin(token: string) {
   const expected = process.env["ADMIN_TOKEN"];
-  if (!expected || token !== expected) throw new Error("Wrong admin key");
+  if (!expected || typeof token !== "string") throw new Error("Wrong admin key");
+  if (token !== expected) {
+    const [expiry, nonce, signature] = token.split(".");
+    if (!expiry || !nonce || !signature || Number(expiry) <= Date.now() || !/^[0-9a-f]{64}$/.test(signature)) throw new Error("Wrong admin key");
+    const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(expected), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
+    const bytes = Uint8Array.from(signature.match(/../g) ?? [], b => parseInt(b, 16));
+    if (!await crypto.subtle.verify("HMAC", key, bytes, new TextEncoder().encode(`${expiry}.${nonce}`))) throw new Error("Wrong admin key");
+  }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
@@ -120,7 +128,7 @@ export const adminListCatalog = createServerFn({ method: "POST" })
 export const adminSaveProduct = createServerFn({ method: "POST" })
   .validator((d: Auth & { product: ProductInput }) => {
     if (!d.product.name?.trim()) throw new Error("Name is required");
-    if (!(Number(d.product.price) >= 0) || !(Number(d.product.stock) >= 0)) throw new Error("Price and stock must be 0 or more");
+    if (num(d.product.price) === undefined || num(d.product.stock) === undefined) throw new Error("Price and stock must be finite and 0 or more");
     return d;
   })
   .handler(async ({ data }) => {
@@ -152,8 +160,10 @@ export const adminDeleteProduct = createServerFn({ method: "POST" })
   });
 
 export const adminSaveVariation = createServerFn({ method: "POST" })
-  .validator((d: Auth & { v: { id?: string | undefined; product_id: number; name: string; price: number; stock: number; display_order: number } }) => {
+  .validator((d: Auth & { v: { id?: string | undefined; product_id: number; name: string; price: number; stock: number; display_order: number; button_config?: PacmanConfig } }) => {
     if (!d.v.name?.trim()) throw new Error("Option name is required");
+    if (num(d.v.price) === undefined || num(d.v.stock) === undefined || num(d.v.display_order) === undefined) throw new Error("Price, stock and order must be finite and nonnegative");
+    if (d.v.button_config) d.v.button_config = pacmanConfigSchema.parse(d.v.button_config);
     return d;
   })
   .handler(async ({ data }) => {
@@ -182,7 +192,11 @@ export const adminDeleteVariation = createServerFn({ method: "POST" })
 
 // ---------- Site settings (slides, socials, sound, stickers) ----------
 export const adminSaveSetting = createServerFn({ method: "POST" })
-  .validator((d: Auth & { key: "slides" | "socials" | "sound" | "stickers"; value: unknown }) => d)
+  .validator((d: Auth & { key: "slides" | "socials" | "sound" | "stickers" | "slideInterval"; value: unknown }) => {
+    if (!["slides", "socials", "sound", "stickers", "slideInterval"].includes(d.key)) throw new Error("Unknown setting");
+    if (d.key === "slideInterval" && (typeof d.value !== "number" || !Number.isFinite(d.value) || d.value < 2 || d.value > 15)) throw new Error("Slide duration must be 2–15 seconds");
+    return d;
+  })
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const { error } = await db.from("site_settings").upsert({ key: data.key, value: data.value as never, updated_at: new Date().toISOString() });

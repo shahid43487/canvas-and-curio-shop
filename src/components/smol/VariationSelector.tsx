@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { PacIcon, Variation } from "@/data/products";
+import { Button } from "@/components/ui/button";
+import { playSfx } from "@/lib/sfx";
 
 // Wedge path: mouth half-angle `a` in degrees (0 = closed).
 function pacPath(a: number) {
@@ -64,10 +66,10 @@ function PacButton({ v, selected, onSelect }: { v: Variation; selected: boolean;
     return () => {
       ctx.revert(); // kills chomp loops + resets mouth/scale
     };
-  }, [selected]);
+  }, [selected, v.button_config]);
 
   return (
-    <button
+    <Button
       ref={ref}
       type="button"
       className={`pac-btn arr-${v.button_config.arrangement ?? "row"}${selected ? " is-selected" : ""}`}
@@ -75,13 +77,13 @@ function PacButton({ v, selected, onSelect }: { v: Variation; selected: boolean;
       aria-label={`${v.name}${out ? " (sold out)" : ""}`}
       title={v.name}
       disabled={out}
-      onClick={onSelect}
+      onClick={() => { playSfx("chomp"); onSelect(); }}
     >
       <span className="pac-icons">
         {icons.map((icon, i) => <PacMan key={i} icon={icon} index={i} />)}
       </span>
       <span className="pac-label">{v.name}</span>
-    </button>
+    </Button>
   );
 }
 
