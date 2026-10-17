@@ -6,7 +6,7 @@ import { adminSaveSetting } from "@/lib/admin.functions";
 import { useSite, type CustomSound, type SoundSettings } from "@/lib/site";
 import { playSfx } from "@/lib/sfx";
 import { AdminUpload } from "@/components/smol/AdminUpload";
-import { useAdminToken } from "./admin";
+import { useAdminToken } from "@/lib/admin-session";
 
 export const Route = createFileRoute("/admin/media")({ component: Media });
 

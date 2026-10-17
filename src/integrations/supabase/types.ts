@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      customer_coupons: {
+        Row: {
+          code: string
+          description: string
+          expires_at: string | null
+          id: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          code: string
+          description?: string
+          expires_at?: string | null
+          id?: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          code?: string
+          description?: string
+          expires_at?: string | null
+          id?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -85,6 +112,7 @@ export type Database = {
           shipping_phone: string
           status: string
           total_amount: number
+          user_id: string | null
         }
         Insert: {
           bkash_transaction_id?: string | null
@@ -101,6 +129,7 @@ export type Database = {
           shipping_phone: string
           status?: string
           total_amount?: number
+          user_id?: string | null
         }
         Update: {
           bkash_transaction_id?: string | null
@@ -117,6 +146,7 @@ export type Database = {
           shipping_phone?: string
           status?: string
           total_amount?: number
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -242,6 +272,27 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string
+          display_name: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string
+          display_name?: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string
+          display_name?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           key: string
@@ -265,6 +316,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_customer_order: { Args: { order_id: string }; Returns: undefined }
       create_order_with_items: {
         Args: { items: Json; order_data: Json }
         Returns: string

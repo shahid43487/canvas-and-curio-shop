@@ -2,13 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { adminDashboard } from "@/lib/admin.functions";
 import { formatPrice } from "@/data/products";
-import { useAdminToken } from "./admin";
+import { useAdminToken } from "@/lib/admin-session";
 
 export const Route = createFileRoute("/admin/")({ component: Dashboard });
 
 function Dashboard() {
   const token = useAdminToken();
-  const { data } = useQuery({ queryKey: ["admin", "dash"], queryFn: () => adminDashboard({ data: { token } }) });
+  const { data } = useQuery({ queryKey: ["admin", "dash", token], enabled: Boolean(token), retry: false, queryFn: () => adminDashboard({ data: { token } }) });
   if (!data) return <p>Warming up…</p>;
   return (
     <>

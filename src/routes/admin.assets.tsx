@@ -5,7 +5,7 @@ import { PRESETS, STICKERS } from "@/data/drops";
 import { adminSaveSetting } from "@/lib/admin.functions";
 import { useSite, type StickerSettings } from "@/lib/site";
 import { AdminUpload } from "@/components/smol/AdminUpload";
-import { useAdminToken } from "./admin";
+import { useAdminToken } from "@/lib/admin-session";
 
 export const Route = createFileRoute("/admin/assets")({ component: Assets });
 

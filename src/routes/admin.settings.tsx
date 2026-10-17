@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { adminSaveSetting } from "@/lib/admin.functions";
 import { useSite, type Socials } from "@/lib/site";
-import { useAdminToken } from "./admin";
+import { useAdminToken } from "@/lib/admin-session";
 
 export const Route = createFileRoute("/admin/settings")({ component: Settings });
 
