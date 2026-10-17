@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,7 +9,7 @@ import { playSfx } from "@/lib/sfx";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { useAdminToken } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin/media")({ component: Media });
+export const Route = createFileRoute("/admin/media")({ head: () => pageHead("Media console", "SMOL STUUF media console administration."), component: Media });
 
 const TRIGGERS: Record<CustomSound["trigger"], string> = { click: "Button clicks", cart: "Add to cart", chomp: "Option pick", none: "Not used" };
 

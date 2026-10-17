@@ -1,3 +1,4 @@
+import { assetUrl } from "@/lib/asset-url";
 import { useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
@@ -28,7 +29,7 @@ function SecretTransition() {
   }, [navigate]);
 
   return <main className="secret-transition">
-    <img src={fierceCharacter.url} alt="Shop character cautiously checking the coast" width={1024} height={1024} />
+    <img src={assetUrl(fierceCharacter)} alt="Shop character cautiously checking the coast" width={1024} height={1024} />
     <h1>Hummm!!!! We&apos;re safe.</h1>
     <p>Opening the suspicious little door…</p>
   </main>;

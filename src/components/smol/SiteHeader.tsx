@@ -1,3 +1,4 @@
+import { assetUrl } from "@/lib/asset-url";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Moon, Sun } from "lucide-react";
@@ -24,10 +25,10 @@ export function SiteHeader({ secret = false }: { secret?: boolean }) {
 
   return (
     <header className={secret ? "smol-header smol-header-secret" : "smol-header"}>
-      <img className="smol-header-texture" src={secret ? vaultTexture.url : normalTexture.url} alt="" aria-hidden="true" />
+      <img className="smol-header-texture" src={secret ? assetUrl(vaultTexture) : assetUrl(normalTexture)} alt="" aria-hidden="true" />
       <div className="navbar">
         <Link to="/" className="brandmark">
-          <img className="logo-lockup" src={secret ? logoInk.url : headerLogo.url} alt="SMOL STUUF" />
+          <img className="logo-lockup" src={secret ? assetUrl(logoInk) : assetUrl(headerLogo)} alt="SMOL STUUF" />
         </Link>
         <nav className="links" aria-label="Main navigation">
           <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "active" }}>

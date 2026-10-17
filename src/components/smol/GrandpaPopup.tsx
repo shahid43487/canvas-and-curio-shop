@@ -1,3 +1,4 @@
+import { assetUrl } from "@/lib/asset-url";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,16 +6,16 @@ import character from "@/assets/shop-character.png";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 
 const jokes = [
-  { line: "Cart ko dekha? It is feeling emotionally empty.", sticker: fierceCharacter.url },
+  { line: "Cart ko dekha? It is feeling emotionally empty.", sticker: assetUrl(fierceCharacter) },
   { line: "Tiny object, giant explanation. Excellent choice.", sticker: character },
-  { line: "I inspected the vibes. Approved with mild confusion.", sticker: fierceCharacter.url },
+  { line: "I inspected the vibes. Approved with mild confusion.", sticker: assetUrl(fierceCharacter) },
   { line: "My glasses say yes. My back says think about it.", sticker: character },
-  { line: "Wallet called. I told it we don't take calls from strangers.", sticker: fierceCharacter.url },
-  { line: "Such a small thing. Such a big problem for my pocket.", sticker: fierceCharacter.url },
+  { line: "Wallet called. I told it we don't take calls from strangers.", sticker: assetUrl(fierceCharacter) },
+  { line: "Such a small thing. Such a big problem for my pocket.", sticker: assetUrl(fierceCharacter) },
   { line: "I am not saying don't buy it. I am saying don't tell anyone.", sticker: character },
   { line: "Everyone has this. Except everyone. Only you have this.", sticker: character },
-  { line: "I checked the quality. Twice. Then I checked the price and sat down.", sticker: fierceCharacter.url },
-  { line: "Hmm. Suspiciously good. Nobody is this generous. Buy two.", sticker: fierceCharacter.url },
+  { line: "I checked the quality. Twice. Then I checked the price and sat down.", sticker: assetUrl(fierceCharacter) },
+  { line: "Hmm. Suspiciously good. Nobody is this generous. Buy two.", sticker: assetUrl(fierceCharacter) },
 ];
 
 export function GrandpaPopup() {

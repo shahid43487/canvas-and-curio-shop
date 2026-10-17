@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -6,7 +7,7 @@ import { adminSaveSetting } from "@/lib/admin.functions";
 import { useSite, type Socials } from "@/lib/site";
 import { useAdminToken } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin/settings")({ component: Settings });
+export const Route = createFileRoute("/admin/settings")({ head: () => pageHead("Settings", "SMOL STUUF settings administration."), component: Settings });
 
 const FIELDS: [keyof Socials, string, string][] = [
   ["instagram", "Instagram", "https://instagram.com/smolstuuf"],
