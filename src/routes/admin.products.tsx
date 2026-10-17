@@ -6,6 +6,8 @@ import { adminDeleteProduct, adminDeleteVariation, adminListCatalog, adminSavePr
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { ProductImage } from "@/components/smol/ProductImage";
 import { useAdminToken } from "@/lib/admin-session";
+import { PacmanConfigurator } from "@/components/smol/PacmanConfigurator";
+import { pacmanConfigSchema, type PacmanConfig } from "@/lib/pacman-config";
 
 export const Route = createFileRoute("/admin/products")({ component: Products });
 
@@ -103,16 +105,23 @@ function Editor({ token, p, onSave, onCancel }: { token: string; p: typeof BLANK
   );
 }
 
-type V = { id?: string | undefined; product_id: number; name: string; price: number; stock: number; display_order: number };
+type V = { id?: string | undefined; product_id: number; name: string; price: number; stock: number; display_order: number; button_config?: unknown };
 function VariationRow({ token, v, run }: { token: string; v: V; run: (p: Promise<unknown>, m?: string) => Promise<boolean> }) {
   const [f, setF] = useState({ ...v, price: Number(v.price) });
+  const [config, setConfig] = useState<PacmanConfig>(() => {
+    const parsed = pacmanConfigSchema.safeParse(v.button_config);
+    return parsed.success ? parsed.data : {};
+  });
   return (
-    <form className="admin-row" onSubmit={async (e) => { e.preventDefault(); if (await run(adminSaveVariation({ data: { token, v: { id: v.id, product_id: v.product_id, name: f.name, price: f.price, stock: f.stock, display_order: f.display_order } } })) && !v.id) setF({ ...v, price: Number(v.price) }); }}>
+    <form className="variation-editor" onSubmit={async (e) => { e.preventDefault(); if (await run(adminSaveVariation({ data: { token, v: { id: v.id, product_id: v.product_id, name: f.name, price: f.price, stock: f.stock, display_order: f.display_order, button_config: config } } })) && !v.id) setF({ ...v, price: Number(v.price) }); }}>
+      <div className="admin-row">
       <input className="admin-input" placeholder={v.id ? "" : "New option name"} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
       ৳<input className="admin-input num" type="number" min={0} value={f.price} onChange={(e) => setF({ ...f, price: Number(e.target.value) })} />
       Stock <input className="admin-input num" type="number" min={0} value={f.stock} onChange={(e) => setF({ ...f, stock: Number(e.target.value) })} />
       <button className="admin-btn">{v.id ? "Save" : "+ Add option"}</button>
-      {v.id && <button type="button" className="admin-btn danger" onClick={() => confirm(`Remove option "${v.name}"?`) && run(adminDeleteVariation({ data: { token, id: v.id! } }), "Removed")}>Remove</button>}
+      {v.id && <button type="button" className="admin-btn danger" onClick={() => { if (v.id && confirm(`Remove option "${v.name}"?`)) void run(adminDeleteVariation({ data: { token, id: v.id } }), "Removed"); }}>Remove</button>}
+      </div>
+      <PacmanConfigurator value={config} onChange={setConfig} name={f.name} />
     </form>
   );
 }

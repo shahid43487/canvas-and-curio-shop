@@ -20,6 +20,7 @@ function Campaigns() {
   const [slides, setSlides] = useState<Slide[] | null>(null);
   const [sel, setSel] = useState(0);
   const [dirty, setDirty] = useState(false);
+  const [interval, setIntervalSeconds] = useState<number | null>(null);
   useEffect(() => { if (site && !slides) setSlides(site.slides); }, [site, slides]);
   if (!slides || !site) return <p>Loading…</p>;
 
@@ -27,7 +28,7 @@ function Campaigns() {
   const patch = (p: Partial<Slide>) => change(slides.map((s, n) => (n === sel ? { ...s, ...p } : s)));
   const move = (d: number) => { const j = sel + d; if (j < 0 || j >= slides.length) return; const c = [...slides]; [c[sel], c[j]] = [c[j]!, c[sel]!]; change(c); setSel(j); };
   const save = async () => {
-    try { await adminSaveSetting({ data: { token, key: "slides", value: slides } }); toast.success("Published to homepage"); setDirty(false); qc.invalidateQueries({ queryKey: ["site-settings"] }); }
+    try { await Promise.all([adminSaveSetting({ data: { token, key: "slides", value: slides } }), adminSaveSetting({ data: { token, key: "slideInterval", value: interval ?? site.slideInterval } })]); toast.success("Published to homepage"); setDirty(false); qc.invalidateQueries({ queryKey: ["site-settings"] }); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
   };
   const s = slides[sel];
@@ -38,6 +39,7 @@ function Campaigns() {
       <div className="admin-row"><h1 className="admin-h1">Hero slides</h1>
         <button className="admin-btn" onClick={() => { change([...slides, blank()]); setSel(slides.length); }}>+ Add slide</button>
         <button className="admin-btn" disabled={!dirty} onClick={save}>{dirty ? "Publish changes" : "All saved"}</button></div>
+      <label className="admin-row">Slide duration · {interval ?? site.slideInterval}s <input aria-label="Slide duration" type="range" min={2} max={15} step={1} value={interval ?? site.slideInterval} onChange={e => { setIntervalSeconds(Number(e.target.value)); setDirty(true); }} /></label>
       <table className="admin-table"><tbody>
         {slides.map((x, n) => (
           <tr key={x.id} style={{ background: n === sel ? "#fff6c2" : undefined, cursor: "pointer" }} onClick={() => setSel(n)}>
