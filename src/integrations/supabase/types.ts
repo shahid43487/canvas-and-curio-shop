@@ -18,33 +18,24 @@ export type Database = {
         Row: {
           code: string
           description: string
-          discount_type: string
-          discount_value: number
           expires_at: string | null
           id: string
-          min_order: number
           used_at: string | null
           user_id: string
         }
         Insert: {
           code: string
           description?: string
-          discount_type?: string
-          discount_value?: number
           expires_at?: string | null
           id?: string
-          min_order?: number
           used_at?: string | null
           user_id: string
         }
         Update: {
           code?: string
           description?: string
-          discount_type?: string
-          discount_value?: number
           expires_at?: string | null
           id?: string
-          min_order?: number
           used_at?: string | null
           user_id?: string
         }
@@ -108,9 +99,7 @@ export type Database = {
       orders: {
         Row: {
           bkash_transaction_id: string | null
-          coupon_id: string | null
           created_at: string
-          discount_amount: number
           id: string
           order_source: string
           payment_method: Database["public"]["Enums"]["payment_method"]
@@ -127,9 +116,7 @@ export type Database = {
         }
         Insert: {
           bkash_transaction_id?: string | null
-          coupon_id?: string | null
           created_at?: string
-          discount_amount?: number
           id?: string
           order_source?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
@@ -146,9 +133,7 @@ export type Database = {
         }
         Update: {
           bkash_transaction_id?: string | null
-          coupon_id?: string | null
           created_at?: string
-          discount_amount?: number
           id?: string
           order_source?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
@@ -337,11 +322,7 @@ export type Database = {
         Returns: string
       }
       create_owned_order: {
-        Args: { coupon_code?: string; items: Json; order_data: Json; owner_id?: string }
-        Returns: string
-      }
-      admin_find_user_by_email: {
-        Args: { lookup: string }
+        Args: { items: Json; order_data: Json; owner_id?: string }
         Returns: string
       }
     }
