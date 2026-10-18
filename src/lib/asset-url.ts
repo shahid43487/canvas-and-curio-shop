@@ -1,2 +1,2 @@
-// Absolute delivery also works when the source is hosted outside Lovable.
-export const assetUrl = (asset: { url: string }) => new URL(asset.url, "https://tanstack-blossom-kit.lovable.app").href;
+// Managed assets are delivered by this site's origin, never another project's host.
+export const assetUrl = (asset: { url: string }) => asset.url;

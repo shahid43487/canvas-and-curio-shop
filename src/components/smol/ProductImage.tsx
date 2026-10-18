@@ -30,6 +30,7 @@ export function ProductImage({ id, name, eager = false, src: custom }: { id: num
       src={src}
       alt={`${name} in the SMOL STUUF studio`}
       loading={eager ? "eager" : "lazy"}
+      decoding="async"
       width={1024}
       height={1024}
     />

@@ -34,7 +34,7 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
   const label = STICKER_TEXT[s.sticker];
   return (
     <div data-preset={s.preset}>
-      {img ? <img src={img} alt="" className="drop-sticker" width={96} height={96} /> : <span className="sticker s1">{label ?? "GOOD STUUF ✓"}</span>}
+      {img ? <img src={img} alt="" className="drop-sticker" width={96} height={96} decoding="async" /> : <span className="sticker slide-text-sticker s1">{label ?? "GOOD STUUF ✓"}</span>}
       <div className="eyebrow-tag"><span className="dot" /> {s.eyebrow}</div>
       <h1 className="hero-title">{s.title}<br /><span className="accent">{s.accent}</span></h1>
       <p className="hero-sub">{s.sub}</p>

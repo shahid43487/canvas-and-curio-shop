@@ -11,6 +11,9 @@ export function AdminUpload({ token, accept, label = "Upload", onDone }: { token
         const f = e.target.files?.[0];
         e.target.value = "";
         if (!f) return;
+        const allowed = accept.split(",").map((value) => value.trim().toLowerCase());
+        const matches = allowed.some((value) => value.endsWith("/*") ? f.type.startsWith(value.slice(0, -1)) : value.startsWith(".") ? f.name.toLowerCase().endsWith(value) : f.type === value);
+        if (!matches) { toast.error("Choose a file of the requested type"); return; }
         setBusy(true);
         try { await onDone(await uploadMedia(token, f), f); }
         catch (err) { toast.error(err instanceof Error ? err.message : "Upload failed"); }

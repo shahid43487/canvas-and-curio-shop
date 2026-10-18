@@ -20,8 +20,13 @@ export function useGsapTactile() {
     };
     const over = (e: PointerEvent) => {
       const el = (e.target as Element).closest(WIGGLE);
-      if (el && !reduced && !gsap.isTweening(el))
-        gsap.fromTo(el, { rotate: 0 }, { rotate: 6, duration: 0.12, yoyo: true, repeat: 3, ease: "sine.inOut" });
+      if (el && !reduced && !gsap.isTweening(el)) {
+        const originalTransform = (el as HTMLElement).style.transform;
+        gsap.to(el, { rotation: "+=6", duration: 0.12, yoyo: true, repeat: 3, ease: "sine.inOut", onComplete: () => {
+          (el as HTMLElement).style.transform = originalTransform;
+          gsap.set(el, { clearProps: "rotate,scale,translate" });
+        } });
+      }
     };
     addEventListener("pointerdown", down);
     addEventListener("pointerup", up);

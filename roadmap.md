@@ -1,5 +1,11 @@
 # Roadmap
 
+## Approved master plan — October 18
+- [ ] Restore same-origin assets and speed up guest loading
+- [ ] Preserve sticker tilt and mobile slide stickers; reject mismatched uploads
+- [ ] Verify cancellation safeguards, atomic restocking, and private guest order responses
+- [ ] Verify storefront and customer flows; deliver portable asset archive
+
 ## Approved October 17 work
 - [ ] Fix shared admin token and verify catalog plus all editors
 - [ ] Add Pac-Man option builder
