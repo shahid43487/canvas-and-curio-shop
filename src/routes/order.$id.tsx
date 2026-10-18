@@ -119,10 +119,7 @@ function OrderConfirmation() {
             {order.shipping_city}
             <br />
             {order.shipping_phone}
-            <br />
-            {order.shipping_email}
           </p>
-          {order.shipping_notes && <p className="order-notes">Notes: {order.shipping_notes}</p>}
         </div>
 
         <Link to="/shop" className="btn-primary order-back">

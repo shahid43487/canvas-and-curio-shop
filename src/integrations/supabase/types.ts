@@ -331,17 +331,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_find_user_by_email: { Args: { lookup: string }; Returns: string }
       cancel_customer_order: { Args: { order_id: string }; Returns: undefined }
       create_order_with_items: {
         Args: { items: Json; order_data: Json }
         Returns: string
       }
       create_owned_order: {
-        Args: { coupon_code?: string; items: Json; order_data: Json; owner_id?: string }
-        Returns: string
-      }
-      admin_find_user_by_email: {
-        Args: { lookup: string }
+        Args: {
+          coupon_code?: string
+          items: Json
+          order_data: Json
+          owner_id?: string
+        }
         Returns: string
       }
     }

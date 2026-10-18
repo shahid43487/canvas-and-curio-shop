@@ -334,7 +334,10 @@ h1.hero-title .accent { color: var(--smol-red); font-weight: 800; }
 .sticker.red { background: var(--smol-red); color: var(--smol-white); border-color: var(--smol-ink); }
 .s1 { top: 20px; left: 400px; transform: rotate(8deg); }
 .s2 { bottom: 10px; right: 20px; transform: rotate(-6deg); }
-@media (max-width: 900px) { .sticker { display: none; } }
+@media (max-width: 900px) {
+  .sticker:not(.slide-text-sticker) { display: none; }
+  .slide-text-sticker { display: inline-block; position: relative; top: auto; left: auto; margin-bottom: 16px; animation: none; }
+}
 
 /* ---------- MARQUEE ---------- */
 .marquee {

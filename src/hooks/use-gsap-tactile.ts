@@ -3,35 +3,39 @@ import gsap from "gsap";
 import { playSfx } from "@/lib/sfx";
 
 const PRESS = "button, a, [role=button]";
-const WIGGLE = "img[src*='sticker'], img[src*='babu'], img[src*='logo']";
+const WIGGLE = ".drop-sticker, img[src*='sticker'], img[src*='babu']";
 
 // One delegated listener for the whole app: press springs + sticker wiggles.
 export function useGsapTactile() {
   useEffect(() => {
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const active = new Set<gsap.core.Tween>();
+    const restores = new Map<HTMLElement, string>();
     const down = (e: PointerEvent) => {
-      const el = (e.target as Element).closest(PRESS);
+      if (!(e.target instanceof Element)) return;
+      const el = e.target.closest(PRESS);
       if (el) playSfx(el.matches(".card-add, .add-cart") ? "cart" : "click");
-      if (el && !reduced) gsap.to(el, { scale: 0.94, duration: 0.08, ease: "power2.out", overwrite: true });
-    };
-    const up = (e: PointerEvent) => {
-      const el = (e.target as Element).closest(PRESS);
-      if (el && !reduced) gsap.to(el, { scale: 1, duration: 0.45, ease: "elastic.out(1.2, 0.4)", overwrite: true });
     };
     const over = (e: PointerEvent) => {
-      const el = (e.target as Element).closest(WIGGLE);
-      if (el && !reduced && !gsap.isTweening(el))
-        gsap.fromTo(el, { rotate: 0 }, { rotate: 6, duration: 0.12, yoyo: true, repeat: 3, ease: "sine.inOut" });
+      if (reduced || !(e.target instanceof Element)) return;
+      const el = e.target.closest<HTMLElement>(WIGGLE);
+      if (!el || restores.has(el) || getComputedStyle(el).animationName !== "none") return;
+      const originalRotate = el.style.rotate;
+      const angle = { value: 0 };
+      restores.set(el, originalRotate);
+      const tween = gsap.to(angle, { value: 6, duration: 0.12, yoyo: true, repeat: 3, ease: "sine.inOut",
+        onUpdate: () => { el.style.rotate = `${angle.value}deg`; },
+        onComplete: () => { el.style.rotate = originalRotate; restores.delete(el); active.delete(tween); },
+      });
+      active.add(tween);
     };
     addEventListener("pointerdown", down);
-    addEventListener("pointerup", up);
-    addEventListener("pointercancel", up);
     addEventListener("pointerover", over);
     return () => {
       removeEventListener("pointerdown", down);
-      removeEventListener("pointerup", up);
-      removeEventListener("pointercancel", up);
       removeEventListener("pointerover", over);
+      active.forEach((tween) => tween.kill());
+      restores.forEach((rotate, el) => { el.style.rotate = rotate; });
     };
   }, []);
 }

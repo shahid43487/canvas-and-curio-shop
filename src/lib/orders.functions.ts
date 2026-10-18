@@ -52,17 +52,17 @@ export const createOrder = createServerFn({ method: "POST" })
   });
 
 export const getOrder = createServerFn({ method: "GET" })
-  .inputValidator((data: { id: string; phone: string }) => data)
+  .inputValidator((data: unknown) => z.object({ id: z.string().uuid(), phone: z.string().min(8).max(32) }).parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: order, error } = await supabaseAdmin
       .from("orders")
-      .select("*, order_items(*, products(*))")
+      .select("id, status, payment_method, payment_status, total_amount, discount_amount, shipping_name, shipping_address, shipping_city, shipping_phone, order_items(id, product_id, quantity, unit_price, products(name))")
       .eq("id", data.id)
       .eq("shipping_phone", data.phone)
       .single();
-    if (error) throw error;
-    return { order };
+    if (error || !order) throw new Error("Order not found");
+    return { order: { ...order, shipping_name: order.shipping_name.slice(0, 1) + "…", shipping_address: "Hidden for privacy", shipping_phone: "••••" + order.shipping_phone.slice(-4) } };
   });
 
 

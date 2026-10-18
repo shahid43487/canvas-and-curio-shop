@@ -146,7 +146,8 @@ function RootComponent() {
       void router.invalidate();
       if (event !== "SIGNED_OUT") void queryClient.invalidateQueries();
     });
-    void supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    // Session state drives the affordance; protected handlers still verify identity.
+    void supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
   useGsapTactile();
