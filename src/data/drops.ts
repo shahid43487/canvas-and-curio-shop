@@ -1,7 +1,7 @@
 // Every PNG sticker/character in src/assets is available automatically.
 const PNGS = import.meta.glob("@/assets/*.png", { eager: true, import: "default" }) as Record<string, string>;
 const BUILT_IN = Object.entries(PNGS).map(([path, src]) => {
-  const id = path.split("/").pop()!.replace(/\.png$/, "");
+  const id = (path.split("/").pop() ?? "sticker").replace(/\.png$/, "");
   return { id, label: id.replace(/-/g, " "), src };
 });
 

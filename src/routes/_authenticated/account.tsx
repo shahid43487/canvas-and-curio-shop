@@ -35,7 +35,7 @@ function Account() {
         <p>{new Date(o.created_at).toLocaleDateString()} · {formatPrice(Number(o.total_amount))}{Number(o.discount_amount) > 0 && ` (coupon −${formatPrice(Number(o.discount_amount))})`}</p>
         <ul>{o.order_items.map(item => <li key={item.id}>{item.quantity} × {item.variation_name || `Product #${item.product_id}`} · {formatPrice(Number(item.unit_price))}</li>)}</ul>
         <p>{o.shipping_address}, {o.shipping_city}</p>
-        {o.status === "pending" && <Button variant="destructive" onClick={() => { if (confirm("Cancel this order?")) void run(cancel({ data: { id: o.id } })); }}>Cancel order</Button>}
+        {o.status === "pending" && o.payment_status !== "paid" && <Button variant="destructive" onClick={() => { if (confirm("Cancel this order?")) void run(cancel({ data: { id: o.id } })); }}>Cancel order</Button>}
       </article>)}
     </section>
     <section><h2>Order history</h2>{data.orders.filter(o => ["delivered", "cancelled"].includes(o.status)).map(o => <article className="account-order" key={o.id}><strong>Order {o.id.slice(0, 8)}</strong><p>{o.status} · {formatPrice(Number(o.total_amount))}</p></article>)}{!data.orders.some(o => ["delivered", "cancelled"].includes(o.status)) && <p>No past orders.</p>}</section>

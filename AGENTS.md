@@ -10,6 +10,8 @@
 <!-- LOVABLE:END -->
 
 - Keep normal-shop and reverse-vault headers as variants of the shared SiteHeader so navigation and cart behavior stay consistent.
+- Resolve managed asset pointers against the current site origin; independent deployments restore assets from the backup archive, never another project's domain.
+- Guest order lookups return only a narrow confirmation projection with masked delivery details; authenticated account reads retain full owner-scoped details.
 - Use useDialogue for queued contextual reactions and shared reading durations so competing timers cannot replace unread lines. Every line is shown for 12–16s (dialogueReadingTime); the cart cycle and secret transition reuse it rather than their own timers.
 - Portal the checkout speaker outside filtered page content and track visualViewport geometry so scrolling and mobile keyboards cannot clip it.
 
