@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PRESETS, STICKERS } from "@/data/drops";
 import { adminSaveSetting } from "@/lib/admin.functions";
-import { useSite, type StickerSettings, type CustomSticker } from "@/lib/site";
+import { useSite, type StickerSettings, type CustomSticker, type DialogueSettings, type DialogueSequence } from "@/lib/site";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { useAdminToken } from "@/lib/admin-session";
 
@@ -37,8 +37,46 @@ function Assets() {
   const [statusFilter, setStatusFilter] = useState<"all" | StickerStatus>("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [dimensions, setDimensions] = useState<Record<string, string>>({});
+  const [dialogueDraft, setDialogueDraft] = useState<DialogueSettings>({ status: "draft", sequences: [
+    { id: "cart-idle", name: "Cart idle reactions", trigger: "Cart idle", priority: 0, enabled: true, lines: [
+      { line: "ভাই… আর কত ভাববেন?", expression: "unimpressed", delayMs: 15000 },
+      { line: "নিবেন যখন, তখন নেন।", expression: "hmm", delayMs: 15000 },
+    ] },
+    { id: "checkout-payment", name: "Checkout payment reaction", trigger: "Payment method changes", priority: 1, enabled: true, lines: [
+      { line: "ওহ! আগেই মিটায় ফেললেন?", expression: "shocked" },
+      { line: "বাহ, বিশ্বাস আছে দেখতেছি!", expression: "laugh" },
+    ] },
+    { id: "checkout-error", name: "Checkout validation / error", trigger: "Validation or order error", priority: 2, enabled: true, lines: [
+      { line: "ভাই, কিছু তথ্য তো লাগবো।", expression: "nervous" },
+      { line: "নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?", expression: "facepalm" },
+    ] },
+  ] });
+  const [selectedSequence, setSelectedSequence] = useState("cart-idle");
+  const [previewIndex, setPreviewIndex] = useState(0);
+  useEffect(() => {
+    if (site?.dialogue) setDialogueDraft(site.dialogue);
+  }, [site?.dialogue]);
   if (!site) return <p>Loading…</p>;
   const st = site.stickers;
+  const selected = dialogueDraft.sequences.find((sequence) => sequence.id === selectedSequence) ?? dialogueDraft.sequences[0];
+  const updateSequence = (id: string, patch: Partial<DialogueSequence>) => setDialogueDraft((current) => ({ ...current, status: "draft", sequences: current.sequences.map((sequence) => sequence.id === id ? { ...sequence, ...patch } : sequence) }));
+  const updateLine = (sequenceId: string, index: number, patch: Partial<DialogueSequence["lines"][number]>) => setDialogueDraft((current) => ({ ...current, status: "draft", sequences: current.sequences.map((sequence) => sequence.id === sequenceId ? { ...sequence, lines: sequence.lines.map((line, i) => i === index ? { ...line, ...patch } : line) } : sequence) }));
+  const addSequence = () => {
+    const id = `sequence-${Date.now().toString(36)}`;
+    setDialogueDraft((current) => ({ ...current, status: "draft", sequences: [...current.sequences, { id, name: "New sequence", trigger: "Manual / future trigger", priority: 1, enabled: false, lines: [{ line: "Write a line…", expression: "hmm" }] }] }));
+    setSelectedSequence(id);
+  };
+  const saveDialogue = async (status: "draft" | "published") => {
+    const invalid = dialogueDraft.sequences.find((sequence) => !sequence.name.trim() || !sequence.lines.length || sequence.lines.some((line) => !line.line.trim() || !line.expression.trim()));
+    if (invalid) { toast.error("Each sequence needs a name and at least one complete dialogue line."); return; }
+    await save({ ...st, custom: st.custom }, "Sticker settings unchanged");
+    try {
+      await adminSaveSetting({ data: { token, key: "dialogue", value: { ...dialogueDraft, status, updatedAt: new Date().toISOString() } } });
+      setDialogueDraft((current) => ({ ...current, status, updatedAt: new Date().toISOString() }));
+      toast.success(status === "published" ? "Dialogue configuration published" : "Dialogue draft saved");
+      await qc.invalidateQueries({ queryKey: ["site-settings"] });
+    } catch (e) { toast.error(e instanceof Error ? e.message : "Could not save dialogue configuration"); }
+  };
 
   const save = async (value: StickerSettings, msg: string) => {
     try {
