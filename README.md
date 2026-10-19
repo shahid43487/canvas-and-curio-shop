@@ -24,3 +24,12 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+
+## Working from GitHub
+
+Start with [Project context](docs/PROJECT_CONTEXT.md), [Database restoration](docs/DATABASE.md), the [schema-only snapshot](drizzle/schema.snapshot.sql), [environment placeholders](.env.example), and [asset inventory](docs/ASSETS.md). Hosted data, secrets and image bytes are not automatically included in a clone.
+
+- Never force-push or rewrite published history (including rebasing, amending or squashing already-pushed commits).
+- Keep the connected branch buildable; pushed commits on that branch sync back to Lovable.
+- Generate future DB migrations through the Lovable migration tool; external tools can prepare SQL for that workflow. Git sync does not apply migrations. Do not edit drizzle/schema.ts or generated migration metadata.
