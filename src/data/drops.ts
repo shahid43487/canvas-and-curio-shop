@@ -24,6 +24,16 @@ export type Slide = {
   rotation?: number | undefined;
   hidden?: boolean | undefined;
   endsAt?: string | undefined;
+  backgroundColor?: string | undefined;
+  mobileBackgroundColor?: string | undefined;
+  stickerX?: number | undefined;
+  stickerY?: number | undefined;
+  mobileStickerX?: number | undefined;
+  mobileStickerY?: number | undefined;
+  imageX?: number | undefined;
+  imageY?: number | undefined;
+  mobileImageX?: number | undefined;
+  mobileImageY?: number | undefined;
 };
 
 export const STICKERS: { id: string; label: string; src: string }[] = [
