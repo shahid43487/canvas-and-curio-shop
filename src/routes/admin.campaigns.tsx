@@ -1,12 +1,12 @@
 import { pageHead } from "@/lib/page-head";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PRESETS, STICKERS, slideStatus, type Preset, type Slide, type HeroLayer } from "@/data/drops";
+import { PRESETS, STICKERS, slideStatus, type Preset, type Slide } from "@/data/drops";
 import { adminSaveSetting } from "@/lib/admin.functions";
 import { useSite } from "@/lib/site";
-import { SlideBody, getDefaultHeroLayers } from "@/components/smol/DropsHero";
+import { SlideBody } from "@/components/smol/DropsHero";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { useAdminToken } from "@/lib/admin-session";
 
@@ -22,11 +22,6 @@ function Campaigns() {
   const [sel, setSel] = useState(0);
   const [dirty, setDirty] = useState(false);
   const [interval, setIntervalSeconds] = useState<number | null>(null);
-  const [canvasView, setCanvasView] = useState<"desktop" | "mobile">("desktop");
-  const [dragging, setDragging] = useState<"sticker" | "image" | "copy" | "buttons" | null>(null);
-  const [dragLayerId, setDragLayerId] = useState<string | null>(null);
-  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
-  const canvasRef = useRef<HTMLDivElement>(null);
   useEffect(() => { if (site && !slides) setSlides(site.slides); }, [site, slides]);
   if (!slides || !site) return <p>Loading…</p>;
 
@@ -38,17 +33,7 @@ function Campaigns() {
     catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
   };
   const s = slides[sel];
-  const setCanvasPosition = (kind: "sticker" | "image" | "copy" | "buttons", e: React.PointerEvent<HTMLElement>) => { const rect = canvasRef.current?.getBoundingClientRect(); if (!rect) return; const x = Math.round(Math.max(0, Math.min(100, (e.clientX - rect.left) / rect.width * 100))); const y = Math.round(Math.max(0, Math.min(100, (e.clientY - rect.top) / rect.height * 100))); if (kind === "copy") patch(canvasView === "mobile" ? { mobileCopyX: x, mobileCopyY: y } : { copyX: x, copyY: y }); else if (kind === "buttons") patch(canvasView === "mobile" ? { mobileButtonsX: x, mobileButtonsY: y } : { buttonsX: x, buttonsY: y }); else if (canvasView === "mobile") patch(kind === "sticker" ? { mobileStickerX: x, mobileStickerY: y } : { mobileImageX: x, mobileImageY: y }); else patch(kind === "sticker" ? { stickerX: x, stickerY: y } : { imageX: x, imageY: y }); };
-  const stickers = [...STICKERS, ...site.stickers.custom];
-  const layers: HeroLayer[] = s?.layers ?? getDefaultHeroLayers();
-  const patchLayer = (id: string, values: Partial<HeroLayer>) => patch({ layers: layers.map((layer) => layer.id === id ? { ...layer, ...values } : layer) });
-  const addLayer = (layer: HeroLayer) => { patch({ layers: [...layers, layer] }); setSelectedLayerId(layer.id); };
-  const dragLayerTo = (id: string, e: React.PointerEvent<HTMLElement>) => {
-    const rect = canvasRef.current?.getBoundingClientRect(); if (!rect) return;
-    const x = Math.round(Math.max(0, Math.min(100, (e.clientX - rect.left) / rect.width * 100)));
-    const y = Math.round(Math.max(0, Math.min(100, (e.clientY - rect.top) / rect.height * 100)));
-    patchLayer(id, canvasView === "mobile" ? { mobileX: x, mobileY: y } : { x, y });
-  };
+  const stickers = [...STICKERS, ...site.stickers.custom].filter((x) => !site.stickers.hidden.includes(x.id) && !site.stickers.inactive.includes(x.id));
 
   return (
     <>
@@ -100,45 +85,8 @@ function Campaigns() {
                 {stickers.map((x) => <button type="button" key={x.id} title={x.label} className={x.id === s.sticker ? "on" : ""} onClick={() => patch({ sticker: x.id })}>{x.src ? <img src={x.src} alt={x.label} /> : x.label}</button>)}
               </span></label>
           </div>
-          <div className="hero-layer-tools">
-            <div className="admin-row">
-              <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `text-${Date.now()}`, kind: "text", text: "Your text", x: 50, y: 35 })}>+ Text layer</button>
-              <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `button-${Date.now()}`, kind: "button", text: "Shop now", href: "/shop", x: 50, y: 78 })}>+ Button layer</button>
-              <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `sticker-${Date.now()}`, kind: "sticker", src: stickers.find(x => x.src)?.src, x: 78, y: 25, width: 18 })}>+ Sticker layer</button>
-              <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `logo-${Date.now()}`, kind: "logo", src: getDefaultHeroLayers()[0]?.src, x: 68, y: 53, width: 30 })}>+ Logo layer</button>
-              <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `decor-${Date.now()}`, kind: "decoration", variant: "spark", text: "✦", x: 50, y: 12, width: 5 })}>+ Decoration</button>
-              <AdminUpload token={token} accept="image/*" label="+ Add media layer" onDone={(url) => addLayer({ id: `image-${Date.now()}`, kind: "image", src: url, x: 75, y: 60, width: 28 })} />
-            </div>
-            <p>Extra layers are independent of the original three presets. Select one to edit it; drag it directly in the preview.</p>
-            {layers.map(layer => <div className="hero-layer-row" key={layer.id}>
-              <button type="button" className={"admin-btn ghost " + (selectedLayerId === layer.id ? "active" : "")} onClick={() => setSelectedLayerId(layer.id)}>{layer.kind}: {layer.text || layer.variant || layer.id}</button>
-              {(layer.kind === "text" || layer.kind === "button") && <input className="admin-input" aria-label="Layer text" value={layer.text ?? ""} onChange={e => patchLayer(layer.id, { text: e.target.value })} />}
-              {(layer.kind === "sticker" || layer.kind === "logo" || layer.kind === "image") && <input className="admin-input" aria-label="Artwork URL" value={layer.src ?? ""} onChange={e => patchLayer(layer.id, { src: e.target.value })} placeholder="Image URL" />}
-              {layer.kind === "decoration" && <select className="admin-input" aria-label="Decoration type" value={layer.variant ?? "spark"} onChange={e => patchLayer(layer.id, { variant: e.target.value, text: ({ badge: "GOOD\\nSTUUF", star: "STUUF", eye: "●", hand: "✌", spark: "✦" } as Record<string,string>)[e.target.value] })}><option value="badge">Good Stuuf badge</option><option value="star">Stuuf star</option><option value="eye">Eye</option><option value="hand">Hand</option><option value="spark">Spark</option></select>}
-              <label>Rotation ° <input className="admin-input" type="number" min="-180" max="180" value={layer.rotation ?? 0} onChange={e => patchLayer(layer.id, { rotation: Number(e.target.value) })} /></label>
-              {layer.kind === "button" && <input className="admin-input" aria-label="Button destination" value={layer.href ?? "/shop"} onChange={e => patchLayer(layer.id, { href: e.target.value })} />}
-              <label>Width % <input className="admin-input" type="number" min="4" max="100" value={layer.width ?? 18} onChange={e => patchLayer(layer.id, { width: Number(e.target.value) })} /></label>
-              <button type="button" className="admin-btn danger" onClick={() => { patch({ layers: layers.filter(x => x.id !== layer.id) }); if (selectedLayerId === layer.id) setSelectedLayerId(null); }}>Remove</button>
-            </div>)}
-          </div>
-          <div className="hero-canvas-toolbar"><div><h2>Hero canvas</h2><p>Drag artwork to position it. Desktop and mobile layouts are edited separately.</p></div><div className="hero-canvas-switch"><button type="button" className={canvasView === "desktop" ? "active" : ""} onClick={() => setCanvasView("desktop")}>Desktop</button><button type="button" className={canvasView === "mobile" ? "active" : ""} onClick={() => setCanvasView("mobile")}>Mobile</button></div></div>
-          <div className="hero-canvas-settings"><label>Background color<input type="color" value={(canvasView === "mobile" ? s.mobileBackgroundColor : s.backgroundColor) ?? "#f5f0e5"} onChange={(e) => patch(canvasView === "mobile" ? { mobileBackgroundColor: e.target.value } : { backgroundColor: e.target.value })}/></label><label>Move element<select className="admin-input" value={dragging ?? "sticker"} onChange={(e) => setDragging(e.target.value as "sticker" | "image")}><option value="sticker">Hero sticker</option><option value="image" disabled={!s.image}>Hero image</option><option value="copy">Hero text block · drag</option><option value="buttons">Hero buttons · drag</option></select></label><button type="button" className="admin-btn ghost" onClick={() => patch(canvasView === "mobile" ? { mobileStickerX: undefined, mobileStickerY: undefined, mobileImageX: undefined, mobileImageY: undefined } : { stickerX: undefined, stickerY: undefined, imageX: undefined, imageY: undefined })}>Reset positions</button></div>
-          <div className={"hero-canvas-shell " + canvasView}><div ref={canvasRef} className={"hero-drag-canvas " + canvasView} style={{ backgroundColor: (canvasView === "mobile" ? s.mobileBackgroundColor : s.backgroundColor) ?? "#f5f0e5", backgroundImage: "radial-gradient(#17213b26 1px, transparent 1px)", backgroundSize: "14px 14px" }} onPointerMove={(e) => { if (dragging && dragging !== "copy") setCanvasPosition(dragging, e); }} onPointerUp={() => setDragging(null)} onPointerCancel={() => setDragging(null)}>
-            <div className="hero-canvas-copy" style={{ left: (canvasView === "mobile" ? s.mobileCopyX ?? s.copyX ?? 6 : s.copyX ?? 6) + "%", top: (canvasView === "mobile" ? s.mobileCopyY ?? s.copyY ?? 12 : s.copyY ?? 12) + "%", pointerEvents: "auto", cursor: "move" }} onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("copy"); }} onPointerMove={e => { if (dragging === "copy" && e.buttons > 0) setCanvasPosition("copy", e); }} onPointerUp={() => setDragging(null)}><span>{s.eyebrow}</span><h2>{s.title}<br/><em>{s.accent}</em></h2><p>{s.sub}</p></div>
-            <button type="button" className="hero-canvas-object hero-canvas-cta" style={{ left: (canvasView === "mobile" ? s.mobileButtonsX ?? s.buttonsX ?? 6 : s.buttonsX ?? 6) + "%", top: (canvasView === "mobile" ? s.mobileButtonsY ?? s.buttonsY ?? 68 : s.buttonsY ?? 68) + "%" }} onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("buttons"); }} onPointerMove={e => { if (dragging === "buttons" && e.buttons > 0) setCanvasPosition("buttons", e); }} onPointerUp={() => setDragging(null)} onPointerCancel={() => setDragging(null)}>{s.cta.label} → <span>Buttons · drag</span></button>
-            {(() => { const sticker = stickers.find((x) => x.id === s.sticker); const x = canvasView === "mobile" ? s.mobileStickerX ?? s.stickerX ?? 78 : s.stickerX ?? 78; const y = canvasView === "mobile" ? s.mobileStickerY ?? s.stickerY ?? 22 : s.stickerY ?? 22; return <button type="button" className="hero-canvas-object sticker" style={{ left: x + "%", top: y + "%" }} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("sticker"); }} aria-label="Drag hero sticker">{sticker?.src ? <img src={sticker.src} alt="" draggable={false}/> : <b>{s.sticker}</b>}<span>Sticker · drag</span></button>; })()}
-            {layers.map(layer => <button key={layer.id} type="button" className={"hero-canvas-object hero-canvas-layer " + layer.kind + (selectedLayerId === layer.id ? " selected" : "")} style={{ left: (canvasView === "mobile" ? layer.mobileX ?? layer.x : layer.x) + "%", top: (canvasView === "mobile" ? layer.mobileY ?? layer.y : layer.y) + "%", width: layer.width ? layer.width + "%" : undefined, transform: `translate(-50%, -50%) rotate(${layer.rotation ?? 0}deg)` }} onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); setSelectedLayerId(layer.id); setDragLayerId(layer.id); }} onPointerMove={e => { if (dragLayerId === layer.id && e.buttons > 0) dragLayerTo(layer.id, e); }} onPointerUp={() => setDragLayerId(null)} onPointerCancel={() => setDragLayerId(null)} aria-label={"Drag " + layer.kind}>
-              {(layer.kind === "logo" || layer.kind === "image" || layer.kind === "sticker") && layer.src ? <img src={layer.src} alt="" draggable={false} /> : null}
-              {layer.kind === "decoration" && <span className={`canvas-decoration ${layer.variant ?? ""}`}>{layer.text}</span>}
-              {(layer.kind === "text" || layer.kind === "button") && <b>{layer.text}</b>}
-              <span>{layer.kind} · drag</span>
-            </button>)}
-            {s.image && <button type="button" className="hero-canvas-object image" style={{ left: (canvasView === "mobile" ? s.mobileImageX ?? s.imageX ?? 76 : s.imageX ?? 76) + "%", top: (canvasView === "mobile" ? s.mobileImageY ?? s.imageY ?? 60 : s.imageY ?? 60) + "%" }} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("image"); }} aria-label="Drag hero image"><img src={s.image} alt="" draggable={false}/><span>Image · drag</span></button>}
-          </div></div>
-          <section className="hero-live-preview">
-            <div className="hero-canvas-toolbar"><div><h2>Live storefront preview</h2><p>This renders the actual homepage hero component using the current unsaved edits.</p></div><span className="hero-preview-tag">LIVE · UNSAVED CHANGES INCLUDED</span></div>
-            <div className="hero-live-preview-frame"><SlideBody s={s} extra={site.stickers.custom} /></div>
-          </section>
+          <h2>Preview</h2>
+          <div className="admin-preview"><SlideBody s={s} extra={site.stickers.custom} /></div>
         </section>
       )}
     </>

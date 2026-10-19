@@ -7,7 +7,6 @@ const BUILT_IN = Object.entries(PNGS).map(([path, src]) => {
 
 // ponytail: drops live in code until a campaigns table exists; edit this file to publish.
 export type Preset = "split" | "chaos" | "editorial" | "prank";
-export type HeroLayer = { id: string; kind: "sticker" | "image" | "text" | "button" | "logo" | "decoration"; src?: string; text?: string; x: number; y: number; width?: number; rotation?: number; href?: string; variant?: string; mobileX?: number; mobileY?: number };
 export type Slide = {
   id: string;
   eyebrow: string;
@@ -35,15 +34,6 @@ export type Slide = {
   imageY?: number | undefined;
   mobileImageX?: number | undefined;
   mobileImageY?: number | undefined;
-  layers?: HeroLayer[] | undefined;
-  copyX?: number | undefined;
-  copyY?: number | undefined;
-  mobileCopyX?: number | undefined;
-  mobileCopyY?: number | undefined;
-  buttonsX?: number | undefined;
-  buttonsY?: number | undefined;
-  mobileButtonsX?: number | undefined;
-  mobileButtonsY?: number | undefined;
 };
 
 export const STICKERS: { id: string; label: string; src: string }[] = [
