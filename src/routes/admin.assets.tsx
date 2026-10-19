@@ -56,7 +56,28 @@ function Assets() {
   const [selectedLineIndex, setSelectedLineIndex] = useState(0);
   const [dialogueStickerSearch, setDialogueStickerSearch] = useState("");
   useEffect(() => {
-    if (site?.dialogue) setDialogueDraft({ ...site.dialogue, status: site.dialogue.draftSequences ? "draft" : site.dialogue.status, sequences: site.dialogue.draftSequences ?? site.dialogue.sequences });
+    if (!site?.dialogue) return;
+    const fallbackSequences: DialogueSequence[] = [
+      { id: "grandpa-popup", name: "Visitor popup", trigger: "Visitor popup after 7 seconds", priority: 0, enabled: true, lines: [
+        { line: "Cart ko dekha? It is feeling emotionally empty.", expression: "hmm", stickerId: "cart-fierce-character" },
+        { line: "Tiny object, giant explanation. Excellent choice.", expression: "laugh", stickerId: "shop-character" },
+      ] },
+    ];
+    const source = site.dialogue.draftSequences ?? site.dialogue.sequences;
+    const sequences = [...source, ...fallbackSequences.filter((fallback) => !source.some((sequence) => sequence.id === fallback.id))]
+      .map((sequence) => ({
+        ...sequence,
+        lines: sequence.lines.map((line) => ({
+          ...line,
+          stickerId: line.stickerId ?? (sequence.id === "grandpa-popup" ? "shop-character" : "cart-fierce-character"),
+        })),
+      }));
+    const neededSpeakerMigration = source.some((sequence) => sequence.lines.some((line) => !line.stickerId));
+    setDialogueDraft({
+      ...site.dialogue,
+      status: site.dialogue.draftSequences || neededSpeakerMigration ? "draft" : site.dialogue.status,
+      sequences,
+    });
   }, [site?.dialogue]);
   if (!site) return <p>Loading…</p>;
   const st = site.stickers;
