@@ -69,7 +69,6 @@ function Assets() {
   const saveDialogue = async (status: "draft" | "published") => {
     const invalid = dialogueDraft.sequences.find((sequence) => !sequence.name.trim() || !sequence.lines.length || sequence.lines.some((line) => !line.line.trim() || !line.expression.trim()));
     if (invalid) { toast.error("Each sequence needs a name and at least one complete dialogue line."); return; }
-    await save({ ...st, custom: st.custom }, "Sticker settings unchanged");
     try {
       await adminSaveSetting({ data: { token, key: "dialogue", value: { ...dialogueDraft, status, updatedAt: new Date().toISOString() } } });
       setDialogueDraft((current) => ({ ...current, status, updatedAt: new Date().toISOString() }));
