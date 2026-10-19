@@ -54,7 +54,7 @@ function Assets() {
   const [selectedSequence, setSelectedSequence] = useState("cart-idle");
   const [previewIndex, setPreviewIndex] = useState(0);
   useEffect(() => {
-    if (site?.dialogue) setDialogueDraft(site.dialogue);
+    if (site?.dialogue) setDialogueDraft({ ...site.dialogue, status: site.dialogue.draftSequences ? "draft" : site.dialogue.status, sequences: site.dialogue.draftSequences ?? site.dialogue.sequences });
   }, [site?.dialogue]);
   if (!site) return <p>Loading…</p>;
   const st = site.stickers;
@@ -70,8 +70,13 @@ function Assets() {
     const invalid = dialogueDraft.sequences.find((sequence) => !sequence.name.trim() || !sequence.lines.length || sequence.lines.some((line) => !line.line.trim() || !line.expression.trim()));
     if (invalid) { toast.error("Each sequence needs a name and at least one complete dialogue line."); return; }
     try {
-      await adminSaveSetting({ data: { token, key: "dialogue", value: { ...dialogueDraft, status, updatedAt: new Date().toISOString() } } });
-      setDialogueDraft((current) => ({ ...current, status, updatedAt: new Date().toISOString() }));
+      const updatedAt = new Date().toISOString();
+      const published = site?.dialogue?.sequences ?? [];
+      const value: DialogueSettings = status === "draft"
+        ? { status: site?.dialogue?.status === "published" ? "published" : "draft", sequences: published, draftSequences: dialogueDraft.sequences, updatedAt }
+        : { status: "published", sequences: dialogueDraft.sequences, updatedAt };
+      await adminSaveSetting({ data: { token, key: "dialogue", value } });
+      setDialogueDraft({ status, sequences: dialogueDraft.sequences, updatedAt });
       toast.success(status === "published" ? "Dialogue configuration published" : "Dialogue draft saved");
       await qc.invalidateQueries({ queryKey: ["site-settings"] });
     } catch (e) { toast.error(e instanceof Error ? e.message : "Could not save dialogue configuration"); }
@@ -175,7 +180,7 @@ function Assets() {
             <div className="dialogue-preview"><b>Preview</b><p lang="bn">{selected.lines[previewIndex]?.line ?? "No line selected"}</p><small>{selected.lines[previewIndex]?.expression ?? "—"} · line {Math.min(previewIndex + 1, selected.lines.length)} of {selected.lines.length}</small><div className="sticker-card-actions"><button type="button" className="admin-btn ghost" onClick={() => setPreviewIndex((index) => Math.max(0, index - 1))} disabled={previewIndex === 0}>Previous line</button><button type="button" className="admin-btn ghost" onClick={() => setPreviewIndex((index) => Math.min(selected.lines.length - 1, index + 1))} disabled={previewIndex >= selected.lines.length - 1}>Next line</button></div></div>
             <div className="sticker-card-actions"><button type="button" className="admin-btn ghost" onClick={() => { if (confirm("Delete this sequence from the draft?")) { setDialogueDraft((current) => ({ ...current, status: "draft", sequences: current.sequences.filter((sequence) => sequence.id !== selected.id) })); setSelectedSequence(dialogueDraft.sequences.find((sequence) => sequence.id !== selected.id)?.id ?? ""); } }} disabled={dialogueDraft.sequences.length <= 1}>Delete sequence</button><button type="button" className="admin-btn ghost" onClick={() => void saveDialogue("draft")}>Save draft</button><button type="button" className="admin-btn" onClick={() => void saveDialogue("published")}>Publish configuration</button></div>
           </div> : <p>No sequences yet. Add one to start editing.</p>}
-          <p><small>Publishing saves this configuration to site settings; the live dialogue scheduler remains unchanged until runtime integration is completed.</small></p>
+          <p><small>Published sequences are used by the cart idle reactions and checkout payment / validation reactions. Drafts remain separate and never affect customers.</small></p>
         </section>
       ) : (
         <>
