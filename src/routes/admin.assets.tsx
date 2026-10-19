@@ -199,7 +199,7 @@ function Assets() {
                     </div>
                     <div className="sticker-card-actions">
                       <button type="button" className="admin-btn ghost" onClick={() => void setStatus(entry.id, entry.status === "hidden" ? "active" : "hidden")}>{entry.status === "hidden" ? "Unhide" : "Hide"}</button>
-                      <button type="button" className="admin-btn ghost" onClick={() => void setStatus(entry.id, entry.status === "active" ? "inactive" : "active")}>{entry.status === "inactive" ? "Activate" : "Deactivate"}</button>
+                      <button type="button" className="admin-btn ghost" onClick={() => void setStatus(entry.id, entry.status === "active" ? "inactive" : "active")}>{entry.status === "inactive" ? "Activate" : entry.status === "hidden" ? "Set active" : "Deactivate"}</button>
                     </div>
                   </figure>
                 );
