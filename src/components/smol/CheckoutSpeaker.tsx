@@ -4,9 +4,12 @@ import { createPortal } from "react-dom";
 import type { Dialogue } from "@/hooks/use-dialogue";
 import character from "@/assets/shop-character.png";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
+import { resolveStickerSrc, useSite } from "@/lib/site";
 
 export function CheckoutSpeaker({ dialogue }: { dialogue: Dialogue }) {
   const [ready, setReady] = useState(false);
+  const site = useSite();
+  const assignedStickerSrc = resolveStickerSrc(dialogue.stickerId, site?.stickers.custom);
   const ref = useRef<HTMLElement | null>(null);
   useEffect(() => setReady(true), []);
   useEffect(() => {
@@ -37,7 +40,7 @@ export function CheckoutSpeaker({ dialogue }: { dialogue: Dialogue }) {
   return createPortal(
     <aside ref={ref} className="checkout-speaker" aria-label="Checkout character">
       <p key={dialogue.line} className="checkout-speaker-bubble" lang="bn" aria-live="polite" aria-atomic="true">{dialogue.line}</p>
-      <img src={["facepalm", "nervous", "unimpressed"].includes(dialogue.expression) ? assetUrl(fierceCharacter) : character} alt="Shop character reacting to your checkout" width={140} height={140} />
+      <img src={assignedStickerSrc || (["facepalm", "nervous", "unimpressed"].includes(dialogue.expression) ? assetUrl(fierceCharacter) : character)} alt={dialogue.stickerId ? "Assigned dialogue sticker" : "Shop character reacting to your checkout"} width={140} height={140} />
     </aside>, document.body,
   );
 }
