@@ -1623,3 +1623,5 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
   .drops-slide-body > .hero-ctas { max-width:90%; flex-direction:row; flex-wrap:wrap; }
   .drops-slide-body > .drop-slide-image { width:35%; }
 }
+
+@media(max-width:640px) { .drops-slide-body .drop-extra-layer { left:var(--layer-mobile-x, var(--hero-layer-x)) !important; top:var(--layer-mobile-y, var(--hero-layer-y)) !important; } }
