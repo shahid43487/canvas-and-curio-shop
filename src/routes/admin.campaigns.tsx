@@ -128,6 +128,10 @@ function Campaigns() {
             </button>)}
             {s.image && <button type="button" className="hero-canvas-object image" style={{ left: (canvasView === "mobile" ? s.mobileImageX ?? s.imageX ?? 76 : s.imageX ?? 76) + "%", top: (canvasView === "mobile" ? s.mobileImageY ?? s.imageY ?? 60 : s.imageY ?? 60) + "%" }} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("image"); }} aria-label="Drag hero image"><img src={s.image} alt="" draggable={false}/><span>Image · drag</span></button>}
           </div></div>
+          <section className="hero-live-preview">
+            <div className="hero-canvas-toolbar"><div><h2>Live storefront preview</h2><p>This renders the actual homepage hero component using the current unsaved edits.</p></div><span className="hero-preview-tag">LIVE · UNSAVED CHANGES INCLUDED</span></div>
+            <div className="hero-live-preview-frame"><SlideBody s={s} extra={site.stickers.custom} /></div>
+          </section>
         </section>
       )}
     </>
