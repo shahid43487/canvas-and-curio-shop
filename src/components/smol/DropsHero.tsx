@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import gsap from "gsap";
-import { liveSlides, SLIDES, stickerSrc, type Slide } from "@/data/drops";
+import { liveSlides, SLIDES, stickerSrc, type Slide, type HeroLayer } from "@/data/drops";
 import { useSite } from "@/lib/site";
 
 // Rotates live STUUF DROPS slides (edited in /admin/campaigns) inside the hero markup.
@@ -44,6 +44,12 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
       </div>
       {s.image && <img src={s.image} alt="" className="drop-slide-image" style={{ rotate: `${s.rotation ?? 0}deg`, left: `${s.imageX ?? 76}%`, top: `${s.imageY ?? 60}%` }} />}
       {s.badge && <span className="drop-badge">{s.badge}</span>}
+      {(s.layers ?? []).map((layer: HeroLayer) => {
+        const style: React.CSSProperties = { left: `${layer.x}%`, top: `${layer.y}%`, width: layer.width ? `${layer.width}%` : undefined, transform: `translate(-50%, -50%) rotate(${layer.rotation ?? 0}deg)` };
+        if (layer.kind === "image" || layer.kind === "sticker") return layer.src ? <img key={layer.id} src={layer.src} alt="" className={layer.kind === "sticker" ? "drop-sticker drop-extra-layer" : "drop-slide-image drop-extra-layer"} style={style} /> : null;
+        if (layer.kind === "button") return <Link key={layer.id} to={(layer.href || "/shop") as "/shop"} className="btn-primary drop-extra-layer" style={style}>{layer.text || "Shop now"}</Link>;
+        return <span key={layer.id} className="drop-extra-text drop-extra-layer" style={style}>{layer.text || "Text"}</span>;
+      })}
       {dots && <div className="drop-dots">{Array.from({ length: dots.n }, (_, n) => <button key={n} aria-label={`Slide ${n + 1}`} className={n === dots.i ? "on" : ""} onClick={() => dots.set(n)} />)}</div>}
     </div>
   );
