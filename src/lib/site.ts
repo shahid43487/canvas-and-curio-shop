@@ -13,6 +13,9 @@ export type SoundSettings = {
 };
 export type CustomSticker = { id: string; label: string; src: string; category?: string; tags?: string[] };
 export type StickerSettings = { custom: CustomSticker[]; hidden: string[]; inactive: string[] };
+export type DialogueLine = { line: string; expression: string; delayMs?: number };
+export type DialogueSequence = { id: string; name: string; trigger: string; priority: 0 | 1 | 2; enabled: boolean; lines: DialogueLine[] };
+export type DialogueSettings = { status: "draft" | "published"; sequences: DialogueSequence[]; updatedAt?: string };
 
 export const DEFAULT_SOCIALS: Socials = { instagram: "https://instagram.com", facebook: "https://facebook.com", tiktok: "https://tiktok.com", youtube: "", email: "" };
 export const DEFAULT_SOUND: SoundSettings = {
@@ -21,7 +24,7 @@ export const DEFAULT_SOUND: SoundSettings = {
   library: [],
 };
 
-export type Site = { slides: Slide[]; slideInterval: number; socials: Socials; sound: SoundSettings; stickers: StickerSettings };
+export type Site = { slides: Slide[]; slideInterval: number; socials: Socials; sound: SoundSettings; stickers: StickerSettings; dialogue: DialogueSettings | null };
 
 export const siteQuery = queryOptions({
   queryKey: ["site-settings"],
@@ -32,6 +35,11 @@ export const siteQuery = queryOptions({
       slideInterval: typeof raw.slideInterval === "number" ? Math.max(2, Math.min(15, raw.slideInterval)) : 6,
       socials: { ...DEFAULT_SOCIALS, ...(raw.socials as Partial<Socials>) },
       sound: { ...DEFAULT_SOUND, ...(raw.sound as Partial<SoundSettings>), music: { ...DEFAULT_SOUND.music, ...((raw.sound as SoundSettings | undefined)?.music) } },
+      dialogue: (() => {
+        const value = raw.dialogue as DialogueSettings | undefined;
+        if (!value || !Array.isArray(value.sequences)) return null;
+        return { status: value.status === "published" ? "published" : "draft", sequences: value.sequences };
+      })(),
       stickers: (() => {
         const stickerSettings = (raw.stickers ?? {}) as Partial<StickerSettings>;
         return {
