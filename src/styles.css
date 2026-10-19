@@ -1282,9 +1282,9 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 .admin-row { display: flex; align-items: center; gap: .75rem; padding: .4rem 0; }
 
 /* ---------- Visitor sound toggle + editable slide extras ---------- */
-.sound-bar { position: fixed; left: 1rem; bottom: 1rem; z-index: 60; display: flex; align-items: center; gap: .5rem; padding: .5rem .9rem; border-radius: 999px; background: #121316; color: #f5f2eb; font: 700 .8rem "Space Grotesk", system-ui, sans-serif; box-shadow: 0 4px 0 #000; }
+.sound-bar { position: fixed; left: 1rem; bottom: 1rem; z-index: 60; display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; padding: 0; border: 1px solid rgb(255 255 255 / 18%); border-radius: 50%; background: #121316; color: #f5f2eb; cursor: pointer; box-shadow: 0 3px 0 #000; transition: width .15s ease, height .15s ease, transform .15s ease; }
 .sound-bar[aria-pressed="true"] { background: #ff4438; }
-.sound-bar small { opacity: .8; font-weight: 500; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 640px) { .sound-bar { left: .5rem; bottom: .5rem; width: 30px; height: 30px; box-shadow: 0 2px 0 #000; } .sound-bar svg { width: 14px; height: 14px; } }
 .drop-slide-image { width: min(320px, 70%); margin-top: 1rem; border-radius: 16px; border: 3px solid #121316; }
 .drop-badge { display: inline-block; margin-top: .75rem; background: #ff4438; color: #fff; font: 800 .85rem "JetBrains Mono", monospace; padding: .3rem .7rem; border-radius: 8px; transform: rotate(-4deg); }
 /* admin editors */
