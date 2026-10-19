@@ -56,6 +56,10 @@ export function CartSheet() {
   }, [totalItems, say]);
 
   useEffect(() => {
+    window.dispatchEvent(new CustomEvent("smol-cart-visibility", { detail: { open: isOpen } }));
+  }, [isOpen]);
+
+  useEffect(() => {
     if (!isOpen) { wasOpen.current = false; return; }
     const justOpened = !wasOpen.current;
     wasOpen.current = true;
