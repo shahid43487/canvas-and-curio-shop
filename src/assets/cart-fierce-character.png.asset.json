@@ -1,11 +1,11 @@
 {
+  "version": 1,
   "asset_id": "fb73bc53-e1e7-4508-a52d-751d92cbd244",
-  "content_type": "image/png",
-  "created_at": "2026-10-16T11:50:28Z",
-  "original_filename": "cart-fierce-character.png",
-  "project_id": "0d12e285-b4d0-496f-bb71-0e3d04366ffc",
-  "r2_key": "a/v1/0d12e285-b4d0-496f-bb71-0e3d04366ffc/fb73bc53-e1e7-4508-a52d-751d92cbd244/cart-fierce-character.png",
-  "size": 1178678,
+  "project_id": "ac3700f2-2a43-472b-8b81-7c167cbcd2d8",
   "url": "/__l5e/assets-v1/fb73bc53-e1e7-4508-a52d-751d92cbd244/cart-fierce-character.png",
-  "version": 1
+  "r2_key": "a/v1/ac3700f2-2a43-472b-8b81-7c167cbcd2d8/fb73bc53-e1e7-4508-a52d-751d92cbd244/cart-fierce-character.png",
+  "original_filename": "cart-fierce-character.png",
+  "size": 1178678,
+  "content_type": "image/png",
+  "created_at": "2026-10-16T11:50:28Z"
 }
