@@ -102,7 +102,7 @@ function Checkout() {
     if (isSecretOrder) setValue("payment_method", "bkash");
   }, [isSecretOrder, setValue]);
 
-  const { dialogue, say, saySequence } = useDialogue({ line: "এইবার আর পেছনে তাকাইয়েন না।", expression: "shush" });
+  const { dialogue, say, saySequence, configuredSequence } = useDialogue({ line: "এইবার আর পেছনে তাকাইয়েন না।", expression: "shush" });
   const idle = useRef<number | undefined>(undefined);
   const idleIndex = useRef(0);
   const poke = useCallback(() => {
@@ -124,10 +124,10 @@ function Checkout() {
   const prevPay = useRef(paymentMethod);
   useEffect(() => {
     if (prevPay.current === paymentMethod) return;
-    if (paymentMethod === "bkash") saySequence([{ line: "ওহ! আগেই মিটায় ফেললেন?", expression: "shocked" }, { line: "বাহ, বিশ্বাস আছে দেখতেছি!", expression: "laugh" }]);
-    else saySequence([{ line: "আগে দিতে চাইলেন, এখন আবার পরে?", expression: "hmm" }, { line: "সিদ্ধান্তটা একটু নড়বড়ে মনে হইতেছে।", expression: "unimpressed" }]);
+    if (paymentMethod === "bkash") configuredSequence("checkout-payment", [{ line: "ওহ! আগেই মিটায় ফেললেন?", expression: "shocked" }, { line: "বাহ, বিশ্বাস আছে দেখতেছি!", expression: "laugh" }]);
+    else configuredSequence("checkout-payment", [{ line: "আগে দিতে চাইলেন, এখন আবার পরে?", expression: "hmm" }, { line: "সিদ্ধান্তটা একটু নড়বড়ে মনে হইতেছে।", expression: "unimpressed" }]);
     prevPay.current = paymentMethod;
-  }, [paymentMethod, say]);
+  }, [paymentMethod, say, configuredSequence]);
 
   if (items.length === 0) {
     return (
@@ -194,7 +194,7 @@ function Checkout() {
           <img src={assetUrl(logo)} alt="" className="checkout-floating-logo" width={320} height={224} />
         </header>
         <div className="checkout-layout">
-          <form onSubmit={handleSubmit(onSubmit, () => saySequence([{ line: "ভাই, কিছু তথ্য তো লাগবো।", expression: "nervous" }, { line: "নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?", expression: "facepalm" }], 2))} className="checkout-form" onInput={poke} onClick={poke}>
+          <form onSubmit={handleSubmit(onSubmit, () => configuredSequence("checkout-error", [{ line: "ভাই, কিছু তথ্য তো লাগবো।", expression: "nervous" }, { line: "নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?", expression: "facepalm" }], 2))} className="checkout-form" onInput={poke} onClick={poke}>
             <section className="checkout-section">
               <h2><span>Shipping deets</span></h2>
               <div className="form-grid">
