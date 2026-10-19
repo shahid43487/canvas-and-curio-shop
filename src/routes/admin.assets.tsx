@@ -55,6 +55,8 @@ function Assets() {
   const [previewIndex, setPreviewIndex] = useState(0);
   const [selectedLineIndex, setSelectedLineIndex] = useState(0);
   const [dialogueStickerSearch, setDialogueStickerSearch] = useState("");
+  const [stickerLibraryOpen, setStickerLibraryOpen] = useState(false);
+  const [expandedDialogueLines, setExpandedDialogueLines] = useState<Record<number, boolean>>({});
   useEffect(() => {
     if (!site?.dialogue) return;
     const fallbackSequences: DialogueSequence[] = [
@@ -186,33 +188,23 @@ function Assets() {
             <div><p className="sticker-eyebrow">SMOL STUUF / CONTROL ROOM</p><h2>Sticker System</h2><p>Choose a sticker, assign speakers line-by-line, and control exactly where and when each sequence runs.</p></div>
             <div className="sticker-workspace-actions"><span className={`sticker-status ${dialogueDraft.status === "published" ? "active" : "inactive"}`}>{dialogueDraft.status === "published" ? "Live configuration" : "Draft changes"}</span><button type="button" className="admin-btn ghost" onClick={() => void saveDialogue("draft")}>Save draft</button><button type="button" className="admin-btn sticker-publish" onClick={() => void saveDialogue("published")}>Publish changes</button></div>
           </header>
-          <div className="sticker-workspace-grid">
-            <aside className="sticker-workspace-column sticker-picker-column">
-              <div className="sticker-column-head"><div><h3>1. Sticker library</h3><p>{allocatableStickers.length} available speakers</p></div><button type="button" className="admin-btn ghost" onClick={() => setTab("library")}>Manage library</button></div>
-              <label className="sticker-search">Find a sticker<input className="admin-input" value={dialogueStickerSearch} onChange={(event) => setDialogueStickerSearch(event.target.value)} placeholder="Search names or tags…" /></label>
-              <p className="sticker-instruction">Select a dialogue line on the right, then click any sticker here to assign it as the speaker.</p>
-              <div className="sticker-picker-grid">
-                {allocatableStickers.filter((entry) => [entry.label, entry.id, ...entry.tags].join(" ").toLowerCase().includes(dialogueStickerSearch.toLowerCase())).map((entry) => {
-                  const assigned = selected?.lines[selectedLineIndex]?.stickerId === entry.id;
-                  return <button type="button" key={entry.id} className={`sticker-picker-card ${assigned ? "is-assigned" : ""}`} aria-pressed={assigned} onClick={() => selected && updateLine(selected.id, selectedLineIndex, { stickerId: entry.id })}>
-                    <span className="sticker-picker-image"><img src={entry.src} alt="" loading="lazy" /></span><b>{entry.label}</b><small>{entry.isBuiltIn ? "Built-in" : "Custom upload"}</small>{assigned && <span className="sticker-assigned-mark">Assigned</span>}
-                  </button>;
-                })}
-              </div>
-              <div className="sticker-unassign"><button type="button" className="admin-btn ghost" onClick={() => selected && updateLine(selected.id, selectedLineIndex, { stickerId: undefined })}>Clear speaker assignment</button></div>
-            </aside>
-            <aside className="sticker-workspace-column sticker-sequence-column">
+          <div className="sticker-library-float">
+            <button type="button" className={`sticker-library-orb ${stickerLibraryOpen ? "open" : ""}`} aria-label={stickerLibraryOpen ? "Close sticker library" : "Open sticker library"} aria-expanded={stickerLibraryOpen} onClick={() => setStickerLibraryOpen((open) => !open)}><icon name={stickerLibraryOpen ? "x" : "images"} size="xl" /><span>Library</span></button>
+            {stickerLibraryOpen && <div className="sticker-library-popover">{library}</div>}
+          </div>
+          <div className="sticker-workspace-grid sticker-workspace-grid-merged">
+            <div className="sticker-sequence-strip">
               <div className="sticker-column-head"><div><h3>2. Locations & sequences</h3><p>Choose which interaction to edit</p></div><button type="button" className="admin-btn ghost" onClick={addSequence}>+ New</button></div>
-              <label className="sticker-search">Active sequence<select className="admin-input" value={selected?.id ?? ""} onChange={(event) => { setSelectedSequence(event.target.value); setPreviewIndex(0); setSelectedLineIndex(0); }}>{dialogueDraft.sequences.map((sequence) => <option key={sequence.id} value={sequence.id}>{sequence.name}</option>)}</select></label>
+              <label className="sticker-search">Active sequence<select className="admin-input" value={selected?.id ?? ""} onChange={(event) => { setSelectedSequence(event.target.value); setPreviewIndex(0); setSelectedLineIndex(0); setExpandedDialogueLines({}); }}>{dialogueDraft.sequences.map((sequence) => <option key={sequence.id} value={sequence.id}>{sequence.name}</option>)}</select></label>
               <div className="sticker-sequence-list">
-                {dialogueDraft.sequences.map((sequence) => <button type="button" key={sequence.id} className={`sticker-sequence-card ${sequence.id === selected?.id ? "selected" : ""}`} onClick={() => { setSelectedSequence(sequence.id); setPreviewIndex(0); setSelectedLineIndex(0); }}>
+                {dialogueDraft.sequences.map((sequence) => <button type="button" key={sequence.id} className={`sticker-sequence-card ${sequence.id === selected?.id ? "selected" : ""}`} onClick={() => { setSelectedSequence(sequence.id); setPreviewIndex(0); setSelectedLineIndex(0); setExpandedDialogueLines({}); }}>
                   <span className="sticker-sequence-icon">{sequence.id.startsWith("cart") ? "🛒" : sequence.id.startsWith("checkout") ? "✓" : "✳"}</span><span className="sticker-sequence-info"><b>{sequence.name}</b><small>{sequence.trigger}</small><small>{sequence.lines.length} dialogue lines · priority {sequence.priority}</small></span><span className={`sticker-mini-status ${sequence.enabled ? "on" : ""}`}>{sequence.enabled ? "Enabled" : "Off"}</span>
                 </button>)}
               </div>
               <div className="sticker-location-note"><b>Website locations</b><p>Cart · Checkout · Visitor popup</p><small>Trigger text describes the intended event; runtime behaviour depends on the supported location.</small></div>
               <div className="sticker-sequence-summary"><span>Sequences</span><b>{dialogueDraft.sequences.length}</b><span>Enabled</span><b>{dialogueDraft.sequences.filter((sequence) => sequence.enabled).length}</b><span>Lines</span><b>{dialogueDraft.sequences.reduce((total, sequence) => total + sequence.lines.length, 0)}</b></div>
-            </aside>
-            <section className="sticker-workspace-column sticker-detail-column">
+            </div>
+            <section className="sticker-workspace-column sticker-detail-column sticker-detail-merged">
               {selected ? <>
                 <div className="sticker-column-head"><div><p className="sticker-eyebrow">3. SEQUENCE EDITOR</p><h3>Dialogue & timing</h3><p>Every line has its own speaker sticker and display timing.</p></div><span className={`sticker-status ${selected.enabled ? "active" : "inactive"}`}>{selected.enabled ? "Enabled" : "Disabled"}</span></div>
                 <div className="sticker-sequence-settings">
@@ -225,15 +217,15 @@ function Assets() {
                   {selected.lines.map((line, index) => {
                     const speakerSticker = allocatableStickers.find((entry) => entry.id === line.stickerId);
                     return <article key={index} className={`sticker-dialogue-line ${selectedLineIndex === index ? "selected" : ""}`}>
-                      <button type="button" className="sticker-line-select" onClick={() => { setSelectedLineIndex(index); setPreviewIndex(index); }} aria-pressed={selectedLineIndex === index}>
+                      <button type="button" className="sticker-line-select" onClick={() => { setSelectedLineIndex(index); setPreviewIndex(index); setExpandedDialogueLines((current) => ({ ...current, [index]: !(current[index] ?? index === selectedLineIndex) })); }} aria-expanded={expandedDialogueLines[index] ?? index === selectedLineIndex} aria-pressed={selectedLineIndex === index}>
                         <span className="sticker-line-number">{index + 1}</span><span className="sticker-line-thumb">{speakerSticker?.src ? <img src={speakerSticker.src} alt="" /> : <span>?</span>}</span><span className="sticker-line-identity"><b>{speakerSticker?.label ?? "No sticker assigned"}</b><small>{speakerSticker ? "Speaker assigned" : "Choose a speaker from library"}</small></span><span className="sticker-line-select-indicator">{selectedLineIndex === index ? "Editing" : "Edit"}</span>
                       </button>
-                      <div className="sticker-line-edit-fields">
+                      {(expandedDialogueLines[index] ?? index === selectedLineIndex) && <div className="sticker-line-edit-fields">
                         <label>Dialogue text<textarea className="admin-input" rows={2} value={line.line} onFocus={() => { setSelectedLineIndex(index); setPreviewIndex(index); }} onChange={(event) => updateLine(selected.id, index, { line: event.target.value })} placeholder="Write the dialogue spoken by this sticker…" /></label>
                         <div className="sticker-settings-row"><label>Expression<input className="admin-input" value={line.expression} onFocus={() => setSelectedLineIndex(index)} onChange={(event) => updateLine(selected.id, index, { expression: event.target.value })} /></label><label>Extra pause (seconds)<input className="admin-input" type="number" min={0} max={120} step={0.5} value={(line.delayMs ?? 0) / 1000} onFocus={() => setSelectedLineIndex(index)} onChange={(event) => updateLine(selected.id, index, { delayMs: Math.max(0, Math.min(120000, (Number(event.target.value) || 0) * 1000)) })} /></label></div>
                         <label>Speaker sticker<select className="admin-input" value={line.stickerId ?? ""} onFocus={() => setSelectedLineIndex(index)} onChange={(event) => updateLine(selected.id, index, { stickerId: event.target.value || undefined })}><option value="">Use default speaker</option>{allocatableStickers.map((entry) => <option key={entry.id} value={entry.id}>{entry.label}</option>)}</select></label>
                         <div className="sticker-line-actions"><button type="button" className="admin-btn ghost" disabled={index === 0} onClick={() => { const lines = [...selected.lines]; [lines[index - 1], lines[index]] = [lines[index], lines[index - 1]]; updateSequence(selected.id, { lines }); setSelectedLineIndex(index - 1); setPreviewIndex(index - 1); }}>↑ Move up</button><button type="button" className="admin-btn ghost" disabled={index === selected.lines.length - 1} onClick={() => { const lines = [...selected.lines]; [lines[index + 1], lines[index]] = [lines[index], lines[index + 1]]; updateSequence(selected.id, { lines }); setSelectedLineIndex(index + 1); setPreviewIndex(index + 1); }}>↓ Move down</button><button type="button" className="admin-btn ghost" disabled={selected.lines.length <= 1} onClick={() => { updateSequence(selected.id, { lines: selected.lines.filter((_, i) => i !== index) }); setSelectedLineIndex(Math.max(0, Math.min(index, selected.lines.length - 2))); setPreviewIndex(Math.max(0, Math.min(index, selected.lines.length - 2))); }}>Remove</button></div>
-                      </div>
+                      </div>}
                     </article>;
                   })}
                 </div>
