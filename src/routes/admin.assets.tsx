@@ -59,7 +59,7 @@ function Assets() {
     if (!site?.dialogue) return;
     const fallbackSequences: DialogueSequence[] = [
       { id: "grandpa-popup", name: "Visitor popup", trigger: "Visitor popup after 7 seconds", priority: 0, enabled: true, lines: [
-        { line: "Cart ko dekha? It is feeling emotionally empty.", expression: "hmm", stickerId: "cart-fierce-character" },
+        { line: "Cart ko dekha? It is feeling emotionally empty.", expression: "hmm", stickerId: "shop-character" },
         { line: "Tiny object, giant explanation. Excellent choice.", expression: "laugh", stickerId: "shop-character" },
       ] },
     ];
@@ -69,7 +69,7 @@ function Assets() {
         ...sequence,
         lines: sequence.lines.map((line) => ({
           ...line,
-          stickerId: line.stickerId ?? (sequence.id === "grandpa-popup" ? "shop-character" : "cart-fierce-character"),
+          stickerId: line.stickerId ?? "shop-character",
         })),
       }));
     const neededSpeakerMigration = source.some((sequence) => sequence.lines.some((line) => !line.stickerId));
