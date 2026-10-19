@@ -192,8 +192,8 @@ export const adminDeleteVariation = createServerFn({ method: "POST" })
 
 // ---------- Site settings (slides, socials, sound, stickers) ----------
 export const adminSaveSetting = createServerFn({ method: "POST" })
-  .validator((d: Auth & { key: "slides" | "socials" | "sound" | "stickers" | "slideInterval"; value: unknown }) => {
-    if (!["slides", "socials", "sound", "stickers", "slideInterval"].includes(d.key)) throw new Error("Unknown setting");
+  .validator((d: Auth & { key: "slides" | "socials" | "sound" | "stickers" | "dialogue" | "slideInterval"; value: unknown }) => {
+    if (!["slides", "socials", "sound", "stickers", "dialogue", "slideInterval"].includes(d.key)) throw new Error("Unknown setting");
     if (d.key === "slideInterval" && (typeof d.value !== "number" || !Number.isFinite(d.value) || d.value < 2 || d.value > 15)) throw new Error("Slide duration must be 2–15 seconds");
     return d;
   })
