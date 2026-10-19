@@ -1,5 +1,9 @@
 # Roadmap
 
+## Remix setup — October 18
+- [x] Update the three admin secrets through secure fields
+- [ ] Clear copied migrations and leave an empty migration directory for the new database
+
 ## Approved master plan — October 18
 - [ ] Restore same-origin assets and speed up guest loading
 - [ ] Preserve sticker tilt and mobile slide stickers; reject mismatched uploads
