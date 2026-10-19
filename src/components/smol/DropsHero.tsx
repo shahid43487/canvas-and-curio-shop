@@ -33,7 +33,7 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
   const img = stickerSrc(s.sticker, extra);
   const label = STICKER_TEXT[s.sticker];
   return (
-    <div data-preset={s.preset} className="drops-slide-body" style={{ backgroundColor: s.backgroundColor || undefined }}>
+    <div data-preset={s.preset} className="drops-slide-body" style={{ backgroundColor: s.backgroundColor || undefined, "--mobile-slide-bg": s.mobileBackgroundColor || s.backgroundColor || "transparent" } as React.CSSProperties}>
       {img ? <img src={img} alt="" className="drop-sticker" style={{ left: `${s.stickerX ?? 78}%`, top: `${s.stickerY ?? 22}%` }} width={96} height={96} decoding="async" /> : <span className="sticker slide-text-sticker s1">{label ?? "GOOD STUUF ✓"}</span>}
       <div className="eyebrow-tag"><span className="dot" /> {s.eyebrow}</div>
       <h1 className="hero-title">{s.title}<br /><span className="accent">{s.accent}</span></h1>
