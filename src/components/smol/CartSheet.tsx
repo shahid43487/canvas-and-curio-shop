@@ -42,7 +42,7 @@ const LOW = "এই টাকায় তো ঠিকমতো নাশতা
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, isOpen, setIsOpen } = useCart();
   const isSecretCart = items.some((item) => item.product.is_hidden === true);
-  const { dialogue, say } = useDialogue({ line: EMPTY[0] ?? "", expression: "hmm" });
+  const { dialogue, say, configuredSequence } = useDialogue({ line: EMPTY[0] ?? "", expression: "hmm" });
   const tick = useRef(0);
   const prevCount = useRef(totalItems);
   const wasOpen = useRef(false);
@@ -63,7 +63,7 @@ export function CartSheet() {
         : totalPrice >= 50 ? HIGH
         : totalItems === 1 ? totalPrice < 18 && index % 3 === 2 ? LOW : ONE[index % ONE.length] ?? ""
         : TWO;
-      say(line, "hmm", opening ? 1 : 0);
+      configuredSequence("cart-idle", [{ line, expression: "hmm" }], opening ? 1 : 0);
       timer = setTimeout(() => cycle(), dialogueReadingTime(line) + 150);
     };
     cycle(justOpened);
