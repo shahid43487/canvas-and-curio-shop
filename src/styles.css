@@ -1565,3 +1565,40 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 .drop-extra-layer { position:absolute; z-index:4; }
 .drop-extra-text { font-weight:900; font-size:clamp(1rem,2.5vw,2.5rem); line-height:1.05; white-space:pre-wrap; max-width:80%; }
 @media(max-width:640px) { .hero-layer-row { grid-template-columns:minmax(0,1fr); } .hero-live-preview-frame .drops-slide-body { min-height:460px; } }
+
+
+/* Hero editor: artwork floats directly on the dotted paper, never on white cards. */
+.drops-slide-body.smol-hero-pattern {
+  position: relative;
+  overflow: hidden;
+  background-image: radial-gradient(rgba(23,33,59,.16) 1px, transparent 1px);
+  background-size: 14px 14px;
+  min-height: 440px;
+}
+.drop-extra-layer { position:absolute; z-index:4; }
+.drop-logo-layer { object-fit:contain; height:auto; max-height:80%; }
+.drop-decoration-layer { position:absolute; z-index:2; display:grid; place-items:center; transform:translate(-50%,-50%); font-weight:1000; line-height:.9; text-align:center; color:#fff; }
+.drop-decoration-layer.badge { aspect-ratio:1; border:3px solid #17213b; border-radius:50%; background:#ed1c0b; box-shadow:4px 4px 0 #17213b; font-size:clamp(8px,.9vw,14px); rotate:-12deg; }
+.drop-decoration-layer.star { aspect-ratio:1; clip-path:polygon(50% 0%,61% 33%,98% 20%,75% 50%,100% 73%,63% 68%,50% 100%,37% 68%,0 73%,25% 50%,2% 20%,39% 33%); background:#ed1c0b; color:#fff; font-size:clamp(7px,.8vw,12px); }
+.drop-decoration-layer.eye { color:#17213b; background:#fff; border:3px solid #17213b; border-radius:55% 45% 55% 45%; aspect-ratio:1.6; font-size:clamp(12px,2vw,30px); }
+.drop-decoration-layer.hand { color:#17213b; background:#fff; border:3px solid #17213b; border-radius:50%; aspect-ratio:1; font-size:clamp(20px,3vw,42px); rotate:12deg; }
+.drop-decoration-layer.spark { color:#ed1c0b; font-size:clamp(20px,3vw,48px); background:transparent; }
+.hero-canvas-object { background:transparent!important; border:0; border-radius:0; padding:0; box-shadow:none; color:#17213b; }
+.hero-canvas-object > span { display:none; }
+.hero-canvas-object:hover { outline:1px dashed #e62a16; outline-offset:4px; }
+.hero-canvas-object:focus-visible, .hero-canvas-layer.selected { outline:2px dashed #e62a16; outline-offset:4px; }
+.hero-canvas-object.hero-canvas-layer { max-width:none; min-width:0; min-height:0; }
+.hero-canvas-object.hero-canvas-layer img { width:100%; height:auto; max-height:75%; object-fit:contain; }
+.hero-canvas-object.hero-canvas-layer.logo { background:transparent!important; }
+.hero-canvas-layer .canvas-decoration { display:grid; place-items:center; width:100%; aspect-ratio:1; color:#fff; font-weight:1000; line-height:.9; text-align:center; }
+.hero-canvas-layer .canvas-decoration.badge { border:3px solid #17213b; border-radius:50%; background:#ed1c0b; box-shadow:4px 4px 0 #17213b; font-size:clamp(8px,.9vw,14px); rotate:-12deg; white-space:pre-line; }
+.hero-canvas-layer .canvas-decoration.star { clip-path:polygon(50% 0%,61% 33%,98% 20%,75% 50%,100% 73%,63% 68%,50% 100%,37% 68%,0 73%,25% 50%,2% 20%,39% 33%); background:#ed1c0b; font-size:clamp(7px,.8vw,12px); }
+.hero-canvas-layer .canvas-decoration.eye { color:#17213b; background:#fff; border:3px solid #17213b; border-radius:55% 45% 55% 45%; font-size:clamp(12px,2vw,30px); }
+.hero-canvas-layer .canvas-decoration.hand { color:#17213b; background:#fff; border:3px solid #17213b; border-radius:50%; font-size:clamp(20px,3vw,42px); }
+.hero-canvas-layer .canvas-decoration.spark { color:#ed1c0b; background:transparent; font-size:clamp(20px,3vw,48px); }
+.hero-canvas-layer.logo { aspect-ratio:auto; }
+.hero-live-preview-frame .drops-slide-body { min-height:440px; background-image:radial-gradient(rgba(23,33,59,.16) 1px, transparent 1px); background-size:14px 14px; }
+@media(max-width:640px) {
+  .drops-slide-body.smol-hero-pattern { min-height:600px; }
+  .hero-live-preview-frame .drops-slide-body { min-height:600px; }
+}
