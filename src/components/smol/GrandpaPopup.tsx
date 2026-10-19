@@ -28,6 +28,15 @@ export function GrandpaPopup() {
   const assignedStickerSrc = resolveStickerSrc(dialogue.stickerId, site?.stickers.custom);
 
   useEffect(() => {
+    const onCartOpen = (event: Event) => {
+      const detail = (event as CustomEvent<{ open?: boolean }>).detail;
+      if (detail?.open) setVisible(false);
+    };
+    window.addEventListener("smol-cart-visibility", onCartOpen);
+    return () => window.removeEventListener("smol-cart-visibility", onCartOpen);
+  }, []);
+
+  useEffect(() => {
     if (window.sessionStorage.getItem("smol-grandpa-seen")) return;
     const timer = window.setTimeout(() => {
       window.sessionStorage.setItem("smol-grandpa-seen", "1");
