@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { PRESETS, STICKERS, slideStatus, type Preset, type Slide, type HeroLayer } from "@/data/drops";
 import { adminSaveSetting } from "@/lib/admin.functions";
 import { useSite } from "@/lib/site";
-import { SlideBody } from "@/components/smol/DropsHero";
+import { SlideBody, getDefaultHeroLayers } from "@/components/smol/DropsHero";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { useAdminToken } from "@/lib/admin-session";
 
@@ -40,7 +40,7 @@ function Campaigns() {
   const s = slides[sel];
   const setCanvasPosition = (kind: "sticker" | "image" | "copy" | "buttons", e: React.PointerEvent<HTMLElement>) => { const rect = canvasRef.current?.getBoundingClientRect(); if (!rect) return; const x = Math.round(Math.max(0, Math.min(100, (e.clientX - rect.left) / rect.width * 100))); const y = Math.round(Math.max(0, Math.min(100, (e.clientY - rect.top) / rect.height * 100))); if (kind === "copy") patch(canvasView === "mobile" ? { mobileCopyX: x, mobileCopyY: y } : { copyX: x, copyY: y }); else if (kind === "buttons") patch(canvasView === "mobile" ? { mobileButtonsX: x, mobileButtonsY: y } : { buttonsX: x, buttonsY: y }); else if (canvasView === "mobile") patch(kind === "sticker" ? { mobileStickerX: x, mobileStickerY: y } : { mobileImageX: x, mobileImageY: y }); else patch(kind === "sticker" ? { stickerX: x, stickerY: y } : { imageX: x, imageY: y }); };
   const stickers = [...STICKERS, ...site.stickers.custom];
-  const layers: HeroLayer[] = s?.layers ?? [];
+  const layers: HeroLayer[] = s?.layers ?? getDefaultHeroLayers();
   const patchLayer = (id: string, values: Partial<HeroLayer>) => patch({ layers: layers.map((layer) => layer.id === id ? { ...layer, ...values } : layer) });
   const addLayer = (layer: HeroLayer) => { patch({ layers: [...layers, layer] }); setSelectedLayerId(layer.id); };
   const dragLayerTo = (id: string, e: React.PointerEvent<HTMLElement>) => {
@@ -105,13 +105,17 @@ function Campaigns() {
               <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `text-${Date.now()}`, kind: "text", text: "Your text", x: 50, y: 35 })}>+ Text layer</button>
               <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `button-${Date.now()}`, kind: "button", text: "Shop now", href: "/shop", x: 50, y: 78 })}>+ Button layer</button>
               <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `sticker-${Date.now()}`, kind: "sticker", src: stickers.find(x => x.src)?.src, x: 78, y: 25, width: 18 })}>+ Sticker layer</button>
+              <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `logo-${Date.now()}`, kind: "logo", src: getDefaultHeroLayers()[0]?.src, x: 68, y: 53, width: 30 })}>+ Logo layer</button>
+              <button type="button" className="admin-btn ghost" onClick={() => addLayer({ id: `decor-${Date.now()}`, kind: "decoration", variant: "spark", text: "✦", x: 50, y: 12, width: 5 })}>+ Decoration</button>
               <AdminUpload token={token} accept="image/*" label="+ Add media layer" onDone={(url) => addLayer({ id: `image-${Date.now()}`, kind: "image", src: url, x: 75, y: 60, width: 28 })} />
             </div>
             <p>Extra layers are independent of the original three presets. Select one to edit it; drag it directly in the preview.</p>
             {layers.map(layer => <div className="hero-layer-row" key={layer.id}>
-              <button type="button" className={"admin-btn ghost " + (selectedLayerId === layer.id ? "active" : "")} onClick={() => setSelectedLayerId(layer.id)}>{layer.kind}: {layer.text || layer.id}</button>
+              <button type="button" className={"admin-btn ghost " + (selectedLayerId === layer.id ? "active" : "")} onClick={() => setSelectedLayerId(layer.id)}>{layer.kind}: {layer.text || layer.variant || layer.id}</button>
               {(layer.kind === "text" || layer.kind === "button") && <input className="admin-input" aria-label="Layer text" value={layer.text ?? ""} onChange={e => patchLayer(layer.id, { text: e.target.value })} />}
-              {layer.kind === "sticker" && <select className="admin-input" aria-label="Sticker artwork" value={layer.src ?? ""} onChange={e => patchLayer(layer.id, { src: e.target.value })}>{stickers.filter(x => x.src).map(x => <option key={x.id} value={x.src}>{x.label}</option>)}</select>}
+              {(layer.kind === "sticker" || layer.kind === "logo" || layer.kind === "image") && <input className="admin-input" aria-label="Artwork URL" value={layer.src ?? ""} onChange={e => patchLayer(layer.id, { src: e.target.value })} placeholder="Image URL" />}
+              {layer.kind === "decoration" && <select className="admin-input" aria-label="Decoration type" value={layer.variant ?? "spark"} onChange={e => patchLayer(layer.id, { variant: e.target.value, text: ({ badge: "GOOD\\nSTUUF", star: "STUUF", eye: "●", hand: "✌", spark: "✦" } as Record<string,string>)[e.target.value] })}><option value="badge">Good Stuuf badge</option><option value="star">Stuuf star</option><option value="eye">Eye</option><option value="hand">Hand</option><option value="spark">Spark</option></select>}
+              <label>Rotation ° <input className="admin-input" type="number" min="-180" max="180" value={layer.rotation ?? 0} onChange={e => patchLayer(layer.id, { rotation: Number(e.target.value) })} /></label>
               {layer.kind === "button" && <input className="admin-input" aria-label="Button destination" value={layer.href ?? "/shop"} onChange={e => patchLayer(layer.id, { href: e.target.value })} />}
               <label>Width % <input className="admin-input" type="number" min="4" max="100" value={layer.width ?? 18} onChange={e => patchLayer(layer.id, { width: Number(e.target.value) })} /></label>
               <button type="button" className="admin-btn danger" onClick={() => { patch({ layers: layers.filter(x => x.id !== layer.id) }); if (selectedLayerId === layer.id) setSelectedLayerId(null); }}>Remove</button>
@@ -124,7 +128,8 @@ function Campaigns() {
             <button type="button" className="hero-canvas-object hero-canvas-cta" style={{ left: (canvasView === "mobile" ? s.mobileButtonsX ?? s.buttonsX ?? 6 : s.buttonsX ?? 6) + "%", top: (canvasView === "mobile" ? s.mobileButtonsY ?? s.buttonsY ?? 68 : s.buttonsY ?? 68) + "%" }} onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("buttons"); }} onPointerMove={e => { if (dragging === "buttons" && e.buttons > 0) setCanvasPosition("buttons", e); }} onPointerUp={() => setDragging(null)} onPointerCancel={() => setDragging(null)}>{s.cta.label} → <span>Buttons · drag</span></button>
             {(() => { const sticker = stickers.find((x) => x.id === s.sticker); const x = canvasView === "mobile" ? s.mobileStickerX ?? s.stickerX ?? 78 : s.stickerX ?? 78; const y = canvasView === "mobile" ? s.mobileStickerY ?? s.stickerY ?? 22 : s.stickerY ?? 22; return <button type="button" className="hero-canvas-object sticker" style={{ left: x + "%", top: y + "%" }} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("sticker"); }} aria-label="Drag hero sticker">{sticker?.src ? <img src={sticker.src} alt="" draggable={false}/> : <b>{s.sticker}</b>}<span>Sticker · drag</span></button>; })()}
             {layers.map(layer => <button key={layer.id} type="button" className={"hero-canvas-object hero-canvas-layer " + layer.kind + (selectedLayerId === layer.id ? " selected" : "")} style={{ left: layer.x + "%", top: layer.y + "%", width: layer.width ? layer.width + "%" : undefined, transform: `translate(-50%, -50%) rotate(${layer.rotation ?? 0}deg)` }} onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); setSelectedLayerId(layer.id); setDragLayerId(layer.id); }} onPointerMove={e => { if (dragLayerId === layer.id && e.buttons > 0) dragLayerTo(layer.id, e); }} onPointerUp={() => setDragLayerId(null)} onPointerCancel={() => setDragLayerId(null)} aria-label={"Drag " + layer.kind}>
-              {(layer.kind === "image" || layer.kind === "sticker") && layer.src ? <img src={layer.src} alt="" draggable={false} /> : null}
+              {(layer.kind === "logo" || layer.kind === "image" || layer.kind === "sticker") && layer.src ? <img src={layer.src} alt="" draggable={false} /> : null}
+              {layer.kind === "decoration" && <span className={`canvas-decoration ${layer.variant ?? ""}`}>{layer.text}</span>}
               {(layer.kind === "text" || layer.kind === "button") && <b>{layer.text}</b>}
               <span>{layer.kind} · drag</span>
             </button>)}
