@@ -11,8 +11,8 @@ export type SoundSettings = {
   music: { url: string; name: string; enabled: boolean; loop: boolean; volume: number };
   library: CustomSound[];
 };
-export type CustomSticker = { id: string; label: string; src: string };
-export type StickerSettings = { custom: CustomSticker[]; hidden: string[] };
+export type CustomSticker = { id: string; label: string; src: string; category?: string; tags?: string[] };
+export type StickerSettings = { custom: CustomSticker[]; hidden: string[]; inactive: string[] };
 
 export const DEFAULT_SOCIALS: Socials = { instagram: "https://instagram.com", facebook: "https://facebook.com", tiktok: "https://tiktok.com", youtube: "", email: "" };
 export const DEFAULT_SOUND: SoundSettings = {
@@ -32,7 +32,14 @@ export const siteQuery = queryOptions({
       slideInterval: typeof raw.slideInterval === "number" ? Math.max(2, Math.min(15, raw.slideInterval)) : 6,
       socials: { ...DEFAULT_SOCIALS, ...(raw.socials as Partial<Socials>) },
       sound: { ...DEFAULT_SOUND, ...(raw.sound as Partial<SoundSettings>), music: { ...DEFAULT_SOUND.music, ...((raw.sound as SoundSettings | undefined)?.music) } },
-      stickers: { custom: [], hidden: [], ...(raw.stickers as Partial<StickerSettings>) },
+      stickers: (() => {
+        const stickerSettings = (raw.stickers ?? {}) as Partial<StickerSettings>;
+        return {
+          custom: Array.isArray(stickerSettings.custom) ? stickerSettings.custom : [],
+          hidden: Array.isArray(stickerSettings.hidden) ? stickerSettings.hidden : [],
+          inactive: Array.isArray(stickerSettings.inactive) ? stickerSettings.inactive : [],
+        };
+      })(),
     };
   },
   staleTime: 60_000,
