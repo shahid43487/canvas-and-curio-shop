@@ -33,8 +33,8 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
   const img = stickerSrc(s.sticker, extra);
   const label = STICKER_TEXT[s.sticker];
   return (
-    <div data-preset={s.preset}>
-      {img ? <img src={img} alt="" className="drop-sticker" width={96} height={96} decoding="async" /> : <span className="sticker slide-text-sticker s1">{label ?? "GOOD STUUF ✓"}</span>}
+    <div data-preset={s.preset} className="drops-slide-body" style={{ backgroundColor: s.backgroundColor || undefined }}>
+      {img ? <img src={img} alt="" className="drop-sticker" style={{ left: `${s.stickerX ?? 78}%`, top: `${s.stickerY ?? 22}%` }} width={96} height={96} decoding="async" /> : <span className="sticker slide-text-sticker s1">{label ?? "GOOD STUUF ✓"}</span>}
       <div className="eyebrow-tag"><span className="dot" /> {s.eyebrow}</div>
       <h1 className="hero-title">{s.title}<br /><span className="accent">{s.accent}</span></h1>
       <p className="hero-sub">{s.sub}</p>
@@ -42,7 +42,7 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
         <Link to={s.cta.to as "/shop"} className="btn-primary">{s.cta.label}</Link>
         <Link to={(s.secondary?.to ?? "/about") as "/about"} className="btn-outline">{s.secondary?.label ?? "Why so smol?"}</Link>
       </div>
-      {s.image && <img src={s.image} alt="" className="drop-slide-image" style={{ rotate: `${s.rotation ?? 0}deg` }} />}
+      {s.image && <img src={s.image} alt="" className="drop-slide-image" style={{ rotate: `${s.rotation ?? 0}deg`, left: `${s.imageX ?? 76}%`, top: `${s.imageY ?? 60}%` }} />}
       {s.badge && <span className="drop-badge">{s.badge}</span>}
       {dots && <div className="drop-dots">{Array.from({ length: dots.n }, (_, n) => <button key={n} aria-label={`Slide ${n + 1}`} className={n === dots.i ? "on" : ""} onClick={() => dots.set(n)} />)}</div>}
     </div>
