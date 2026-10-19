@@ -1543,3 +1543,5 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 .hero-canvas-object.image img { width:clamp(70px,17vw,210px); height:clamp(70px,17vw,210px); }
 .hero-drag-canvas.mobile .hero-canvas-object img { width:90px; height:90px; }
 .hero-canvas-object span { display:block; white-space:nowrap; font-size:9px; font-weight:900; }
+
+@media (max-width: 640px) { .drops-slide-body { background-color: var(--mobile-slide-bg, transparent) !important; } }
