@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/com
 import { formatPrice } from "@/data/products";
 import { useCart, itemKey, unitPrice } from "@/hooks/use-cart";
 import { useDialogue, dialogueReadingTime } from "@/hooks/use-dialogue";
+import { resolveStickerSrc, useSite } from "@/lib/site";
 import { ProductImage } from "./ProductImage";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 
@@ -42,7 +43,9 @@ const LOW = "এই টাকায় তো ঠিকমতো নাশতা
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, isOpen, setIsOpen } = useCart();
   const isSecretCart = items.some((item) => item.product.is_hidden === true);
+  const site = useSite();
   const { dialogue, say, configuredSequence } = useDialogue({ line: EMPTY[0] ?? "", expression: "hmm" });
+  const assignedStickerSrc = resolveStickerSrc(dialogue.stickerId, site?.stickers.custom);
   const tick = useRef(0);
   const prevCount = useRef(totalItems);
   const wasOpen = useRef(false);
@@ -75,8 +78,8 @@ export function CartSheet() {
       <SheetContent className="cart-sheet">
         <img
           className="cart-comedy-sticker"
-          src={assetUrl(fierceCharacter)}
-          alt="Shop character judging your cart"
+          src={assignedStickerSrc || assetUrl(fierceCharacter)}
+          alt={dialogue.stickerId ? "Assigned dialogue sticker" : "Shop character judging your cart"}
           loading="lazy"
         />
         <SheetHeader className="cart-sheet-header">
