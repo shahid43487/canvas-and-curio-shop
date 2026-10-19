@@ -35,10 +35,10 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
   return (
     <div data-preset={s.preset} className="drops-slide-body" style={{ backgroundColor: s.backgroundColor || undefined, "--mobile-slide-bg": s.mobileBackgroundColor || s.backgroundColor || "transparent" } as React.CSSProperties}>
       {img ? <img src={img} alt="" className="drop-sticker" style={{ left: `${s.stickerX ?? 78}%`, top: `${s.stickerY ?? 22}%` }} width={96} height={96} decoding="async" /> : <span className="sticker slide-text-sticker s1">{label ?? "GOOD STUUF ✓"}</span>}
-      <div className="eyebrow-tag"><span className="dot" /> {s.eyebrow}</div>
-      <h1 className="hero-title">{s.title}<br /><span className="accent">{s.accent}</span></h1>
-      <p className="hero-sub">{s.sub}</p>
-      <div className="hero-ctas">
+      <div className="eyebrow-tag" style={{ left: `${s.copyX ?? 6}%`, top: `${s.copyY ?? 12}%` }}><span className="dot" /> {s.eyebrow}</div>
+      <h1 className="hero-title" style={{ left: `${s.copyX ?? 6}%`, top: `${(s.copyY ?? 12) + 7}%` }}>{s.title}<br /><span className="accent">{s.accent}</span></h1>
+      <p className="hero-sub" style={{ left: `${s.copyX ?? 6}%`, top: `${(s.copyY ?? 12) + 25}%` }}>{s.sub}</p>
+      <div className="hero-ctas" style={{ left: `${s.buttonsX ?? 6}%`, top: `${s.buttonsY ?? 68}%` }}>
         <Link to={s.cta.to as "/shop"} className="btn-primary">{s.cta.label}</Link>
         <Link to={(s.secondary?.to ?? "/about") as "/about"} className="btn-outline">{s.secondary?.label ?? "Why so smol?"}</Link>
       </div>
