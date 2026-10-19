@@ -189,8 +189,16 @@ function Assets() {
             <div className="sticker-workspace-actions"><span className={`sticker-status ${dialogueDraft.status === "published" ? "active" : "inactive"}`}>{dialogueDraft.status === "published" ? "Live configuration" : "Draft changes"}</span><button type="button" className="admin-btn ghost" onClick={() => void saveDialogue("draft")}>Save draft</button><button type="button" className="admin-btn sticker-publish" onClick={() => void saveDialogue("published")}>Publish changes</button></div>
           </header>
           <div className="sticker-library-float">
-            <button type="button" className={`sticker-library-orb ${stickerLibraryOpen ? "open" : ""}`} aria-label={stickerLibraryOpen ? "Close sticker library" : "Open sticker library"} aria-expanded={stickerLibraryOpen} onClick={() => setStickerLibraryOpen((open) => !open)}><icon name={stickerLibraryOpen ? "x" : "images"} size="xl" /><span>Library</span></button>
-            {stickerLibraryOpen && <div className="sticker-library-popover">{library}</div>}
+            <button type="button" className={`sticker-library-orb ${stickerLibraryOpen ? "open" : ""}`} aria-label={stickerLibraryOpen ? "Close sticker library" : "Open sticker library"} aria-expanded={stickerLibraryOpen} onClick={() => setStickerLibraryOpen((open) => !open)}><span className="sticker-library-orb-icon">{stickerLibraryOpen ? "×" : "▧"}</span><span>Library</span></button>
+            {stickerLibraryOpen && <div className="sticker-library-popover">
+              <div className="sticker-workspace-column sticker-picker-column">
+                <div className="sticker-column-head"><div><h3>Sticker Library</h3><p>{allocatableStickers.length} available speakers</p></div><button type="button" className="admin-btn ghost" onClick={() => setTab("library")}>Manage</button></div>
+                <label className="sticker-search">Find a sticker<input className="admin-input" value={dialogueStickerSearch} onChange={(event) => setDialogueStickerSearch(event.target.value)} placeholder="Search names or tags…" /></label>
+                <p className="sticker-instruction">Choose a dialogue line first, then click a sticker to assign its speaker.</p>
+                <div className="sticker-picker-grid">{allocatableStickers.filter((entry) => [entry.label, entry.id, ...entry.tags].join(" ").toLowerCase().includes(dialogueStickerSearch.toLowerCase())).map((entry) => { const assigned = selected?.lines[selectedLineIndex]?.stickerId === entry.id; return <button type="button" key={entry.id} className={`sticker-picker-card ${assigned ? "is-assigned" : ""}`} aria-pressed={assigned} onClick={() => selected && selectedLineIndex >= 0 && updateLine(selected.id, selectedLineIndex, { stickerId: entry.id })}><span className="sticker-picker-image"><img src={entry.src} alt="" loading="lazy" /></span><b>{entry.label}</b><small>{entry.isBuiltIn ? "Built-in" : "Custom upload"}</small>{assigned && <span className="sticker-assigned-mark">Assigned</span>}</button>; })}</div>
+                <div className="sticker-unassign"><button type="button" className="admin-btn ghost" onClick={() => selected && selectedLineIndex >= 0 && updateLine(selected.id, selectedLineIndex, { stickerId: undefined })}>Clear speaker assignment</button></div>
+              </div>
+            </div>}
           </div>
           <div className="sticker-workspace-grid sticker-workspace-grid-merged">
             <div className="sticker-sequence-strip">
