@@ -1625,3 +1625,7 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 }
 
 @media(max-width:640px) { .drops-slide-body .drop-extra-layer { left:var(--layer-mobile-x, var(--hero-layer-x)) !important; top:var(--layer-mobile-y, var(--hero-layer-y)) !important; } }
+
+/* The hero is now a single full-width editable canvas, not a two-column logo/sidebar layout. */
+.hero-inner { grid-template-columns: minmax(0, 1fr); }
+.hero-inner > div:first-child { min-width:0; width:100%; }
