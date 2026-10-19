@@ -50,7 +50,7 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
       {layers.map((layer: HeroLayer) => {
         const style = { left: "var(--hero-layer-x)", top: "var(--hero-layer-y)", width: layer.width ? `${layer.width}%` : undefined, transform: `translate(-50%, -50%) rotate(${layer.rotation ?? 0}deg)`, "--hero-layer-x": `${layer.x}%`, "--hero-layer-y": `${layer.y}%`, "--layer-mobile-x": `${layer.mobileX ?? layer.x}%`, "--layer-mobile-y": `${layer.mobileY ?? layer.y}%` } as React.CSSProperties;
         if (layer.kind === "logo" || layer.kind === "image" || layer.kind === "sticker") return layer.src ? <img key={layer.id} src={layer.src} alt="" className={layer.kind === "logo" ? "drop-logo-layer drop-extra-layer" : layer.kind === "sticker" ? "drop-sticker drop-extra-layer" : "drop-slide-image drop-extra-layer"} style={style} /> : null;
-        if (layer.kind === "decoration") return <span key={layer.id} className={`drop-decoration-layer ${layer.variant ?? ""}`} style={style}>{layer.text}</span>;
+        if (layer.kind === "decoration") return <span key={layer.id} className={`drop-decoration-layer drop-extra-layer ${layer.variant ?? ""}`} style={style}>{layer.text}</span>;
         if (layer.kind === "button") return <Link key={layer.id} to={(layer.href || "/shop") as "/shop"} className="btn-primary drop-extra-layer" style={style}>{layer.text || "Shop now"}</Link>;
         return <span key={layer.id} className="drop-extra-text drop-extra-layer" style={style}>{layer.text || "Text"}</span>;
       })}
