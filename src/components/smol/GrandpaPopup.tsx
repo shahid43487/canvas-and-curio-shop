@@ -1,5 +1,6 @@
 import { assetUrl } from "@/lib/asset-url";
 import { useEffect, useState } from "react";
+import { resolveStickerSrc, useSite } from "@/lib/site";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDialogue } from "@/hooks/use-dialogue";
@@ -22,7 +23,9 @@ const jokes = [
 export function GrandpaPopup() {
   const [visible, setVisible] = useState(false);
   const [jokeIndex, setJokeIndex] = useState(0);
+  const site = useSite();
   const { dialogue, configuredSequence } = useDialogue({ line: jokes[0]?.line ?? "", expression: "hmm" });
+  const assignedStickerSrc = resolveStickerSrc(dialogue.stickerId, site?.stickers.custom);
 
   useEffect(() => {
     if (window.sessionStorage.getItem("smol-grandpa-seen")) return;
@@ -45,7 +48,7 @@ export function GrandpaPopup() {
       <Button className="grandpa-close" variant="ghost" size="icon" onClick={() => setVisible(false)} aria-label="Dismiss joke">
         <X size={17} />
       </Button>
-      <img src={joke.sticker} alt="Shop character reacting to the shop" width={1024} height={1024} loading="lazy" />
+      <img src={assignedStickerSrc || joke.sticker} alt={dialogue.stickerId ? "Assigned dialogue sticker" : "Shop character reacting to the shop"} width={1024} height={1024} loading="lazy" />
       <p>{dialogue.line || joke.line}</p>
     </aside>
   );
