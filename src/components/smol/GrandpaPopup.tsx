@@ -2,6 +2,7 @@ import { assetUrl } from "@/lib/asset-url";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useDialogue } from "@/hooks/use-dialogue";
 import character from "@/assets/shop-character.png";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 
@@ -21,16 +22,19 @@ const jokes = [
 export function GrandpaPopup() {
   const [visible, setVisible] = useState(false);
   const [jokeIndex, setJokeIndex] = useState(0);
+  const { dialogue, configuredSequence } = useDialogue({ line: jokes[0]?.line ?? "", expression: "hmm" });
 
   useEffect(() => {
     if (window.sessionStorage.getItem("smol-grandpa-seen")) return;
     const timer = window.setTimeout(() => {
       window.sessionStorage.setItem("smol-grandpa-seen", "1");
-      setJokeIndex(Math.floor(Math.random() * jokes.length));
+      const index = Math.floor(Math.random() * jokes.length);
+      setJokeIndex(index);
+      configuredSequence("grandpa-popup", [{ line: jokes[index]?.line ?? "", expression: "hmm" }], 0);
       setVisible(true);
     }, 7000);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [configuredSequence]);
 
   if (!visible) return null;
   const joke = jokes[jokeIndex] ?? jokes[0];
@@ -42,7 +46,7 @@ export function GrandpaPopup() {
         <X size={17} />
       </Button>
       <img src={joke.sticker} alt="Shop character reacting to the shop" width={1024} height={1024} loading="lazy" />
-      <p>{joke.line}</p>
+      <p>{dialogue.line || joke.line}</p>
     </aside>
   );
 }
