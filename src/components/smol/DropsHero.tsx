@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import gsap from "gsap";
 import { liveSlides, SLIDES, stickerSrc, type Slide, type HeroLayer } from "@/data/drops";
+import { assetUrl } from "@/lib/asset-url";
+import logo from "@/assets/smol-stuuf-logo.png.asset.json";
 import { useSite } from "@/lib/site";
 
 // Rotates live STUUF DROPS slides (edited in /admin/campaigns) inside the hero markup.
@@ -31,6 +33,7 @@ export function DropsHero() {
 
 export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; src: string }[] | undefined; dots?: { n: number; i: number; set: (n: number) => void } | undefined }) {
   const img = stickerSrc(s.sticker, extra);
+  const layers = s.layers ?? getDefaultHeroLayers();
   const label = STICKER_TEXT[s.sticker];
   return (
     <div data-preset={s.preset} className="drops-slide-body smol-hero-pattern" style={{ backgroundColor: s.backgroundColor || "#f5f0e5", "--mobile-slide-bg": s.mobileBackgroundColor || s.backgroundColor || "#f5f0e5" } as React.CSSProperties}>
@@ -44,9 +47,10 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
       </div>
       {s.image && <img src={s.image} alt="" className="drop-slide-image" style={{ rotate: `${s.rotation ?? 0}deg`, left: `${s.imageX ?? 76}%`, top: `${s.imageY ?? 60}%` }} />}
       {s.badge && <span className="drop-badge">{s.badge}</span>}
-      {(s.layers ?? []).map((layer: HeroLayer) => {
+      {layers.map((layer: HeroLayer) => {
         const style: React.CSSProperties = { left: `${layer.x}%`, top: `${layer.y}%`, width: layer.width ? `${layer.width}%` : undefined, transform: `translate(-50%, -50%) rotate(${layer.rotation ?? 0}deg)` };
-        if (layer.kind === "image" || layer.kind === "sticker") return layer.src ? <img key={layer.id} src={layer.src} alt="" className={layer.kind === "sticker" ? "drop-sticker drop-extra-layer" : "drop-slide-image drop-extra-layer"} style={style} /> : null;
+        if (layer.kind === "logo" || layer.kind === "image" || layer.kind === "sticker") return layer.src ? <img key={layer.id} src={layer.src} alt="" className={layer.kind === "logo" ? "drop-logo-layer drop-extra-layer" : layer.kind === "sticker" ? "drop-sticker drop-extra-layer" : "drop-slide-image drop-extra-layer"} style={style} /> : null;
+        if (layer.kind === "decoration") return <span key={layer.id} className={`drop-decoration-layer ${layer.variant ?? ""}`} style={style}>{layer.text}</span>;
         if (layer.kind === "button") return <Link key={layer.id} to={(layer.href || "/shop") as "/shop"} className="btn-primary drop-extra-layer" style={style}>{layer.text || "Shop now"}</Link>;
         return <span key={layer.id} className="drop-extra-text drop-extra-layer" style={style}>{layer.text || "Text"}</span>;
       })}
@@ -55,3 +59,15 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
   );
 }
 const STICKER_TEXT: Record<string, string> = { good: "GOOD STUUF ✓", drop: "DROP 04" };
+
+
+export function getDefaultHeroLayers(): HeroLayer[] {
+  return [
+    { id: "hero-logo", kind: "logo", src: assetUrl(logo), x: 68, y: 53, width: 30 },
+    { id: "decor-good", kind: "decoration", variant: "badge", text: "GOOD\\nSTUUF", x: 4, y: 18, width: 7 },
+    { id: "decor-star", kind: "decoration", variant: "star", text: "STUUF", x: 95, y: 13, width: 7 },
+    { id: "decor-eye", kind: "decoration", variant: "eye", text: "●", x: 7, y: 88, width: 7 },
+    { id: "decor-hand", kind: "decoration", variant: "hand", text: "✌", x: 89, y: 91, width: 7 },
+    { id: "decor-spark", kind: "decoration", variant: "spark", text: "✦", x: 48, y: 6, width: 4 },
+  ];
+}
