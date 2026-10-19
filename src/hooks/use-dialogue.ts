@@ -6,7 +6,7 @@ export const MIN_READ_MS = 12000;
 export const MAX_READ_MS = 16000;
 export const dialogueReadingTime = (line: string) =>
   Math.min(MAX_READ_MS, MIN_READ_MS + Math.max(0, Array.from(line).length - 40) * 100);
-export type Dialogue = { line: string; expression: string };
+export type Dialogue = { line: string; expression: string; delayMs?: number };
 /** 0 ambient (only when idle), 1 interaction (shows now), 2 critical (interrupts anything). */
 export type Priority = 0 | 1 | 2;
 type Beat = Dialogue & { priority: Priority };
@@ -28,7 +28,7 @@ export function useDialogue(initial: Dialogue) {
     current.current = beat;
     lastShown.current.set(beat.line, Date.now());
     setDialogue({ line: beat.line, expression: beat.expression });
-    const ms = dialogueReadingTime(beat.line);
+    const ms = dialogueReadingTime(beat.line) + Math.max(0, Math.min(120000, beat.delayMs ?? 0));
     until.current = Date.now() + ms;
     timer.current = setTimeout(() => {
       const next = pending.current.shift();
@@ -61,7 +61,7 @@ export function useDialogue(initial: Dialogue) {
 
   const configuredSequence = useCallback((id: string, fallback: Dialogue[], priority: Priority = 1) => {
     const configured = publishedSequences.find((sequence: DialogueSequence) => sequence.id === id && sequence.enabled);
-    saySequence(configured?.lines?.length ? configured.lines.map(({ line, expression }) => ({ line, expression })) : fallback, configured?.priority ?? priority);
+    saySequence(configured?.lines?.length ? configured.lines.map(({ line, expression, delayMs }) => ({ line, expression, delayMs })) : fallback, configured?.priority ?? priority);
   }, [publishedSequences, saySequence]);
 
   useEffect(() => {
