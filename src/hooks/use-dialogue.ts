@@ -39,7 +39,7 @@ export function useDialogue(initial: Dialogue) {
   const saySequence = useCallback((steps: Dialogue[], priority: Priority = 1) => {
     const list = steps.filter((s) => s.line);
     const [first, ...rest] = list;
-    if (!first || current.current.line === first.line) return;
+    if (!first || (current.current.line === first.line && current.current.stickerId === first.stickerId)) return;
     const now = Date.now();
     const busy = now < until.current;
     if (priority === 0 && busy) return; // ambient never stomps an unread line
