@@ -1370,3 +1370,19 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 .sticker-card-actions .admin-btn { margin: 0; }
 .sticker-card .sticker-meta-input { font-size: .75rem; padding: .35rem .45rem; }
 .sticker-usage { font-size: .72rem; text-align: left; line-height: 1.4; overflow-wrap: anywhere; }
+
+
+/* Dialogue sequence editor */
+.dialogue-editor { display: grid; gap: 1rem; margin-top: 1rem; }
+.dialogue-editor h3 { margin: .5rem 0 0; }
+.dialogue-enable { display: flex !important; align-items: center; gap: .5rem; }
+.dialogue-enable input { width: auto !important; }
+.dialogue-line-editor, .dialogue-preview { border: 1px solid var(--line, #d8d2c7); border-radius: 12px; padding: 1rem; display: grid; gap: .7rem; min-width: 0; }
+.dialogue-line-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; flex-wrap: wrap; }
+.dialogue-line-editor textarea { width: 100%; resize: vertical; }
+.dialogue-preview p { font-size: 1.15rem; margin: .2rem 0; overflow-wrap: anywhere; }
+.dialogue-editor .admin-form { gap: 1rem; }
+@media (max-width: 600px) {
+  .dialogue-line-editor, .dialogue-preview { padding: .75rem; }
+  .dialogue-line-heading { align-items: flex-start; }
+}
