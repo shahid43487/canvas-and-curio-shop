@@ -48,7 +48,7 @@ export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; 
       {s.image && <img src={s.image} alt="" className="drop-slide-image" style={{ rotate: `${s.rotation ?? 0}deg`, left: `${s.imageX ?? 76}%`, top: `${s.imageY ?? 60}%` }} />}
       {s.badge && <span className="drop-badge">{s.badge}</span>}
       {layers.map((layer: HeroLayer) => {
-        const style: React.CSSProperties = { left: `${layer.x}%`, top: `${layer.y}%`, width: layer.width ? `${layer.width}%` : undefined, transform: `translate(-50%, -50%) rotate(${layer.rotation ?? 0}deg)` };
+        const style: React.CSSProperties = { left: `${layer.x}%`, top: `${layer.y}%`, width: layer.width ? `${layer.width}%` : undefined, transform: `translate(-50%, -50%) rotate(${layer.rotation ?? 0}deg)`, "--layer-mobile-x": `${layer.mobileX ?? layer.x}%`, "--layer-mobile-y": `${layer.mobileY ?? layer.y}%` } as React.CSSProperties;
         if (layer.kind === "logo" || layer.kind === "image" || layer.kind === "sticker") return layer.src ? <img key={layer.id} src={layer.src} alt="" className={layer.kind === "logo" ? "drop-logo-layer drop-extra-layer" : layer.kind === "sticker" ? "drop-sticker drop-extra-layer" : "drop-slide-image drop-extra-layer"} style={style} /> : null;
         if (layer.kind === "decoration") return <span key={layer.id} className={`drop-decoration-layer ${layer.variant ?? ""}`} style={style}>{layer.text}</span>;
         if (layer.kind === "button") return <Link key={layer.id} to={(layer.href || "/shop") as "/shop"} className="btn-primary drop-extra-layer" style={style}>{layer.text || "Shop now"}</Link>;
@@ -63,11 +63,11 @@ const STICKER_TEXT: Record<string, string> = { good: "GOOD STUUF ✓", drop: "DR
 
 export function getDefaultHeroLayers(): HeroLayer[] {
   return [
-    { id: "hero-logo", kind: "logo", src: assetUrl(logo), x: 68, y: 53, width: 30 },
-    { id: "decor-good", kind: "decoration", variant: "badge", text: "GOOD\\nSTUUF", x: 4, y: 18, width: 7 },
-    { id: "decor-star", kind: "decoration", variant: "star", text: "STUUF", x: 95, y: 13, width: 7 },
-    { id: "decor-eye", kind: "decoration", variant: "eye", text: "●", x: 7, y: 88, width: 7 },
-    { id: "decor-hand", kind: "decoration", variant: "hand", text: "✌", x: 89, y: 91, width: 7 },
-    { id: "decor-spark", kind: "decoration", variant: "spark", text: "✦", x: 48, y: 6, width: 4 },
+    { id: "hero-logo", kind: "logo", src: assetUrl(logo), x: 68, y: 53, width: 30, mobileX: 50, mobileY: 77 },
+    { id: "decor-good", kind: "decoration", variant: "badge", text: "GOOD\\nSTUUF", x: 4, y: 18, width: 7, mobileX: 8, mobileY: 13 },
+    { id: "decor-star", kind: "decoration", variant: "star", text: "STUUF", x: 95, y: 13, width: 7, mobileX: 91, mobileY: 13 },
+    { id: "decor-eye", kind: "decoration", variant: "eye", text: "●", x: 7, y: 88, width: 7, mobileX: 10, mobileY: 92 },
+    { id: "decor-hand", kind: "decoration", variant: "hand", text: "✌", x: 89, y: 91, width: 7, mobileX: 89, mobileY: 92 },
+    { id: "decor-spark", kind: "decoration", variant: "spark", text: "✦", x: 48, y: 6, width: 4, mobileX: 50, mobileY: 5 },
   ];
 }
