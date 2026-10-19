@@ -101,7 +101,9 @@ function Assets() {
         ? { status: site?.dialogue?.status === "published" ? "published" : "draft", sequences: published, draftSequences: dialogueDraft.sequences, updatedAt }
         : { status: "published", sequences: dialogueDraft.sequences, updatedAt };
       await adminSaveSetting({ data: { token, key: "dialogue", value } });
-      setDialogueDraft({ status, sequences: dialogueDraft.sequences, updatedAt });
+      setDialogueDraft(status === "draft"
+        ? { status: value.status, sequences: dialogueDraft.sequences, draftSequences: dialogueDraft.sequences, updatedAt }
+        : { status: "published", sequences: dialogueDraft.sequences, updatedAt });
       toast.success(status === "published" ? "Dialogue configuration published" : "Dialogue draft saved");
       await qc.invalidateQueries({ queryKey: ["site-settings"] });
     } catch (e) { toast.error(e instanceof Error ? e.message : "Could not save dialogue configuration"); }
