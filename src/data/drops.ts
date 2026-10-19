@@ -36,6 +36,14 @@ export type Slide = {
   mobileImageX?: number | undefined;
   mobileImageY?: number | undefined;
   layers?: HeroLayer[] | undefined;
+  copyX?: number | undefined;
+  copyY?: number | undefined;
+  mobileCopyX?: number | undefined;
+  mobileCopyY?: number | undefined;
+  buttonsX?: number | undefined;
+  buttonsY?: number | undefined;
+  mobileButtonsX?: number | undefined;
+  mobileButtonsY?: number | undefined;
 };
 
 export const STICKERS: { id: string; label: string; src: string }[] = [
