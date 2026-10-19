@@ -1,5 +1,5 @@
 import { pageHead } from "@/lib/page-head";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -22,6 +22,9 @@ function Campaigns() {
   const [sel, setSel] = useState(0);
   const [dirty, setDirty] = useState(false);
   const [interval, setIntervalSeconds] = useState<number | null>(null);
+  const [canvasView, setCanvasView] = useState<"desktop" | "mobile">("desktop");
+  const [dragging, setDragging] = useState<"sticker" | "image" | null>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
   useEffect(() => { if (site && !slides) setSlides(site.slides); }, [site, slides]);
   if (!slides || !site) return <p>Loading…</p>;
 
@@ -33,6 +36,7 @@ function Campaigns() {
     catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
   };
   const s = slides[sel];
+  const setCanvasPosition = (kind: "sticker" | "image", e: React.PointerEvent<HTMLDivElement>) => { const rect = canvasRef.current?.getBoundingClientRect(); if (!rect) return; const x = Math.round(Math.max(0, Math.min(100, (e.clientX - rect.left) / rect.width * 100))); const y = Math.round(Math.max(0, Math.min(100, (e.clientY - rect.top) / rect.height * 100))); if (canvasView === "mobile") patch(kind === "sticker" ? { mobileStickerX: x, mobileStickerY: y } : { mobileImageX: x, mobileImageY: y }); else patch(kind === "sticker" ? { stickerX: x, stickerY: y } : { imageX: x, imageY: y }); };
   const stickers = [...STICKERS, ...site.stickers.custom].filter((x) => !site.stickers.hidden.includes(x.id) && !site.stickers.inactive.includes(x.id));
 
   return (
@@ -85,8 +89,13 @@ function Campaigns() {
                 {stickers.map((x) => <button type="button" key={x.id} title={x.label} className={x.id === s.sticker ? "on" : ""} onClick={() => patch({ sticker: x.id })}>{x.src ? <img src={x.src} alt={x.label} /> : x.label}</button>)}
               </span></label>
           </div>
-          <h2>Preview</h2>
-          <div className="admin-preview"><SlideBody s={s} extra={site.stickers.custom} /></div>
+          <div className="hero-canvas-toolbar"><div><h2>Hero canvas</h2><p>Drag artwork to position it. Desktop and mobile layouts are edited separately.</p></div><div className="hero-canvas-switch"><button type="button" className={canvasView === "desktop" ? "active" : ""} onClick={() => setCanvasView("desktop")}>Desktop</button><button type="button" className={canvasView === "mobile" ? "active" : ""} onClick={() => setCanvasView("mobile")}>Mobile</button></div></div>
+          <div className="hero-canvas-settings"><label>Background color<input type="color" value={(canvasView === "mobile" ? s.mobileBackgroundColor : s.backgroundColor) ?? "#f5f0e5"} onChange={(e) => patch(canvasView === "mobile" ? { mobileBackgroundColor: e.target.value } : { backgroundColor: e.target.value })}/></label><label>Move element<select className="admin-input" value={dragging ?? "sticker"} onChange={(e) => setDragging(e.target.value as "sticker" | "image")}><option value="sticker">Hero sticker</option><option value="image" disabled={!s.image}>Hero image</option></select></label><button type="button" className="admin-btn ghost" onClick={() => patch(canvasView === "mobile" ? { mobileStickerX: undefined, mobileStickerY: undefined, mobileImageX: undefined, mobileImageY: undefined } : { stickerX: undefined, stickerY: undefined, imageX: undefined, imageY: undefined })}>Reset positions</button></div>
+          <div className={"hero-canvas-shell " + canvasView}><div ref={canvasRef} className={"hero-drag-canvas " + canvasView} style={{ backgroundColor: (canvasView === "mobile" ? s.mobileBackgroundColor : s.backgroundColor) ?? "#f5f0e5" }} onPointerMove={(e) => { if (dragging) setCanvasPosition(dragging, e); }} onPointerUp={() => setDragging(null)} onPointerCancel={() => setDragging(null)}>
+            <div className="hero-canvas-copy"><span>{s.eyebrow}</span><h2>{s.title}<br/><em>{s.accent}</em></h2><p>{s.sub}</p><b>{s.cta.label} →</b></div>
+            {(() => { const sticker = stickers.find((x) => x.id === s.sticker); const x = canvasView === "mobile" ? s.mobileStickerX ?? s.stickerX ?? 78 : s.stickerX ?? 78; const y = canvasView === "mobile" ? s.mobileStickerY ?? s.stickerY ?? 22 : s.stickerY ?? 22; return <button type="button" className="hero-canvas-object sticker" style={{ left: x + "%", top: y + "%" }} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("sticker"); }} aria-label="Drag hero sticker">{sticker?.src ? <img src={sticker.src} alt="" draggable={false}/> : <b>{s.sticker}</b>}<span>Sticker · drag</span></button>; })()}
+            {s.image && <button type="button" className="hero-canvas-object image" style={{ left: (canvasView === "mobile" ? s.mobileImageX ?? s.imageX ?? 76 : s.imageX ?? 76) + "%", top: (canvasView === "mobile" ? s.mobileImageY ?? s.imageY ?? 60 : s.imageY ?? 60) + "%" }} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("image"); }} aria-label="Drag hero image"><img src={s.image} alt="" draggable={false}/><span>Image · drag</span></button>}
+          </div></div>
         </section>
       )}
     </>
