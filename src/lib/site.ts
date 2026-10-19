@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { SLIDES, type Slide } from "@/data/drops";
+import { SLIDES, STICKERS, type Slide } from "@/data/drops";
 import { adminFileUrl, adminUploadUrl } from "./admin.functions";
 import { getSiteSettings } from "./site.functions";
 
@@ -13,7 +13,7 @@ export type SoundSettings = {
 };
 export type CustomSticker = { id: string; label: string; src: string; category?: string; tags?: string[] };
 export type StickerSettings = { custom: CustomSticker[]; hidden: string[]; inactive: string[] };
-export type DialogueLine = { line: string; expression: string; delayMs?: number };
+export type DialogueLine = { line: string; expression: string; stickerId?: string; delayMs?: number };
 export type DialogueSequence = { id: string; name: string; trigger: string; priority: 0 | 1 | 2; enabled: boolean; lines: DialogueLine[] };
 export type DialogueSettings = { status: "draft" | "published"; sequences: DialogueSequence[]; draftSequences?: DialogueSequence[]; updatedAt?: string };
 
@@ -53,6 +53,12 @@ export const siteQuery = queryOptions({
   staleTime: 60_000,
 });
 export const useSite = () => useQuery(siteQuery).data;
+
+/** Resolve a sticker-library ID to its image URL, preferring custom library entries. */
+export function resolveStickerSrc(id: string | undefined, custom: CustomSticker[] = []) {
+  if (!id) return "";
+  return custom.find((sticker) => sticker.id === id)?.src || STICKERS.find((sticker) => sticker.id === id)?.src || "";
+}
 
 /** Admin-only: upload a file to storage and return a long-lived URL. */
 export async function uploadMedia(token: string, file: File) {
