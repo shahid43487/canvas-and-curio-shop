@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSite, type DialogueSequence } from "@/lib/site";
 
 // Every line stays up at least 12s so it can be read; longer lines get up to 16s.
 export const MIN_READ_MS = 12000;
@@ -11,6 +12,8 @@ export type Priority = 0 | 1 | 2;
 type Beat = Dialogue & { priority: Priority };
 
 export function useDialogue(initial: Dialogue) {
+  const site = useSite();
+  const publishedSequences = site?.dialogue?.status === "published" ? site.dialogue.sequences : [];
   const [dialogue, setDialogue] = useState(initial);
   const current = useRef<Beat>({ ...initial, priority: 1 });
   const until = useRef(0);
@@ -56,6 +59,11 @@ export function useDialogue(initial: Dialogue) {
   const say = useCallback((line: string, expression = "hmm", priority: Priority = 1) =>
     saySequence([{ line, expression }], priority), [saySequence]);
 
+  const configuredSequence = useCallback((id: string, fallback: Dialogue[], priority: Priority = 1) => {
+    const configured = publishedSequences.find((sequence: DialogueSequence) => sequence.id === id && sequence.enabled);
+    saySequence(configured?.lines?.length ? configured.lines.map(({ line, expression }) => ({ line, expression })) : fallback, configured?.priority ?? priority);
+  }, [publishedSequences, saySequence]);
+
   useEffect(() => {
     mounted.current = true;
     const ms = dialogueReadingTime(current.current.line);
@@ -68,5 +76,5 @@ export function useDialogue(initial: Dialogue) {
     return () => { mounted.current = false; clearTimeout(timer.current); pending.current = []; };
   }, [show]);
 
-  return { dialogue, say, saySequence, isBusy: () => Date.now() < until.current };
+  return { dialogue, say, saySequence, configuredSequence, isBusy: () => Date.now() < until.current };
 }
