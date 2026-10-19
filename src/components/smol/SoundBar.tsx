@@ -29,8 +29,6 @@ export function SoundBar() {
   return (
     <button type="button" className="sound-bar" onClick={toggle} aria-pressed={!muted} aria-label={muted ? "Turn website sound on" : "Turn website sound off"}>
       {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-      <span>Sound {muted ? "off" : "on"}</span>
-      {music && !muted && <small>♪ {music.name || "music"}</small>}
     </button>
   );
 }
