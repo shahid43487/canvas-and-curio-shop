@@ -123,6 +123,7 @@ function Assets() {
     })),
   ];
   const categories = [...new Set(entries.map((entry) => entry.category))].sort();
+  const allocatableStickers = entries.filter((entry) => Boolean(entry.src));
   const filtered = entries.filter((entry) => {
     const haystack = [entry.id, entry.label, entry.category, ...entry.tags].join(" ").toLowerCase();
     return (!search.trim() || haystack.includes(search.trim().toLowerCase()))
@@ -158,7 +159,8 @@ function Assets() {
 
       {tab === "controls" ? (
         <section className="admin-panel">
-          <div className="admin-row"><div><h2>Dialogue sequences</h2><p><small>Edit dialogue lines, expressions, trigger notes and priority. Shared reading windows remain unchanged.</small></p></div><span className={`sticker-status ${dialogueDraft.status === "published" ? "active" : "inactive"}`}>{dialogueDraft.status}</span></div>
+          <div className="admin-row"><div><h2>Sticker dialogue controls</h2><p><small>Choose when a sequence plays, then assign a library sticker to each line. Save a draft to keep changes private, or publish to make them live.</small></p></div><span className={`sticker-status ${dialogueDraft.status === "published" ? "active" : "inactive"}`}>{dialogueDraft.status}</span></div>
+          <div className="admin-tiles dialogue-guide"><div className="admin-tile"><span>Step 1 · Event</span><b>When it plays</b></div><div className="admin-tile"><span>Step 2 · Speaker</span><b>Choose sticker</b></div><div className="admin-tile"><span>Step 3 · Timing</span><b>Set the pause</b></div><div className="admin-tile"><span>Step 4 · Go live</span><b>Publish changes</b></div>
           <div className="sticker-library-tools">
             <label>Sequence<select value={selected?.id ?? ""} onChange={(event) => { setSelectedSequence(event.target.value); setPreviewIndex(0); }}>{dialogueDraft.sequences.map((sequence) => <option key={sequence.id} value={sequence.id}>{sequence.name}</option>)}</select></label>
             <button type="button" className="admin-btn ghost" onClick={addSequence}>+ New sequence</button>
@@ -170,17 +172,34 @@ function Assets() {
               <label>Priority<select className="admin-input" value={selected.priority} onChange={(event) => updateSequence(selected.id, { priority: Number(event.target.value) as 0 | 1 | 2 })}><option value={0}>0 · Ambient (idle only)</option><option value={1}>1 · Interaction</option><option value={2}>2 · Critical / interrupt</option></select></label>
               <label className="dialogue-enable"><input type="checkbox" checked={selected.enabled} onChange={(event) => updateSequence(selected.id, { enabled: event.target.checked })} /> Enabled</label>
             </div>
-            <h3>Lines in order</h3>
+            <h3>Dialogue lines</h3><p><small>Every line has its own speaker sticker. Select the character from your library, then edit the words and timing.</small></p>
             {selected.lines.map((line, index) => <div className="dialogue-line-editor" key={index}>
               <div className="dialogue-line-heading"><b>Line {index + 1}</b><div><button type="button" className="admin-btn ghost" disabled={index === 0} onClick={() => updateSequence(selected.id, { lines: selected.lines.map((item, i, all) => i === index ? all[i - 1] : i === index - 1 ? all[i + 1] : item) })}>↑</button> <button type="button" className="admin-btn ghost" disabled={index === selected.lines.length - 1} onClick={() => updateSequence(selected.id, { lines: selected.lines.map((item, i, all) => i === index ? all[i + 1] : i === index + 1 ? all[i - 1] : item) })}>↓</button> <button type="button" className="admin-btn ghost" disabled={selected.lines.length === 1} onClick={() => updateSequence(selected.id, { lines: selected.lines.filter((_, i) => i !== index) })}>Remove line</button></div></div>
-              <label>Dialogue text<textarea className="admin-input" rows={2} value={line.line} onChange={(event) => updateLine(selected.id, index, { line: event.target.value })} /></label>
-              <div className="admin-form"><label>Expression<input className="admin-input" value={line.expression} onChange={(event) => updateLine(selected.id, index, { expression: event.target.value })} /></label><label>Extra pause after reading (ms)<input className="admin-input" type="number" min={0} max={120000} value={line.delayMs ?? 0} onChange={(event) => updateLine(selected.id, index, { delayMs: Math.max(0, Math.min(120000, Number(event.target.value) || 0)) })} /></label></div>
+              <div className="dialogue-line-assignment">
+                <div className="dialogue-assigned-sticker">
+                  {line.stickerId && allocatableStickers.find((entry) => entry.id === line.stickerId)?.src ? <img src={allocatableStickers.find((entry) => entry.id === line.stickerId)?.src} alt="" /> : <span>?</span>}
+                  <small>{allocatableStickers.find((entry) => entry.id === line.stickerId)?.label ?? "Default speaker"}</small>
+                </div>
+                <div className="dialogue-line-fields">
+                  <label>Speaker sticker
+                    <select className="admin-input" value={line.stickerId ?? ""} onChange={(event) => updateLine(selected.id, index, { stickerId: event.target.value || undefined })}>
+                      <option value="">Use default speaker</option>
+                      {allocatableStickers.map((entry) => <option key={entry.id} value={entry.id}>{entry.label} · {entry.isBuiltIn ? "Built-in" : "Custom upload"}</option>)}
+                    </select>
+                  </label>
+                  <label>Dialogue text<textarea className="admin-input" rows={2} value={line.line} onChange={(event) => updateLine(selected.id, index, { line: event.target.value })} /></label>
+                </div>
+              </div>
+              <div className="admin-form">
+                <label>Expression<input className="admin-input" value={line.expression} onChange={(event) => updateLine(selected.id, index, { expression: event.target.value })} /></label>
+                <label>Extra pause after reading (seconds)<input className="admin-input" type="number" min={0} max={120} step={1} value={(line.delayMs ?? 0) / 1000} onChange={(event) => updateLine(selected.id, index, { delayMs: Math.max(0, Math.min(120000, (Number(event.target.value) || 0) * 1000)) })} /></label>
+              </div>
             </div>)}
             <button type="button" className="admin-btn ghost" onClick={() => updateSequence(selected.id, { lines: [...selected.lines, { line: "", expression: "hmm" }] })}>+ Add line</button>
-            <div className="dialogue-preview"><b>Preview</b><p lang="bn">{selected.lines[previewIndex]?.line ?? "No line selected"}</p><small>{selected.lines[previewIndex]?.expression ?? "—"} · line {Math.min(previewIndex + 1, selected.lines.length)} of {selected.lines.length}</small><div className="sticker-card-actions"><button type="button" className="admin-btn ghost" onClick={() => setPreviewIndex((index) => Math.max(0, index - 1))} disabled={previewIndex === 0}>Previous line</button><button type="button" className="admin-btn ghost" onClick={() => setPreviewIndex((index) => Math.min(selected.lines.length - 1, index + 1))} disabled={previewIndex >= selected.lines.length - 1}>Next line</button></div></div>
+            <div className="dialogue-preview"><b>Preview</b><p lang="bn">{selected.lines[previewIndex]?.line ?? "No line selected"}</p><small>{selected.lines[previewIndex]?.expression ?? "—"} · {allocatableStickers.find((entry) => entry.id === selected.lines[previewIndex]?.stickerId)?.label ?? "Default speaker"} · line {Math.min(previewIndex + 1, selected.lines.length)} of {selected.lines.length}</small><div className="sticker-card-actions"><button type="button" className="admin-btn ghost" onClick={() => setPreviewIndex((index) => Math.max(0, index - 1))} disabled={previewIndex === 0}>Previous line</button><button type="button" className="admin-btn ghost" onClick={() => setPreviewIndex((index) => Math.min(selected.lines.length - 1, index + 1))} disabled={previewIndex >= selected.lines.length - 1}>Next line</button></div></div>
             <div className="sticker-card-actions"><button type="button" className="admin-btn ghost" onClick={() => { if (confirm("Delete this sequence from the draft?")) { setDialogueDraft((current) => ({ ...current, status: "draft", sequences: current.sequences.filter((sequence) => sequence.id !== selected.id) })); setSelectedSequence(dialogueDraft.sequences.find((sequence) => sequence.id !== selected.id)?.id ?? ""); } }} disabled={dialogueDraft.sequences.length <= 1}>Delete sequence</button><button type="button" className="admin-btn ghost" onClick={() => void saveDialogue("draft")}>Save draft</button><button type="button" className="admin-btn" onClick={() => void saveDialogue("published")}>Publish configuration</button></div>
           </div> : <p>No sequences yet. Add one to start editing.</p>}
-          <p><small>Published sequences are used by the cart idle reactions and checkout payment / validation reactions. Drafts remain separate and never affect customers.</small></p>
+          <p><small>Published sequences are used by supported cart, checkout, and visitor dialogue triggers. Each line can use a different sticker. Drafts remain separate and never affect customers.</small></p>
         </section>
       ) : (
         <>
