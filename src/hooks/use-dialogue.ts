@@ -27,7 +27,7 @@ export function useDialogue(initial: Dialogue) {
     clearTimeout(timer.current);
     current.current = beat;
     lastShown.current.set(beat.line, Date.now());
-    setDialogue({ line: beat.line, expression: beat.expression, stickerId: beat.stickerId });
+    setDialogue({ line: beat.line, expression: beat.expression, ...(beat.stickerId === undefined ? {} : { stickerId: beat.stickerId }) });
     const ms = dialogueReadingTime(beat.line) + Math.max(0, Math.min(120000, beat.delayMs ?? 0));
     until.current = Date.now() + ms;
     timer.current = setTimeout(() => {
@@ -61,7 +61,7 @@ export function useDialogue(initial: Dialogue) {
 
   const configuredSequence = useCallback((id: string, fallback: Dialogue[], priority: Priority = 1) => {
     const configured = publishedSequences.find((sequence: DialogueSequence) => sequence.id === id && sequence.enabled);
-    saySequence(configured?.lines?.length ? configured.lines.map(({ line, expression, stickerId, delayMs }) => ({ line, expression, stickerId, delayMs })) : fallback, configured?.priority ?? priority);
+    saySequence(configured?.lines?.length ? configured.lines.map((line) => ({ ...line })) : fallback, configured?.priority ?? priority);
   }, [publishedSequences, saySequence]);
 
   useEffect(() => {
