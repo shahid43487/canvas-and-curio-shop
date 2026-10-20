@@ -8,20 +8,20 @@ import prankExcuseButton from "@/assets/prank-excuse-button.jpg";
 import prankSpillCoaster from "@/assets/prank-spill-coaster.jpg";
 import prankDeskWhistle from "@/assets/prank-desk-whistle.jpg";
 
-const PRODUCT_IMAGES: Record<number, string> = {
-  1: blobLamp,
-  2: corkTray,
-  3: littleGuyHook,
-  4: stackRings,
-  5: sunCoasters,
-  6: squiggleBookend,
-  101: prankExcuseButton,
-  102: prankSpillCoaster,
-  103: prankDeskWhistle,
+const PRODUCT_IMAGES: Record<string, string> = {
+  "product-blob-lamp": blobLamp,
+  "product-cork-tray": corkTray,
+  "product-little-guy-hook": littleGuyHook,
+  "product-stack-rings": stackRings,
+  "product-sun-coasters": sunCoasters,
+  "product-squiggle-bookend": squiggleBookend,
+  "prank-excuse-button": prankExcuseButton,
+  "prank-spill-coaster": prankSpillCoaster,
+  "prank-desk-whistle": prankDeskWhistle,
 };
 
-export function ProductImage({ id, name, eager = false, src: custom }: { id: number; name: string; eager?: boolean; src?: string | null }) {
-  const src = custom?.startsWith("http") ? custom : PRODUCT_IMAGES[id];
+export function ProductImage({ name, eager = false, src: custom }: { id: number; name: string; eager?: boolean; src?: string | null }) {
+  const src = custom?.startsWith("http") ? custom : custom ? PRODUCT_IMAGES[custom] : undefined;
   if (!src) return null;
 
   return (

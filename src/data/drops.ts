@@ -1,3 +1,4 @@
+import { KINETIC_STICKERS } from "./kinetic-stickers";
 // Every PNG sticker/character in src/assets is available automatically.
 const PNGS = import.meta.glob("@/assets/*.png", { eager: true, import: "default" }) as Record<string, string>;
 const BUILT_IN = Object.entries(PNGS).map(([path, src]) => {
@@ -38,8 +39,7 @@ export type Slide = {
 
 export const STICKERS: { id: string; label: string; src: string }[] = [
   ...BUILT_IN,
-  { id: "good", label: "GOOD STUUF ✓", src: "" },
-  { id: "drop", label: "DROP 04", src: "" },
+  ...KINETIC_STICKERS,
 ];
 
 export const PRESETS: Record<Preset, { label: string; note: string }> = {

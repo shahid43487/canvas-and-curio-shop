@@ -64,6 +64,12 @@ export function useDialogue(initial: Dialogue) {
     saySequence(configured?.lines?.length ? configured.lines.map((line) => ({ ...line })) : fallback, configured?.priority ?? priority);
   }, [publishedSequences, saySequence]);
 
+  /** Lines of a published, enabled sequence (or the fallback) for components that pick one line at a time. */
+  const linesFor = useCallback((id: string, fallback: Dialogue[]): Dialogue[] => {
+    const configured = publishedSequences.find((sequence: DialogueSequence) => sequence.id === id && sequence.enabled);
+    return configured?.lines?.length ? configured.lines.map((line) => ({ ...line })) : fallback;
+  }, [publishedSequences]);
+
   useEffect(() => {
     mounted.current = true;
     const ms = dialogueReadingTime(current.current.line);
@@ -76,5 +82,5 @@ export function useDialogue(initial: Dialogue) {
     return () => { mounted.current = false; clearTimeout(timer.current); pending.current = []; };
   }, [show]);
 
-  return { dialogue, say, saySequence, configuredSequence, isBusy: () => Date.now() < until.current };
+  return { dialogue, say, saySequence, configuredSequence, linesFor, isBusy: () => Date.now() < until.current };
 }
