@@ -109,7 +109,7 @@ export function CartSheet() {
                 <span>Subtotal</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
-              <Button asChild className="add-cart button-spring w-full" onMouseEnter={() => say(ALMOST, "shush")} onFocus={() => say(ALMOST, "shush")}>
+              <Button asChild className="add-cart button-spring w-full" onMouseEnter={() => saySequence([CART_MANY[1] ?? { line: "", expression: "shush" }])} onFocus={() => saySequence([CART_MANY[1] ?? { line: "", expression: "shush" }])}>
                 <Link to="/checkout" onClick={() => setIsOpen(false)}>
                   {isSecretCart ? "Advance checkout" : "Checkout"}
                 </Link>
