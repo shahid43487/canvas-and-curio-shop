@@ -12,48 +12,22 @@ import { resolveStickerSrc, useSite } from "@/lib/site";
 import { ProductImage } from "./ProductImage";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 
-const EMPTY = [
-  "ভাই, কার্টে বাতাস ছাড়া আর কিছু নাই!",
-  "এইটা কী ভাই! কার্ট একদম খালি?",
-  "এতক্ষণ ঘুরলেন, কিনলেন কী?",
-  "ভাই, শুধু দেখলে তো হবে না… কিছু একটা নেন!",
-  "কার্ট খালি রাখছেন কেন? মানুষজন কী ভাববে?",
-  "একটা জিনিসও পছন্দ হলো না? সমস্যা আছে ভাই।",
-  "এই কার্টের অবস্থা দেখে আমারই খারাপ লাগতেছে।",
-  "ভাই, খালি হাতে যাইয়েন না… মান-সম্মান আছে।",
-  "আপনি কি শপিং করতে আসছেন, নাকি ঘুরতে?",
-];
-const ONE = [
-  "একটা জিনিস নিয়া এত হিসাব কইরেন না ভাই!",
-  "একটা নিলে হবে? আরেকটা নেন ভাই।",
-  "এই একটা দিয়ে কী হবে? আরেকটা দেন।",
-  "ভাই, যেহেতু শুরু করছেন… শেষ করেন।",
-  "একটা জিনিস নিয়া এত খুশি হওয়ার কী আছে?",
-  "আরেকটা নেন। পরে আফসোস করবেন।",
-  "ভাই, কার্টে জায়গা আছে… সমস্যা কোথায়?",
-  "একটা আপনার জন্য, একটা বাসার জন্য—বুদ্ধি করে চলেন।",
-  "এইটা ভালো হইছে… এখন আরেকটা নেন।",
-];
-const TWO = "এইবার হইছে। মানুষজনের মতো লাগতেছে।";
-const ALMOST = "এইবার টাকা দেন… এত চিন্তা করলে ব্যবসা চলে?";
-const REMOVED = "এইটা বাদ দিলেন ক্যান? আপনার রুচি নিয়ে সন্দেহ হইতেছে।";
-const HIGH = "ভাই… জিনিস ভালো লাগছে বুঝলাম, কিন্তু এতগুলা?";
-const LOW = "এই টাকায় তো ঠিকমতো নাশতাও হয় না!";
+import { CART_EMPTY, CART_ONE, CART_MANY, CART_HIGH, CART_LOW, CART_REMOVED } from "@/data/dialogue-defaults";
 
 export function CartSheet() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, isOpen, setIsOpen } = useCart();
   const isSecretCart = items.some((item) => item.product.is_hidden === true);
   const site = useSite();
-  const { dialogue, say, configuredSequence } = useDialogue({ line: EMPTY[0] ?? "", expression: "hmm" });
+  const { dialogue, saySequence, configuredSequence, linesFor } = useDialogue(CART_EMPTY[0] ?? { line: "", expression: "hmm" });
   const assignedStickerSrc = resolveStickerSrc(dialogue.stickerId, site?.stickers.custom);
   const tick = useRef(0);
   const prevCount = useRef(totalItems);
   const wasOpen = useRef(false);
 
   useEffect(() => {
-    if (totalItems < prevCount.current) say(REMOVED, "facepalm", 2);
+    if (totalItems < prevCount.current) configuredSequence("cart-remove", CART_REMOVED, 2);
     prevCount.current = totalItems;
-  }, [totalItems, say]);
+  }, [totalItems, configuredSequence]);
 
   useEffect(() => {
     window.dispatchEvent(new CustomEvent("smol-cart-visibility", { detail: { open: isOpen } }));
@@ -66,16 +40,19 @@ export function CartSheet() {
     let timer: ReturnType<typeof setTimeout>;
     const cycle = (opening = false) => {
       const index = tick.current++;
-      const line = totalItems === 0 ? EMPTY[index % EMPTY.length] ?? ""
-        : totalPrice >= 50 ? HIGH
-        : totalItems === 1 ? totalPrice < 18 && index % 3 === 2 ? LOW : ONE[index % ONE.length] ?? ""
-        : TWO;
-      configuredSequence("cart-idle", [{ line, expression: "hmm" }], opening ? 1 : 0);
+      const [id, fb] = totalItems === 0 ? ["cart-empty", CART_EMPTY] as const
+        : totalPrice >= 50 ? ["cart-high", CART_HIGH] as const
+        : totalItems === 1 ? totalPrice < 18 && index % 3 === 2 ? ["cart-low", CART_LOW] as const : ["cart-single", CART_ONE] as const
+        : ["cart-many", CART_MANY] as const;
+      const lines = linesFor(id, fb);
+      const pick = lines[index % lines.length] ?? { line: "", expression: "hmm" };
+      const line = pick.line;
+      saySequence([pick], opening ? 1 : 0);
       timer = setTimeout(() => cycle(), dialogueReadingTime(line) + 150);
     };
     cycle(justOpened);
     return () => clearTimeout(timer);
-  }, [isOpen, totalItems, totalPrice, say]);
+  }, [isOpen, totalItems, totalPrice, linesFor, saySequence]);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -132,7 +109,7 @@ export function CartSheet() {
                 <span>Subtotal</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
-              <Button asChild className="add-cart button-spring w-full" onMouseEnter={() => say(ALMOST, "shush")} onFocus={() => say(ALMOST, "shush")}>
+              <Button asChild className="add-cart button-spring w-full" onMouseEnter={() => saySequence([CART_MANY[1] ?? { line: "", expression: "shush" }])} onFocus={() => saySequence([CART_MANY[1] ?? { line: "", expression: "shush" }])}>
                 <Link to="/checkout" onClick={() => setIsOpen(false)}>
                   {isSecretCart ? "Advance checkout" : "Checkout"}
                 </Link>
