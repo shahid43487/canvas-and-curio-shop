@@ -31,7 +31,7 @@ export function CanvasContent({ element: e, extra, editing = false, onLogoClick 
   return <div className={`canvas-content ${e.bold ? 'canvas-bold' : ''} ${e.kind === 'button' ? 'canvas-link' : ''}`}>{content}</div>;
 }
 export function HeroCanvasView({ canvas, extra, onLogoClick }: { canvas: HeroCanvas; extra?: { id: string; src: string }[] | undefined; onLogoClick?: (() => void) | undefined }) {
-  const render = (mode: CanvasMode) => <CanvasStage canvas={canvas} mode={mode}>{canvas.elements.filter(e => !e.hidden).map(e => <div key={e.id} className={`canvas-element canvas-kind-${e.kind} canvas-fg-${e.color} canvas-bg-${e.kind === "text" ? "transparent" : e.background} ${e.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} data-canvas-animation={e.animation ?? (e.kind === 'button' ? 'bounce-shadow' : 'none')} style={elementStyle(e, mode)}><CanvasContent element={e} extra={extra} onLogoClick={onLogoClick} /></div>)}</CanvasStage>;
+  const render = (mode: CanvasMode) => <CanvasStage canvas={canvas} mode={mode}>{canvas.elements.filter(e => !e.hidden).map(e => <div key={e.id} className={`canvas-element canvas-kind-${e.kind} canvas-fg-${e.color} canvas-bg-${e.kind === "text" ? "transparent" : e.background} ${e.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} data-canvas-animation={e.animation ?? 'bounce-shadow'} style={elementStyle(e, mode)}><CanvasContent element={e} extra={extra} onLogoClick={onLogoClick} /></div>)}</CanvasStage>;
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
     const scope = root.current;
@@ -40,9 +40,9 @@ export function HeroCanvasView({ canvas, extra, onLogoClick }: { canvas: HeroCan
     const ctx = gsap.context(() => {
       targets.forEach((el, index) => {
         const computed = getComputedStyle(el);
-        const finalShadow = computed.boxShadow;
+        const finalShadow = computed.boxShadow === 'none' ? '4px 4px 0px var(--smol-ink)' : computed.boxShadow;
         gsap.set(el, { y: -18, boxShadow: '0px 0px 0px rgba(22,27,83,0)', transformOrigin: '50% 50%' });
-        gsap.to(el, { y: 0, boxShadow: finalShadow, duration: 0.72, delay: index * 0.075, ease: 'bounce.out', clearProps: 'transform' });
+        gsap.to(el, { y: 0, boxShadow: finalShadow, duration: 0.72, delay: index * 0.075, ease: 'bounce.out', clearProps: 'y' });
       });
     }, scope);
     return () => ctx.revert();
