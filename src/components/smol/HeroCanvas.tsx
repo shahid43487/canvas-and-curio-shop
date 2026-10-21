@@ -14,7 +14,7 @@ export function CanvasStage({ canvas, mode, children, stageRef }: { canvas: Hero
     return () => observer.disconnect();
   }, [mode]);
   return <div ref={host} className={`hero-canvas-host canvas-${mode}`} style={{ height: canvas[mode].height * scale }}>
-    <div ref={stageRef} className={`hero-canvas-stage canvas-bg-${canvas[mode].background}`} style={{ width: CANVAS_WIDTH[mode], height: canvas[mode].height, transform: `scale(${scale})` }}>{children}</div>
+    <div ref={stageRef} className="hero-canvas-stage canvas-bg-paper" style={{ width: CANVAS_WIDTH[mode], height: canvas[mode].height, transform: `scale(${scale})` }}>{children}</div>
   </div>;
 }
 export function elementStyle(e: HeroElement, mode: CanvasMode): CSSProperties {
