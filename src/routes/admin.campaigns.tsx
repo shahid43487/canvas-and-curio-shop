@@ -9,6 +9,8 @@ import { useSite } from "@/lib/site";
 import { SlideBody } from "@/components/smol/DropsHero";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { useAdminToken } from "@/lib/admin-session";
+import { HeroCanvasEditor } from "@/components/smol/HeroCanvasEditor";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/admin/campaigns")({ head: () => pageHead("Hero slides", "SMOL STUUF hero slides administration."), component: Campaigns });
 
@@ -27,7 +29,7 @@ function Campaigns() {
 
   const change = (next: Slide[]) => { setSlides(next); setDirty(true); };
   const patch = (p: Partial<Slide>) => change(slides.map((s, n) => (n === sel ? { ...s, ...p } : s)));
-  const move = (d: number) => { const j = sel + d; if (j < 0 || j >= slides.length) return; const c = [...slides]; [c[sel], c[j]] = [c[j]!, c[sel]!]; change(c); setSel(j); };
+  const move = (d: number) => { const j = sel + d; const a = slides[sel], b = slides[j]; if (!a || !b) return; const c = [...slides]; c[sel] = b; c[j] = a; change(c); setSel(j); };
   const save = async () => {
     try { await Promise.all([adminSaveSetting({ data: { token, key: "slides", value: slides } }), adminSaveSetting({ data: { token, key: "slideInterval", value: interval ?? site.slideInterval } })]); toast.success("Published to homepage"); setDirty(false); qc.invalidateQueries({ queryKey: ["site-settings"] }); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
@@ -59,6 +61,8 @@ function Campaigns() {
             <button className="admin-btn ghost" onClick={() => patch({ hidden: !s.hidden })}>{s.hidden ? "Show" : "Hide"}</button>
             <button className="admin-btn danger" onClick={() => { if (confirm("Delete this slide?")) { change(slides.filter((_, n) => n !== sel)); setSel(Math.max(0, sel - 1)); } }}>Delete</button>
           </div>
+          <HeroCanvasEditor key={s.id} slide={s} token={token} stickers={stickers} extra={site.stickers.custom} onChange={canvas => patch({ canvas })} />
+          <details open={!s.canvas}><summary>Classic slide fields & scheduling</summary>
           <div className="admin-form">
             <label>Small top line<input className="admin-input" value={s.eyebrow} onChange={(e) => patch({ eyebrow: e.target.value })} /></label>
             <label>Headline<input className="admin-input" value={s.title} onChange={(e) => patch({ title: e.target.value })} /></label>
@@ -85,8 +89,8 @@ function Campaigns() {
                 {stickers.map((x) => <button type="button" key={x.id} title={x.label} className={x.id === s.sticker ? "on" : ""} onClick={() => patch({ sticker: x.id })}>{x.src ? <img src={x.src} alt={x.label} /> : x.label}</button>)}
               </span></label>
           </div>
-          <h2>Preview</h2>
-          <div className="admin-preview"><SlideBody s={s} extra={site.stickers.custom} /></div>
+          </details>
+          {!s.canvas && <><h2>Preview</h2><div className="admin-preview"><SlideBody s={s} extra={site.stickers.custom} /></div></>}
         </section>
       )}
     </>

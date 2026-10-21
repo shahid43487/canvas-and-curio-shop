@@ -59,18 +59,7 @@ function Home() {
     <>
       <SiteHeader />
       <main>
-        <div className="hero dots">
-          <StickerField />
-          <div className="wrap hero-inner">
-            <DropsHero />
-            <div className="hero-logo-art">
-              <button type="button" className="hero-secret-trigger" onClick={handleSecretClick} aria-label="SMOL STUUF hand-drawn logo">
-                <img src={assetUrl(logo)} alt="" />
-              </button>
-              <span className="sticker red s2">DROP 04</span>
-            </div>
-          </div>
-        </div>
+        <DropsHero onLogoClick={handleSecretClick} />
 
         <div className="marquee">
           <span>
