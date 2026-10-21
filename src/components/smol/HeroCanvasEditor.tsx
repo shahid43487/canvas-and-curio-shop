@@ -146,7 +146,8 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
             <label>Lift (px)<NumberField label="Hover lift" value={current.hoverLift ?? 3} onCommit={n => update({ hoverLift: Math.max(0, Math.min(30, n)) })} /></label>
             <label>Rotation (deg)<NumberField label="Hover rotation" value={current.hoverRotation ?? -1} onCommit={n => update({ hoverRotation: Math.max(-20, Math.min(20, n)) })} /></label>
           </div>
-        </div>}
+        </div>
+        </fieldset>}
         <div className="canvas-tools">{icon('Bring forward', ArrowUp, () => reorder(1))}{icon('Send backward', ArrowDown, () => reorder(-1))}{icon('Duplicate layer', Copy, () => add({ ...current, id: canvasId(), name: `${current.name} copy`, desktop: { ...current.desktop, x: current.desktop.x + 16 }, mobile: { ...current.mobile, x: current.mobile.x + 8 } }))}{icon(current.locked ? 'Unlock layer' : 'Lock layer', current.locked ? Unlock : Lock, () => update({ locked: !current.locked }))}{icon('Delete layer', Trash2, () => { commit({ ...canvas, elements: canvas.elements.filter(e => e.id !== current.id) }); select(null); })}</div>
       </>}</aside>
     </div>
