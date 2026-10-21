@@ -1632,6 +1632,11 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 .canvas-element:not(.canvas-bg-transparent) > .canvas-content { align-content: center; padding: .15em .5em; }
 .canvas-kind-button .canvas-link, .canvas-content.canvas-link { display: flex; align-items: center; justify-content: center; text-align: center; font-family: var(--smol-display); font-weight: 400; letter-spacing: .01em; }
 .canvas-content.canvas-bold { font-family: var(--smol-display); font-weight: 400 !important; letter-spacing: -.01em; }
+.canvas-element.top-line .canvas-content { font-family: var(--smol-display); font-size: inherit; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.canvas-element.headline .canvas-content, .canvas-element.accent-headline .canvas-content { font-family: var(--smol-display); font-size: inherit; font-weight: 800 !important; line-height: .98; letter-spacing: -.045em; text-transform: uppercase; }
+.canvas-element.description .canvas-content { font-family: var(--smol-body, inherit); font-weight: 400 !important; line-height: 1.55; letter-spacing: 0; }
+.canvas-element.headline .canvas-content, .canvas-element.accent-headline .canvas-content, .canvas-element.description .canvas-content, .canvas-element.top-line .canvas-content { padding: 0; }
+.canvas-kind-text { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
 .canvas-element img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; user-select: none; -webkit-user-drag: none; }
 .canvas-kind-image, .canvas-kind-sticker, .canvas-kind-logo { background-color: transparent; }
 .canvas-element a.canvas-link { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; padding: 0 .5em; background: transparent; color: inherit; box-shadow: none; border-radius: inherit; text-decoration: none; white-space: normal; text-align: center; font-size: inherit; font-weight: 400; }
