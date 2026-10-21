@@ -15,6 +15,7 @@ import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { formatPrice } from "@/data/products";
 import { useCart, itemKey, unitPrice } from "@/hooks/use-cart";
+import { CHECKOUT_IDLE, CHECKOUT_IDLE_HIGH, CHECKOUT_IDLE_ONE } from "@/data/dialogue-defaults";
 import { useDialogue } from "@/hooks/use-dialogue";
 import { CheckoutSpeaker } from "@/components/smol/CheckoutSpeaker";
 import { createOrder, previewCoupon } from "@/lib/orders.functions";
@@ -102,21 +103,19 @@ function Checkout() {
     if (isSecretOrder) setValue("payment_method", "bkash");
   }, [isSecretOrder, setValue]);
 
-  const { dialogue, say, saySequence, configuredSequence } = useDialogue({ line: "এইবার আর পেছনে তাকাইয়েন না।", expression: "shush" });
+  const { dialogue, say, saySequence, configuredSequence, linesFor } = useDialogue({ line: "এইবার আর পেছনে তাকাইয়েন না।", expression: "shush" });
   const idle = useRef<number | undefined>(undefined);
   const idleIndex = useRef(0);
   const poke = useCallback(() => {
     window.clearTimeout(idle.current);
     idle.current = window.setTimeout(() => {
-      const lines = totalPrice >= 50
-        ? ["ভাই… হিসাবটা আরেকবার দেখবেন?", "এতগুলা জিনিস লাগবে আপনার?", "ভাই, বাজেটের ভিতরে আছেন তো?", "টাকা আছে তো?"]
-        : items.length === 1
-          ? ["একটা জিনিস নিয়া যাবেন?", "আরেকটা নিলে খারাপ কী?", "ভাই, একটা দিয়ে কী হবে?"]
-          : ["ভাই… আর কত ভাববেন?", "নিবেন যখন, তখন নেন।", "সিদ্ধান্ত নিতে এত সময় লাগে?"];
-      say(lines[idleIndex.current++ % lines.length] ?? "", totalPrice >= 50 ? "nervous" : items.length === 1 ? "pointing" : "unimpressed", 0);
+      const lines = totalPrice >= 50 ? linesFor("checkout-idle-high", CHECKOUT_IDLE_HIGH)
+        : items.length === 1 ? linesFor("checkout-idle-one", CHECKOUT_IDLE_ONE) : linesFor("checkout-idle", CHECKOUT_IDLE);
+      const pick = lines[idleIndex.current++ % lines.length];
+      if (pick) saySequence([pick], 0);
       poke();
     }, 15000);
-  }, [totalPrice, items.length, say]);
+  }, [totalPrice, items.length, linesFor, saySequence]);
   useEffect(() => {
     poke();
     return () => window.clearTimeout(idle.current);
@@ -125,7 +124,7 @@ function Checkout() {
   useEffect(() => {
     if (prevPay.current === paymentMethod) return;
     if (paymentMethod === "bkash") configuredSequence("checkout-payment", [{ line: "ওহ! আগেই মিটায় ফেললেন?", expression: "shocked" }, { line: "বাহ, বিশ্বাস আছে দেখতেছি!", expression: "laugh" }]);
-    else configuredSequence("checkout-payment", [{ line: "আগে দিতে চাইলেন, এখন আবার পরে?", expression: "hmm" }, { line: "সিদ্ধান্তটা একটু নড়বড়ে মনে হইতেছে।", expression: "unimpressed" }]);
+    else configuredSequence("checkout-payment-cod", [{ line: "আগে দিতে চাইলেন, এখন আবার পরে?", expression: "hmm" }, { line: "সিদ্ধান্তটা একটু নড়বড়ে মনে হইতেছে।", expression: "unimpressed" }]);
     prevPay.current = paymentMethod;
   }, [paymentMethod, say, configuredSequence]);
 

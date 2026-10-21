@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { PRESETS, STICKERS } from "@/data/drops";
 import { adminSaveSetting } from "@/lib/admin.functions";
 import { useSite, type StickerSettings, type CustomSticker, type DialogueSettings, type DialogueSequence } from "@/lib/site";
+import { DEFAULT_SEQUENCES } from "@/data/dialogue-defaults";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { useAdminToken } from "@/lib/admin-session";
 
@@ -37,21 +38,8 @@ function Assets() {
   const [statusFilter, setStatusFilter] = useState<"all" | StickerStatus>("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [dimensions, setDimensions] = useState<Record<string, string>>({});
-  const [dialogueDraft, setDialogueDraft] = useState<DialogueSettings>({ status: "draft", sequences: [
-    { id: "cart-idle", name: "Cart idle reactions", trigger: "Cart idle", priority: 0, enabled: true, lines: [
-      { line: "ভাই… আর কত ভাববেন?", expression: "unimpressed", delayMs: 0 },
-      { line: "নিবেন যখন, তখন নেন।", expression: "hmm", delayMs: 15000 },
-    ] },
-    { id: "checkout-payment", name: "Checkout payment reaction", trigger: "Payment method changes", priority: 1, enabled: true, lines: [
-      { line: "ওহ! আগেই মিটায় ফেললেন?", expression: "shocked" },
-      { line: "বাহ, বিশ্বাস আছে দেখতেছি!", expression: "laugh" },
-    ] },
-    { id: "checkout-error", name: "Checkout validation / error", trigger: "Validation or order error", priority: 2, enabled: true, lines: [
-      { line: "ভাই, কিছু তথ্য তো লাগবো।", expression: "nervous" },
-      { line: "নাম-ঠিকানা ছাড়া জিনিস পাঠামু কই?", expression: "facepalm" },
-    ] },
-  ] });
-  const [selectedSequence, setSelectedSequence] = useState("cart-idle");
+  const [dialogueDraft, setDialogueDraft] = useState<DialogueSettings>({ status: "draft", sequences: DEFAULT_SEQUENCES });
+  const [selectedSequence, setSelectedSequence] = useState("cart-empty");
   const [previewIndex, setPreviewIndex] = useState(0);
   const [selectedLineIndex, setSelectedLineIndex] = useState(0);
   const [dialogueStickerSearch, setDialogueStickerSearch] = useState("");
@@ -59,12 +47,7 @@ function Assets() {
   const [expandedDialogueLines, setExpandedDialogueLines] = useState<Record<number, boolean>>({});
   useEffect(() => {
     if (!site?.dialogue) return;
-    const fallbackSequences: DialogueSequence[] = [
-      { id: "grandpa-popup", name: "Visitor popup", trigger: "Visitor popup after 7 seconds", priority: 0, enabled: true, lines: [
-        { line: "Cart ko dekha? It is feeling emotionally empty.", expression: "hmm", stickerId: "shop-character" },
-        { line: "Tiny object, giant explanation. Excellent choice.", expression: "laugh", stickerId: "shop-character" },
-      ] },
-    ];
+    const fallbackSequences: DialogueSequence[] = DEFAULT_SEQUENCES;
     const source = site.dialogue.draftSequences ?? site.dialogue.sequences;
     const sequences = [...source, ...fallbackSequences.filter((fallback) => !source.some((sequence) => sequence.id === fallback.id))]
       .map((sequence) => ({

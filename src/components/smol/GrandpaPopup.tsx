@@ -4,6 +4,7 @@ import { resolveStickerSrc, useSite } from "@/lib/site";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDialogue } from "@/hooks/use-dialogue";
+import { VISITOR_JOKES } from "@/data/dialogue-defaults";
 import character from "@/assets/shop-character.png";
 import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
 
@@ -24,7 +25,7 @@ export function GrandpaPopup() {
   const [visible, setVisible] = useState(false);
   const [jokeIndex, setJokeIndex] = useState(0);
   const site = useSite();
-  const { dialogue, configuredSequence } = useDialogue({ line: jokes[0]?.line ?? "", expression: "hmm" });
+  const { dialogue, saySequence, linesFor } = useDialogue({ line: jokes[0]?.line ?? "", expression: "hmm" });
   const assignedStickerSrc = resolveStickerSrc(dialogue.stickerId, site?.stickers.custom);
 
   useEffect(() => {
@@ -40,13 +41,15 @@ export function GrandpaPopup() {
     if (window.sessionStorage.getItem("smol-grandpa-seen")) return;
     const timer = window.setTimeout(() => {
       window.sessionStorage.setItem("smol-grandpa-seen", "1");
-      const index = Math.floor(Math.random() * jokes.length);
-      setJokeIndex(index);
-      configuredSequence("grandpa-popup", [{ line: jokes[index]?.line ?? "", expression: "hmm" }], 0);
+      const lines = linesFor("grandpa-popup", VISITOR_JOKES);
+      const index = Math.floor(Math.random() * lines.length);
+      setJokeIndex(index % jokes.length);
+      const pick = lines[index];
+      if (pick) saySequence([pick], 0);
       setVisible(true);
     }, 7000);
     return () => window.clearTimeout(timer);
-  }, [configuredSequence]);
+  }, [linesFor, saySequence]);
 
   if (!visible) return null;
   const joke = jokes[jokeIndex] ?? jokes[0];
