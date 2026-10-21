@@ -138,7 +138,15 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
           </div>
           <label>Border color<select className="admin-input" value={current.borderColor ?? 'ink'} onChange={e => update({ borderColor: e.target.value as HeroElement['borderColor'] })}>{CANVAS_COLORS.map(c => <option key={c}>{c}</option>)}</select></label>
           <label>Shadow color<select className="admin-input" value={current.shadowColor ?? 'ink'} onChange={e => update({ shadowColor: e.target.value as HeroElement['shadowColor'] })}>{CANVAS_COLORS.map(c => <option key={c}>{c}</option>)}</select></label>
-        </fieldset>}
+        <div className="canvas-style-fields"><legend>Hover effect</legend>
+          <label className="canvas-check"><input type="checkbox" checked={current.hoverEffect ?? true} onChange={e => update({ hoverEffect: e.target.checked })} /> Enable hover lift + shadow</label>
+          <div className="canvas-numbers">
+            <label>Hover shadow X<NumberField label="Hover shadow horizontal offset" value={current.hoverShadowX ?? 5} onCommit={n => update({ hoverShadowX: Math.max(-40, Math.min(40, n)) })} /></label>
+            <label>Hover shadow Y<NumberField label="Hover shadow vertical offset" value={current.hoverShadowY ?? 6} onCommit={n => update({ hoverShadowY: Math.max(-40, Math.min(40, n)) })} /></label>
+            <label>Lift (px)<NumberField label="Hover lift" value={current.hoverLift ?? 3} onCommit={n => update({ hoverLift: Math.max(0, Math.min(30, n)) })} /></label>
+            <label>Rotation (deg)<NumberField label="Hover rotation" value={current.hoverRotation ?? -1} onCommit={n => update({ hoverRotation: Math.max(-20, Math.min(20, n)) })} /></label>
+          </div>
+        </div>}
         <div className="canvas-tools">{icon('Bring forward', ArrowUp, () => reorder(1))}{icon('Send backward', ArrowDown, () => reorder(-1))}{icon('Duplicate layer', Copy, () => add({ ...current, id: canvasId(), name: `${current.name} copy`, desktop: { ...current.desktop, x: current.desktop.x + 16 }, mobile: { ...current.mobile, x: current.mobile.x + 8 } }))}{icon(current.locked ? 'Unlock layer' : 'Lock layer', current.locked ? Unlock : Lock, () => update({ locked: !current.locked }))}{icon('Delete layer', Trash2, () => { commit({ ...canvas, elements: canvas.elements.filter(e => e.id !== current.id) }); select(null); })}</div>
       </>}</aside>
     </div>
