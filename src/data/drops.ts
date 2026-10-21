@@ -1,4 +1,5 @@
 import { KINETIC_STICKERS } from "./kinetic-stickers";
+import type { HeroCanvas } from "@/lib/hero-canvas";
 // Every PNG sticker/character in src/assets is available automatically.
 const PNGS = import.meta.glob("@/assets/*.png", { eager: true, import: "default" }) as Record<string, string>;
 const BUILT_IN = Object.entries(PNGS).map(([path, src]) => {
@@ -9,6 +10,7 @@ const BUILT_IN = Object.entries(PNGS).map(([path, src]) => {
 // ponytail: drops live in code until a campaigns table exists; edit this file to publish.
 export type Preset = "split" | "chaos" | "editorial" | "prank";
 export type Slide = {
+  canvas?: HeroCanvas | undefined;
   id: string;
   eyebrow: string;
   title: string;

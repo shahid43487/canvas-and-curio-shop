@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 - Keep normal-shop and reverse-vault headers as variants of the shared SiteHeader so navigation and cart behavior stay consistent.
+- Hero canvas data is optional per slide; share its fixed-coordinate renderer between campaigns and storefront with independent desktop/mobile geometry, preserving the legacy hero for unconverted slides.
 - Resolve managed asset pointers against the current site origin; independent deployments restore assets from the backup archive, never another project's domain.
 - CSS owns shared button transforms and dedicated GSAP components own their animations; delegated sticker wiggles use independent rotation to preserve artwork tilt.
 - Guest order lookups return only a narrow confirmation projection with masked delivery details; authenticated account reads retain full owner-scoped details.

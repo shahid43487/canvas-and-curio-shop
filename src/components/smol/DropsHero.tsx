@@ -3,9 +3,14 @@ import { Link } from "@tanstack/react-router";
 import gsap from "gsap";
 import { liveSlides, SLIDES, stickerSrc, type Slide } from "@/data/drops";
 import { useSite } from "@/lib/site";
+import { HeroCanvasView } from "./HeroCanvas";
+import { StickerField } from "./StickerField";
+import { Button } from "@/components/ui/button";
+import logo from "@/assets/smol-stuuf-logo.png.asset.json";
+import { assetUrl } from "@/lib/asset-url";
 
 // Rotates live STUUF DROPS slides (edited in /admin/campaigns) inside the hero markup.
-export function DropsHero() {
+export function DropsHero({ onLogoClick }: { onLogoClick?: (() => void) | undefined }) {
   const site = useSite();
   const live = site ? liveSlides(site.slides) : [];
   const slides = live.length ? live : SLIDES.slice(0, 1);
@@ -14,19 +19,24 @@ export function DropsHero() {
 
   useEffect(() => {
     if (slides.length < 2) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const id = setInterval(() => {
       if (!box.current) return;
+      if (reduced) { setI(n => (n + 1) % slides.length); return; }
       gsap.to(box.current, { opacity: 0, y: -12, duration: 0.25, onComplete: () => setI((n) => (n + 1) % slides.length) });
     }, (site?.slideInterval ?? 6) * 1000);
-    return () => clearInterval(id);
+    return () => { clearInterval(id); if (box.current) gsap.killTweensOf(box.current); };
   }, [slides.length, site?.slideInterval]);
   useEffect(() => {
-    if (box.current) gsap.fromTo(box.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.6)" });
+    if (!box.current) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) gsap.set(box.current, { opacity: 1, y: 0 });
+    else gsap.fromTo(box.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.6)" });
   }, [i]);
 
   const current = slides[i % slides.length];
   if (!current) return null;
-  return <div ref={box}><SlideBody s={current} extra={site?.stickers.custom} dots={slides.length > 1 ? { n: slides.length, i, set: setI } : undefined} /></div>;
+  const canvas = current.canvas?.version === 1 && Array.isArray(current.canvas.elements) ? current.canvas : undefined;
+  return <div className="hero-slider"><div ref={box}>{canvas ? <HeroCanvasView canvas={canvas} extra={site?.stickers.custom} onLogoClick={onLogoClick} /> : <div className="hero dots"><StickerField /><div className="wrap hero-inner"><SlideBody s={current} extra={site?.stickers.custom} /><div className="hero-logo-art"><Button type="button" variant="ghost" className="hero-secret-trigger" onClick={onLogoClick} aria-label="SMOL STUUF hand-drawn logo"><img src={assetUrl(logo)} alt="" /></Button><span className="sticker red s2">DROP 04</span></div></div></div>}</div>{slides.length > 1 && <div className="hero-slider-dots">{slides.map((s, n) => <Button key={s.id} variant="ghost" size="icon" aria-label={`Slide ${n + 1}`} aria-pressed={n === i % slides.length} onClick={() => setI(n)}><span /></Button>)}</div>}</div>;
 }
 
 export function SlideBody({ s, extra, dots }: { s: Slide; extra?: { id: string; src: string }[] | undefined; dots?: { n: number; i: number; set: (n: number) => void } | undefined }) {
