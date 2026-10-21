@@ -18,6 +18,7 @@ import { useCart, itemKey, unitPrice } from "@/hooks/use-cart";
 import { CHECKOUT_IDLE, CHECKOUT_IDLE_HIGH, CHECKOUT_IDLE_ONE } from "@/data/dialogue-defaults";
 import { useDialogue } from "@/hooks/use-dialogue";
 import { CheckoutSpeaker } from "@/components/smol/CheckoutSpeaker";
+import { CouponPanel } from "@/components/smol/CouponPanel";
 import { createOrder, previewCoupon } from "@/lib/orders.functions";
 import { useCustomer } from "@/hooks/use-customer";
 import logo from "@/assets/smol-stuuf-logo.png.asset.json";
@@ -58,28 +59,30 @@ function Checkout() {
   const isSecretOrder = items.some((item) => item.product.is_hidden === true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const customer = useCustomer();
-  const [couponCode, setCouponCode] = useState("");
+  const [couponPanelOpen, setCouponPanelOpen] = useState(false);
   const [couponBusy, setCouponBusy] = useState(false);
   const [coupon, setCoupon] = useState<{ code: string; discount: number; total: number } | null>(null);
   // A changed cart invalidates the previewed discount.
   useEffect(() => setCoupon(null), [totalPrice, items.length]);
   const payable = coupon ? coupon.total : totalPrice;
 
-  const applyCoupon = async () => {
-    if (!couponCode.trim()) return;
+  const applyCoupon = async (code: string): Promise<boolean> => {
+    if (!code.trim()) return false;
     setCouponBusy(true);
     try {
       const result = await previewCoupon({
         data: {
-          code: couponCode,
+          code,
           items: items.map((i) => ({ product_id: i.product.id, ...(i.variation?.id ? { variation_id: i.variation.id } : {}), quantity: i.quantity })),
         },
       });
       setCoupon({ code: result.code, discount: result.discount, total: result.total });
       toast.success(`Coupon ${result.code} applied`);
+      return true;
     } catch (error) {
       setCoupon(null);
       toast.error(error instanceof Error ? error.message : "Could not apply coupon");
+      return false;
     } finally {
       setCouponBusy(false);
     }
@@ -289,21 +292,26 @@ function Checkout() {
               {!customer ? (
                 <p className="summary-note"><Link to="/auth">Sign in</Link> to use a coupon.</p>
               ) : coupon ? (
-                <div className="summary-item">
-                  <span>Coupon {coupon.code}</span>
-                  <span>
-                    −{formatPrice(coupon.discount)}{" "}
-                    <button type="button" className="coupon-remove" onClick={() => { setCoupon(null); setCouponCode(""); }}>remove</button>
-                  </span>
+                <div className="coupon-applied">
+                  <div className="coupon-applied-head">
+                    <span className="coupon-tag">{coupon.code}</span>
+                    <button type="button" className="coupon-remove" onClick={() => setCoupon(null)}>Remove</button>
+                  </div>
+                  <p className="summary-note">Coupon applied — you saved {formatPrice(coupon.discount)}.</p>
                 </div>
               ) : (
-                <div className="coupon-row">
-                  <Input aria-label="Coupon code" placeholder="Coupon code" value={couponCode} maxLength={64} onChange={(e) => setCouponCode(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void applyCoupon(); } }} />
-                  <Button type="button" variant="outline" disabled={couponBusy || !couponCode.trim()} onClick={() => void applyCoupon()}>{couponBusy ? "…" : "Apply"}</Button>
-                </div>
+                <button type="button" className="coupon-open" onClick={() => setCouponPanelOpen(true)}>
+                  <span aria-hidden="true">🎟</span> Have a coupon? <b>Apply</b>
+                </button>
               )}
+              {customer && <CouponPanel open={couponPanelOpen} onOpenChange={setCouponPanelOpen} subtotal={totalPrice} busy={couponBusy} appliedCode={coupon?.code ?? null} onApply={applyCoupon} />}
             </div>
+            {coupon && (
+              <>
+                <div className="summary-item"><span>Subtotal</span><span>{formatPrice(totalPrice)}</span></div>
+                <div className="summary-item summary-discount"><span>Discount ({coupon.code})</span><span>−{formatPrice(coupon.discount)}</span></div>
+              </>
+            )}
             <div className="summary-total">
               <span>Total</span>
               <span>{formatPrice(payable)}</span>
