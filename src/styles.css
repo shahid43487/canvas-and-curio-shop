@@ -1581,7 +1581,7 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 
 
 /* ---------- Hero canvas: stage, layers, editor ---------- */
-.canvas-bg-paper { background-color: var(--smol-paper); }
+.canvas-bg-paper { background-color: var(--smol-paper); background-image: radial-gradient(circle, rgb(22 27 83 / .24) 1px, transparent 1.2px); background-size: 12px 12px; }
 .canvas-bg-ink { background-color: var(--smol-ink); }
 .canvas-bg-red { background-color: var(--smol-red); }
 .canvas-bg-yellow { background-color: var(--smol-yellow); }
@@ -1600,7 +1600,7 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 .canvas-fg-white { color: var(--smol-white); }
 
 .hero-slider { position: relative; }
-.published-hero-canvas { position: relative; width: 100%; overflow: hidden; }
+.published-hero-canvas { position: relative; width: 100%; overflow: hidden; background-color: var(--smol-paper); background-image: radial-gradient(circle, rgb(22 27 83 / .24) 1px, transparent 1.2px); background-size: 12px 12px; }
 .published-hero-canvas:has(.canvas-desktop > .canvas-bg-paper) { background-color: var(--smol-paper); }
 .published-hero-canvas:has(.canvas-desktop > .canvas-bg-ink) { background-color: var(--smol-ink); }
 .published-hero-canvas:has(.canvas-desktop > .canvas-bg-red) { background-color: var(--smol-red); }
@@ -1660,7 +1660,11 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 .canvas-swatch { width: 24px; height: 24px; min-width: 24px; padding: 0; border: 2px solid var(--smol-ink); border-radius: 50%; }
 .canvas-swatch[aria-pressed="true"] { outline: 3px solid #2f6bff; outline-offset: 2px; }
 
-.canvas-columns { display: grid; grid-template-columns: 220px minmax(0, 1fr) 260px; gap: 12px; align-items: start; }
+.canvas-columns { display: grid; grid-template-columns: 190px minmax(0, 1fr) 240px; gap: 12px; align-items: start; }
+.canvas-workspace { width: 100%; max-width: none; }
+.canvas-area .hero-canvas-host.canvas-desktop { min-width: 1180px; width: 1180px; max-width: none; }
+.canvas-area .hero-canvas-host.canvas-mobile { min-width: 390px; width: 390px; max-width: none; }
+.canvas-area .hero-canvas-stage.canvas-bg-paper { background-image: radial-gradient(circle, rgb(22 27 83 / .24) 1px, transparent 1.2px); background-size: 12px 12px; }
 .canvas-layers, .canvas-inspector { display: grid; gap: .5rem; align-content: start; font-size: .85rem; max-height: 78vh; overflow-y: auto; }
 .canvas-layers h3, .canvas-inspector h3 { font-weight: 800; font-size: .9rem; margin-top: .25rem; overflow-wrap: anywhere; }
 .canvas-layer-list { display: grid; gap: 2px; max-height: 240px; overflow-y: auto; }
