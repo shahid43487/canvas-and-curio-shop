@@ -1711,11 +1711,19 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
   .canvas-layers, .canvas-inspector { max-height: none; }
 }
 
-/* Canvas button styling controls and reduced-motion safe GSAP entrance. */
-.canvas-kind-button { transition: transform .28s cubic-bezier(.34,1.56,.64,1), box-shadow .24s ease, background-color .2s ease; }
+/* Canvas button styling controls, ink-fill hover, and a subtle springy bounce. */
+.canvas-kind-button { transition: transform .28s cubic-bezier(.34,1.56,.64,1), box-shadow .24s ease, background-color .2s ease, color .2s ease; }
 .canvas-kind-button:not(.canvas-edit-element):hover { transform: translateY(calc(var(--canvas-hover-lift, -3px) * var(--canvas-hover-enabled, 1))) rotate(calc(var(--canvas-hover-rotation, -1deg) * var(--canvas-hover-enabled, 1))) scale(1.015); box-shadow: var(--canvas-hover-shadow, 5px 6px 0 var(--smol-ink)); background-color: var(--smol-ink); color: var(--smol-paper); }
-.canvas-kind-button[data-hover-effect='false']:hover { transform: none; box-shadow: var(--canvas-base-shadow, none); background-color: var(--canvas-base-background, transparent); color: var(--canvas-base-color, inherit); }
-.canvas-kind-button:not(.canvas-edit-element):active { transform: translateY(2px) scale(.97); box-shadow: 1px 2px 0 var(--smol-ink); }
+.canvas-kind-button:not(.canvas-edit-element):hover:not([data-hover-effect='false']) { animation: canvas-button-hover-bounce .42s ease-out; }
+@keyframes canvas-button-hover-bounce {
+  0% { translate: 0 0; }
+  34% { translate: 0 -3px; }
+  58% { translate: 0 1px; }
+  78% { translate: 0 -1px; }
+  100% { translate: 0 0; }
+}
+.canvas-kind-button[data-hover-effect='false']:hover { transform: none; translate: none; animation: none; box-shadow: var(--canvas-base-shadow, none); background-color: var(--canvas-base-background, transparent); color: var(--canvas-base-color, inherit); }
+.canvas-kind-button:not(.canvas-edit-element):active { transform: translateY(2px) scale(.97); translate: none; animation: none; box-shadow: 1px 2px 0 var(--smol-ink); }
 .canvas-style-fields { border: 1px solid color-mix(in srgb, var(--smol-ink) 24%, transparent); border-radius: 10px; padding: 10px; margin: 12px 0; }
 .canvas-style-fields legend { font-weight: 800; padding: 0 5px; }
-@media (prefers-reduced-motion: reduce) { .canvas-kind-button { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .canvas-kind-button { transition: none !important; animation: none !important; } }
