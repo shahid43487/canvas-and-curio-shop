@@ -1,5 +1,10 @@
 # Roadmap
 
+## Hero canvas — October 21
+- [ ] Build inline campaign canvas with editable layers and independent desktop/mobile placement
+- [ ] Render published canvas slides while preserving legacy slides and logo interactions
+- [ ] Verify dragging, editing, undo, and saved layouts
+
 ## Remix setup — October 18
 - [x] Update the three admin secrets through secure fields
 - [x] Clear copied migrations and leave an empty migration directory for the new database
