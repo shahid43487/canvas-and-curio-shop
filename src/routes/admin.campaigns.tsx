@@ -35,7 +35,7 @@ function Campaigns() {
     catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
   };
   const s = slides[sel];
-  const stickers = [...STICKERS, ...site.stickers.custom].filter((x) => !site.stickers.hidden.includes(x.id) && !site.stickers.inactive.includes(x.id));
+  const stickers = [...STICKERS, ...site.stickers.custom];
 
   return (
     <>
