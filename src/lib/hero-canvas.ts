@@ -42,9 +42,10 @@ export function createHeroCanvas(slide: Slide): HeroCanvas {
   if (slide.badge) add('text', 'Badge', slide.badge, '', { x: 900, y: 420, width: 210, height: 46, fontSize: 20 }, { x: 220, y: 220, width: 140, height: 36, fontSize: 16 }, { background: 'red', color: 'white', bold: true, align: 'center' });
   return { version: 1, desktop: { height: 560, background: 'paper' }, mobile: { height: 780, background: 'paper' }, elements };
 }
+const clamp = (v: number, lo: number, hi: number) => (Number.isFinite(v) ? Math.max(lo, Math.min(hi, v)) : lo);
 export function constrainRect(rect: CanvasRect, mode: CanvasMode, height: number): CanvasRect {
-  const width = Math.max(24, Math.min(CANVAS_WIDTH[mode], rect.width));
-  const h = Math.max(24, Math.min(height, rect.height));
-  return { ...rect, width, height: h, x: Math.max(0, Math.min(CANVAS_WIDTH[mode] - width, rect.x)), y: Math.max(0, Math.min(height - h, rect.y)) };
+  const width = clamp(rect.width, 24, CANVAS_WIDTH[mode]);
+  const h = clamp(rect.height, 24, height);
+  return { ...rect, width, height: h, x: clamp(rect.x, 0, CANVAS_WIDTH[mode] - width), y: clamp(rect.y, 0, height - h), fontSize: clamp(rect.fontSize, 8, 400), rotation: clamp(rect.rotation, -360, 360) };
 }
 export const safeHeroHref = (href: string) => /^\/(?!\/)|^https?:\/\//i.test(href) ? href : '/shop';

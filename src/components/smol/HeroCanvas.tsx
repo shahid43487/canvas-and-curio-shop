@@ -29,6 +29,6 @@ export function CanvasContent({ element: e, extra, editing = false, onLogoClick 
   return <div className={`canvas-content ${e.bold ? 'canvas-bold' : ''} ${e.kind === 'button' ? 'canvas-link' : ''}`}>{content}</div>;
 }
 export function HeroCanvasView({ canvas, extra, onLogoClick }: { canvas: HeroCanvas; extra?: { id: string; src: string }[] | undefined; onLogoClick?: (() => void) | undefined }) {
-  const render = (mode: CanvasMode) => <CanvasStage canvas={canvas} mode={mode}>{canvas.elements.filter(e => !e.hidden).map(e => <div key={e.id} className={`canvas-element canvas-fg-${e.color} canvas-bg-${e.background}`} style={elementStyle(e, mode)}><CanvasContent element={e} extra={extra} onLogoClick={onLogoClick} /></div>)}</CanvasStage>;
+  const render = (mode: CanvasMode) => <CanvasStage canvas={canvas} mode={mode}>{canvas.elements.filter(e => !e.hidden).map(e => <div key={e.id} className={`canvas-element canvas-kind-${e.kind} canvas-fg-${e.color} canvas-bg-${e.background}`} style={elementStyle(e, mode)}><CanvasContent element={e} extra={extra} onLogoClick={onLogoClick} /></div>)}</CanvasStage>;
   return <section className="published-hero-canvas" aria-label="SMOL STUUF drop">{render('desktop')}{render('mobile')}</section>;
 }

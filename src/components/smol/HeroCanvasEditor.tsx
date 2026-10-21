@@ -1,10 +1,24 @@
-import { useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { ArrowDown, ArrowUp, Copy, Eye, EyeOff, Lock, Unlock, Monitor, Smartphone, Plus, Redo2, Undo2, Trash2, Type, ImagePlus, MousePointer2, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AdminUpload } from './AdminUpload';
 import { CanvasStage, CanvasContent, elementStyle } from './HeroCanvas';
 import { CANVAS_COLORS, CANVAS_WIDTH, canvasId, constrainRect, createHeroCanvas, newHeroElement, type CanvasMode, type CanvasRect, type HeroCanvas, type HeroElement } from '@/lib/hero-canvas';
 import type { Slide } from '@/data/drops';
+
+// Number box that keeps what the person is typing: a value is applied as soon as it is valid,
+// and out-of-range values are clamped when the box loses focus (so "500" can be typed digit by digit).
+function NumberField({ label, value, onCommit }: { label: string; value: number; onCommit: (n: number, final: boolean) => void }) {
+  const [draft, setDraft] = useState(String(value));
+  const [tick, setTick] = useState(0);
+  const focused = useRef(false);
+  useEffect(() => { if (!focused.current) setDraft(String(value)); }, [value, tick]);
+  const parsed = (text: string) => (text.trim() !== '' && Number.isFinite(Number(text)) ? Number(text) : null);
+  return <input className="admin-input" type="number" aria-label={label} value={draft}
+    onFocus={() => { focused.current = true; }}
+    onChange={e => { setDraft(e.target.value); const n = parsed(e.target.value); if (n !== null) onCommit(n, false); }}
+    onBlur={() => { focused.current = false; const n = parsed(draft); if (n !== null) onCommit(n, true); setTick(t => t + 1); }} />;
+}
 
 export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { slide: Slide; token: string; stickers: { id: string; label: string; src: string }[]; extra: { id: string; src: string }[]; onChange: (canvas: HeroCanvas | undefined) => void }) {
   const [mode, setMode] = useState<CanvasMode>('desktop');
@@ -23,6 +37,18 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
   };
   const update = (patch: Partial<HeroElement>) => { if (canvas && current) commit({ ...canvas, elements: canvas.elements.map(e => e.id === current.id ? { ...e, ...patch } : e) }); };
   const rectUpdate = (patch: Partial<CanvasRect>) => { if (canvas && current) update({ [mode]: constrainRect({ ...current[mode], ...patch }, mode, canvas[mode].height) }); };
+  const setNum = (key: keyof CanvasRect, n: number, final: boolean) => {
+    if (!canvas || !current) return;
+    const next = constrainRect({ ...current[mode], [key]: n }, mode, canvas[mode].height);
+    if ((!final && next[key] !== n) || next[key] === current[mode][key]) return;
+    update({ [mode]: next });
+  };
+  const setHeight = (n: number, final: boolean) => {
+    if (!canvas) return;
+    const h = Math.max(300, Math.min(1800, n));
+    if ((!final && h !== n) || h === canvas[mode].height) return;
+    commit({ ...canvas, [mode]: { ...canvas[mode], height: h }, elements: canvas.elements.map(el => ({ ...el, [mode]: constrainRect(el[mode], mode, h) })) });
+  };
   const add = (e: HeroElement) => { if (!canvas) return; commit({ ...canvas, elements: [...canvas.elements, e] }); select(e.id); };
   const undo = () => { const last = past.at(-1); if (!last || !canvas) return; setPast(p => p.slice(0, -1)); setFuture(f => [...f, canvas]); onChange(last); };
   const redo = () => { const next = future.at(-1); if (!next || !canvas) return; setFuture(f => f.slice(0, -1)); setPast(p => [...p, canvas]); onChange(next); };
@@ -65,7 +91,7 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
         <Button type="button" variant={mode === 'mobile' ? 'default' : 'outline'} size="sm" onClick={() => setMode('mobile')}><Smartphone /> Mobile</Button>
       </div>
       <div className="canvas-tools">{icon('Undo', Undo2, undo, !past.length)}{icon('Redo', Redo2, redo, !future.length)}<label className="canvas-check"><input type="checkbox" checked={snap} onChange={e => setSnap(e.target.checked)} /> Snap</label></div>
-      <label className="canvas-height">Height<input className="admin-input" type="number" min={300} max={1800} value={canvas[mode].height} onChange={e => { const h = Math.max(300, Math.min(1800, Number(e.target.value))); commit({ ...canvas, [mode]: { ...canvas[mode], height: h }, elements: canvas.elements.map(el => ({ ...el, [mode]: constrainRect(el[mode], mode, h) })) }); }} /></label>
+      <label className="canvas-height">Height<NumberField label="Canvas height" value={canvas[mode].height} onCommit={setHeight} /></label>
       <div className="canvas-swatches" aria-label="Canvas background">{CANVAS_COLORS.map(c => <Button key={c} type="button" size="icon" variant="outline" className={`canvas-swatch canvas-bg-${c}`} title={`${c} background`} aria-label={`${c} background`} aria-pressed={canvas[mode].background === c} onClick={() => commit({ ...canvas, [mode]: { ...canvas[mode], background: c } })} />)}</div>
       {icon('Return to classic layout', RotateCcw, () => { if (confirm('Return to classic layout? Canvas layers will be removed after publishing.')) onChange(undefined); })}
     </div>
@@ -83,7 +109,7 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
         const box = stage.current.getBoundingClientRect(), scale = box.width / CANVAS_WIDTH[mode], e = newHeroElement('sticker', '', sticker.id);
         add({ ...e, name: sticker.label, [mode]: constrainRect({ ...e[mode], x: (event.clientX - box.left) / scale, y: (event.clientY - box.top) / scale }, mode, canvas[mode].height) });
       }}>
-        <CanvasStage canvas={canvas} mode={mode} stageRef={stage}>{canvas.elements.filter(e => !e.hidden).map(e => <div key={e.id} data-layer-id={e.id} aria-label={`Canvas layer ${e.name}`} tabIndex={0} className={`canvas-element canvas-edit-element canvas-fg-${e.color} canvas-bg-${e.background} ${selected === e.id ? 'is-selected' : ''} ${e.locked ? 'is-locked' : ''}`} style={elementStyle(e, mode)} onPointerDown={event => startDrag(event, e)} onPointerMove={moveDrag} onPointerUp={() => stopDrag()} onPointerCancel={() => stopDrag(true)} onFocus={() => select(e.id)} onKeyDown={event => {
+        <CanvasStage canvas={canvas} mode={mode} stageRef={stage}>{canvas.elements.filter(e => !e.hidden).map(e => <div key={e.id} data-layer-id={e.id} aria-label={`Canvas layer ${e.name}`} tabIndex={0} className={`canvas-element canvas-kind-${e.kind} canvas-edit-element canvas-fg-${e.color} canvas-bg-${e.background} ${selected === e.id ? 'is-selected' : ''} ${e.locked ? 'is-locked' : ''}`} style={elementStyle(e, mode)} onPointerDown={event => startDrag(event, e)} onPointerMove={moveDrag} onPointerUp={() => stopDrag()} onPointerCancel={() => stopDrag(true)} onFocus={() => select(e.id)} onKeyDown={event => {
           if (e.locked || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
           event.preventDefault(); const step = event.shiftKey ? 10 : 1;
           commit({ ...canvas, elements: canvas.elements.map(x => x.id === e.id ? { ...x, [mode]: constrainRect({ ...x[mode], x: x[mode].x + (event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0), y: x[mode].y + (event.key === 'ArrowUp' ? -step : event.key === 'ArrowDown' ? step : 0) }, mode, canvas[mode].height) } : x) });
@@ -95,7 +121,7 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
         {current.kind === 'button' && <label>Link<input className="admin-input" value={current.href} onChange={e => update({ href: e.target.value })} /></label>}
         {(current.kind === 'image' || current.kind === 'logo') && <AdminUpload token={token} accept="image/*" label="Replace image" onDone={src => update({ src })} />}
         {current.kind === 'sticker' && <label>Artwork<select className="admin-input" value={current.src} onChange={e => update({ src: e.target.value })}>{stickers.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}</select></label>}
-        <fieldset disabled={current.locked}><div className="canvas-numbers">{(['x', 'y', 'width', 'height', 'rotation', 'fontSize'] as const).map(key => <label key={key}>{key === 'fontSize' ? 'Font size' : key}<input className="admin-input" type="number" aria-label={`Layer ${key}`} value={current[mode][key]} onChange={e => rectUpdate({ [key]: Number(e.target.value) })} /></label>)}</div></fieldset>
+        <fieldset disabled={current.locked}><div className="canvas-numbers">{(['x', 'y', 'width', 'height', 'rotation', 'fontSize'] as const).map(key => <label key={key}>{key === 'fontSize' ? 'Font size' : key}<NumberField label={`Layer ${key}`} value={current[mode][key]} onCommit={(n, final) => setNum(key, n, final)} /></label>)}</div></fieldset>
         <label>Alignment<select className="admin-input" value={current.align} onChange={e => update({ align: e.target.value as HeroElement['align'] })}><option>left</option><option>center</option><option>right</option></select></label>
         <label className="canvas-check"><input type="checkbox" checked={current.bold} onChange={e => update({ bold: e.target.checked })} /> Bold</label>
         <label>Text color<select className="admin-input" value={current.color} onChange={e => update({ color: e.target.value as HeroElement['color'] })}>{CANVAS_COLORS.map(c => <option key={c}>{c}</option>)}</select></label>
