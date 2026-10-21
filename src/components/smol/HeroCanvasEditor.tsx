@@ -125,8 +125,10 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
         <label className="canvas-check"><input type="checkbox" checked={current.bold} onChange={e => update({ bold: e.target.checked })} /> Bold</label>
         <label>Text color<select className="admin-input" value={current.color} onChange={e => update({ color: e.target.value as HeroElement['color'] })}>{CANVAS_COLORS.map(c => <option key={c}>{c}</option>)}</select></label>
         <label>Fill<select className="admin-input" value={current.background} onChange={e => update({ background: e.target.value as HeroElement['background'] })}><option>transparent</option>{CANVAS_COLORS.map(c => <option key={c}>{c}</option>)}</select></label>
-        <label>Motion<select className="admin-input" value={current.animation ?? (current.kind === 'button' ? 'bounce-shadow' : 'none')} onChange={e => update({ animation: e.target.value as HeroElement['animation'] })}><option value="none">No animation</option><option value="bounce-shadow">GSAP bounce + shadow drop</option></select></label>
+        <label>Motion<select className="admin-input" value={current.animation ?? 'none'} onChange={e => update({ animation: e.target.value as HeroElement['animation'] })}><option value="none">No animation</option><option value="bounce-shadow">GSAP bounce + shadow drop</option></select></label>
         {current.kind === 'button' && <fieldset className="canvas-style-fields"><legend>Button border & shadow</legend>
+          <label className="canvas-check"><input type="checkbox" checked={(current.borderWidth ?? 3) > 0} onChange={e => update({ borderWidth: e.target.checked ? 3 : 0 })} /> Show border</label>
+          <label className="canvas-check"><input type="checkbox" checked={current.shadowEnabled ?? false} onChange={e => update({ shadowEnabled: e.target.checked })} /> Enable shadow</label>
           <div className="canvas-numbers">
             <label>Border width<NumberField label="Border width" value={current.borderWidth ?? 3} onCommit={n => update({ borderWidth: Math.max(0, Math.min(16, n)) })} /></label>
             <label>Corner radius<NumberField label="Corner radius" value={current.borderRadius ?? 999} onCommit={n => update({ borderRadius: Math.max(0, Math.min(999, n)) })} /></label>
