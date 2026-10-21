@@ -9,6 +9,9 @@ export type HeroElement = {
   id: string; name: string; kind: 'text' | 'image' | 'sticker' | 'button' | 'logo';
   text: string; src: string; href: string; color: CanvasColor; background: CanvasColor | 'transparent';
   bold: boolean; align: 'left' | 'center' | 'right'; locked: boolean; hidden: boolean;
+  borderWidth: number; borderColor: CanvasColor; borderRadius: number;
+  shadowX: number; shadowY: number; shadowBlur: number; shadowColor: CanvasColor;
+  animation: 'none' | 'bounce-shadow';
   desktop: CanvasRect; mobile: CanvasRect;
 };
 export type HeroCanvas = { version: 1; desktop: { height: number; background: CanvasColor }; mobile: { height: number; background: CanvasColor }; elements: HeroElement[] };
@@ -18,6 +21,8 @@ export const canvasId = () => `layer-${Date.now().toString(36)}-${Math.random().
 export function newHeroElement(kind: HeroElement['kind'], text = '', src = ''): HeroElement {
   const art = kind === 'sticker' || kind === 'image' || kind === 'logo';
   return { id: canvasId(), name: text || kind, kind, text, src, href: kind === 'button' ? '/shop' : '', color: 'ink', background: kind === 'button' ? 'yellow' : 'transparent', bold: kind !== 'text', align: 'left', locked: false, hidden: false,
+    borderWidth: kind === 'button' ? 3 : 0, borderColor: 'ink', borderRadius: kind === 'button' ? 999 : 0,
+    shadowX: kind === 'button' ? 4 : 0, shadowY: kind === 'button' ? 4 : 0, shadowBlur: 0, shadowColor: 'ink', animation: kind === 'button' ? 'bounce-shadow' : 'none',
     desktop: { x: 60, y: 60, width: art ? 140 : 400, height: art ? 140 : 70, rotation: 0, fontSize: 32 },
     mobile: { x: 24, y: 320, width: art ? 100 : 342, height: art ? 100 : 70, rotation: 0, fontSize: 24 } };
 }
