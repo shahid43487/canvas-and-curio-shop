@@ -92,7 +92,6 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
       </div>
       <div className="canvas-tools">{icon('Undo', Undo2, undo, !past.length)}{icon('Redo', Redo2, redo, !future.length)}<label className="canvas-check"><input type="checkbox" checked={snap} onChange={e => setSnap(e.target.checked)} /> Snap</label></div>
       <label className="canvas-height">Height<NumberField label="Canvas height" value={canvas[mode].height} onCommit={setHeight} /></label>
-      <div className="canvas-swatches" aria-label="Canvas background">{CANVAS_COLORS.map(c => <Button key={c} type="button" size="icon" variant="outline" className={`canvas-swatch canvas-bg-${c}`} title={`${c} background`} aria-label={`${c} background`} aria-pressed={canvas[mode].background === c} onClick={() => commit({ ...canvas, [mode]: { ...canvas[mode], background: c } })} />)}</div>
       {icon('Return to classic layout', RotateCcw, () => { if (confirm('Return to classic layout? Canvas layers will be removed after publishing.')) onChange(undefined); })}
     </div>
     <div className="canvas-columns">
