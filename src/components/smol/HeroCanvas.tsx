@@ -40,7 +40,7 @@ export function HeroCanvasView({ canvas, extra, onLogoClick }: { canvas: HeroCan
     const ctx = gsap.context(() => {
       targets.forEach((el, index) => {
         const computed = getComputedStyle(el);
-        const hasShadow = el.dataset.canvasShadow === 'true';
+        const hasShadow = el.dataset['canvasShadow'] === 'true';
         gsap.set(el, { y: -18, ...(hasShadow ? { boxShadow: '0px 0px 0px rgba(22,27,83,0)' } : {}), transformOrigin: '50% 50%' });
         gsap.to(el, { y: 0, ...(hasShadow ? { boxShadow: computed.boxShadow } : {}), duration: 0.72, delay: index * 0.075, ease: 'bounce.out', clearProps: 'y' });
       });
