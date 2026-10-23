@@ -20,8 +20,8 @@ export function CanvasStage({ canvas, mode, children, stageRef }: { canvas: Hero
 }
 export function elementStyle(e: HeroElement, mode: CanvasMode): CSSProperties {
   const r = e[mode];
-  return { left: r.x, top: r.y, width: r.width, height: r.height, transform: `rotate(${r.rotation}deg)`, fontSize: r.fontSize, textAlign: e.align, fontWeight: e.bold ? 900 : 400,
-    ...(e.kind === 'button' ? { border: (e.borderWidth ?? 3) > 0 ? `${e.borderWidth ?? 3}px solid var(--smol-${e.borderColor ?? 'ink'})` : 'none', borderRadius: `${e.borderRadius ?? 999}px`, boxShadow: e.shadowEnabled ? `${e.shadowX ?? 4}px ${e.shadowY ?? 4}px ${e.shadowBlur ?? 0}px var(--smol-${e.shadowColor ?? 'ink'})` : 'none', '--canvas-hover-shadow': `${e.hoverShadowX ?? 5}px ${e.hoverShadowY ?? 6}px 0 var(--smol-ink)`, '--canvas-hover-lift': `${-(e.hoverLift ?? 3)}px`, '--canvas-hover-rotation': `${e.hoverRotation ?? -1}deg`, '--canvas-hover-enabled': e.hoverEffect ?? (e.kind === 'button') ? 1 : 0, '--canvas-base-shadow': e.shadowEnabled ? `${e.shadowX ?? 4}px ${e.shadowY ?? 4}px ${e.shadowBlur ?? 0}px var(--smol-${e.shadowColor ?? 'ink'})` : 'none', '--canvas-base-background': e.background === 'transparent' ? 'transparent' : `var(--smol-${e.background})`, '--canvas-base-color': `var(--smol-${e.color})` } as CSSProperties : {}) };
+  return { left: r.x, top: r.y, width: r.width, height: r.height, '--canvas-rotation': `${r.rotation}deg`, fontSize: r.fontSize, textAlign: e.align, fontWeight: e.bold ? 900 : 400,
+    ...(e.kind === 'button' ? { border: (e.borderWidth ?? 3) > 0 ? `${e.borderWidth ?? 3}px solid var(--smol-${e.borderColor ?? 'ink'})` : 'none', borderRadius: `${e.borderRadius ?? 999}px`, '--canvas-hover-shadow': `${e.hoverShadowX ?? 5}px ${e.hoverShadowY ?? 6}px 0 var(--smol-ink)`, '--canvas-hover-lift': `${-(e.hoverLift ?? 3)}px`, '--canvas-hover-rotation': `${e.hoverRotation ?? -1}deg`, '--canvas-hover-enabled': e.hoverEffect ?? (e.kind === 'button') ? 1 : 0, '--canvas-base-shadow': e.shadowEnabled ? `${e.shadowX ?? 4}px ${e.shadowY ?? 4}px ${e.shadowBlur ?? 0}px var(--smol-${e.shadowColor ?? 'ink'})` : 'none', '--canvas-base-background': e.background === 'transparent' ? 'transparent' : `var(--smol-${e.background})`, '--canvas-base-color': `var(--smol-${e.color})` } as CSSProperties : {}) };
 }
 export function CanvasContent({ element: e, extra, editing = false, onLogoClick }: { element: HeroElement; extra?: { id: string; src: string }[] | undefined; editing?: boolean; onLogoClick?: (() => void) | undefined }) {
   const art = e.kind === 'image' || e.kind === 'sticker' || e.kind === 'logo';
@@ -31,18 +31,23 @@ export function CanvasContent({ element: e, extra, editing = false, onLogoClick 
   return <div className={`canvas-content ${e.bold ? 'canvas-bold' : ''} ${e.kind === 'button' ? 'canvas-link' : ''}`}>{content}</div>;
 }
 export function HeroCanvasView({ canvas, extra, onLogoClick }: { canvas: HeroCanvas; extra?: { id: string; src: string }[] | undefined; onLogoClick?: (() => void) | undefined }) {
-  const render = (mode: CanvasMode) => <CanvasStage canvas={canvas} mode={mode}>{canvas.elements.filter(e => !e.hidden).map(e => <div key={e.id} className={`canvas-element canvas-kind-${e.kind} canvas-fg-${e.color} canvas-bg-${e.kind === "text" ? "transparent" : e.background} ${e.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} data-canvas-animation={e.animation ?? 'none'} data-canvas-shadow={e.shadowEnabled ? 'true' : 'false'} data-hover-effect={(e.hoverEffect ?? e.kind === 'button') ? 'true' : 'false'} style={elementStyle(e, mode)}><CanvasContent element={e} extra={extra} onLogoClick={onLogoClick} /></div>)}</CanvasStage>;
+  const render = (mode: CanvasMode) => <CanvasStage canvas={canvas} mode={mode}>{canvas.elements.filter(e => !e.hidden).map(e => <div key={e.id} className={`canvas-element canvas-kind-${e.kind} canvas-fg-${e.color} canvas-bg-${e.kind === "text" ? "transparent" : e.background} ${e.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} data-canvas-animation={e.animation ?? 'none'} data-canvas-rotation={e[mode].rotation} data-canvas-shadow={e.shadowEnabled ? 'true' : 'false'} data-hover-effect={(e.hoverEffect ?? e.kind === 'button') ? 'true' : 'false'} style={elementStyle(e, mode)}><CanvasContent element={e} extra={extra} onLogoClick={onLogoClick} /></div>)}</CanvasStage>;
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
     const scope = root.current;
     if (!scope) return;
-    const targets = scope.querySelectorAll<HTMLElement>('[data-canvas-animation="bounce-shadow"]');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ctx = gsap.context(() => {
-      targets.forEach((el, index) => {
+      if (reduced) return;
+      const rotation = (el: HTMLElement) => Number(el.dataset['canvasRotation'] ?? 0);
+      scope.querySelectorAll<HTMLElement>('[data-canvas-animation="bounce-shadow"]').forEach((el, index) => {
         const computed = getComputedStyle(el);
         const hasShadow = el.dataset['canvasShadow'] === 'true';
-        gsap.set(el, { y: -18, ...(hasShadow ? { boxShadow: '0px 0px 0px rgba(22,27,83,0)' } : {}), transformOrigin: '50% 50%' });
-        gsap.to(el, { y: 0, ...(hasShadow ? { boxShadow: computed.boxShadow } : {}), duration: 0.72, delay: index * 0.075, ease: 'bounce.out', clearProps: 'y' });
+        gsap.set(el, { y: -18, rotate: rotation(el), ...(hasShadow ? { boxShadow: '0px 0px 0px rgba(22,27,83,0)' } : {}), transformOrigin: '50% 50%' });
+        gsap.to(el, { y: 0, rotate: rotation(el), ...(hasShadow ? { boxShadow: computed.boxShadow } : {}), duration: 0.72, delay: index * 0.075, ease: 'bounce.out', clearProps: 'y' });
+      });
+      scope.querySelectorAll<HTMLElement>('[data-canvas-animation="entrance-spring"]').forEach((el, index) => {
+        gsap.fromTo(el, { opacity: 0, y: 16, rotate: rotation(el) }, { opacity: 1, y: 0, rotate: rotation(el), duration: 0.5, delay: index * 0.075, ease: 'back.out(1.6)', clearProps: 'opacity,y' });
       });
     }, scope);
     return () => ctx.revert();
