@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Dialogue } from "@/hooks/use-dialogue";
 import character from "@/assets/shop-character.png";
-import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
+import fierceCharacter from "@/assets/cart-fierce-character.png";
 import { resolveStickerSrc, useSite } from "@/lib/site";
 
 export function CheckoutSpeaker({ dialogue }: { dialogue: Dialogue }) {

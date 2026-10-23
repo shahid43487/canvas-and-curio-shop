@@ -10,7 +10,7 @@ import { StickerField } from "@/components/smol/StickerField";
 import { ManifestoPanel } from "@/components/smol/ManifestoPanel";
 import { DropsHero } from "@/components/smol/DropsHero";
 import { SECRET_ACCESS_KEY } from "@/components/smol/SecretGate";
-import logo from "@/assets/smol-stuuf-logo.png.asset.json";
+import logo from "@/assets/smol-stuuf-logo.png";
 import { listProducts } from "@/lib/products.functions";
 
 const productsQueryOptions = queryOptions({

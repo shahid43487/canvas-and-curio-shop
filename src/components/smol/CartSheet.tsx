@@ -10,7 +10,7 @@ import { useCart, itemKey, unitPrice } from "@/hooks/use-cart";
 import { useDialogue, dialogueReadingTime } from "@/hooks/use-dialogue";
 import { resolveStickerSrc, useSite } from "@/lib/site";
 import { ProductImage } from "./ProductImage";
-import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
+import fierceCharacter from "@/assets/cart-fierce-character.png";
 
 import { CART_EMPTY, CART_ONE, CART_MANY, CART_HIGH, CART_LOW, CART_REMOVED } from "@/data/dialogue-defaults";
 

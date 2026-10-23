@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useDialogue } from "@/hooks/use-dialogue";
 import { VISITOR_JOKES } from "@/data/dialogue-defaults";
 import character from "@/assets/shop-character.png";
-import fierceCharacter from "@/assets/cart-fierce-character.png.asset.json";
+import fierceCharacter from "@/assets/cart-fierce-character.png";
 
 const jokes = [
   { line: "Cart ko dekha? It is feeling emotionally empty.", sticker: assetUrl(fierceCharacter) },
