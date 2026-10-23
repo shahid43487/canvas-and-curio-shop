@@ -6,7 +6,7 @@ import { useSite } from "@/lib/site";
 import { HeroCanvasView } from "./HeroCanvas";
 import { StickerField } from "./StickerField";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/smol-stuuf-logo.png.asset.json";
+import logo from "@/assets/smol-stuuf-logo.png";
 import { assetUrl } from "@/lib/asset-url";
 
 // Rotates live STUUF DROPS slides (edited in /admin/campaigns) inside the hero markup.

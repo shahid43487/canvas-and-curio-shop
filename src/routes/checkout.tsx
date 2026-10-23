@@ -21,7 +21,7 @@ import { CheckoutSpeaker } from "@/components/smol/CheckoutSpeaker";
 import { CouponPanel } from "@/components/smol/CouponPanel";
 import { createOrder, previewCoupon } from "@/lib/orders.functions";
 import { useCustomer } from "@/hooks/use-customer";
-import logo from "@/assets/smol-stuuf-logo.png.asset.json";
+import logo from "@/assets/smol-stuuf-logo.png";
 
 const checkoutSchema = z.object({
   shipping_name: z.string().min(2, "Name is required"),

@@ -1,5 +1,5 @@
 import type { Slide } from '@/data/drops';
-import logo from '@/assets/smol-stuuf-logo.png.asset.json';
+import logo from '@/assets/smol-stuuf-logo.png';
 import { assetUrl } from './asset-url';
 
 export type CanvasMode = 'desktop' | 'mobile';
