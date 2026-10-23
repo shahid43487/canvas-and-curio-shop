@@ -12,7 +12,7 @@ export type HeroElement = {
   borderWidth: number; borderColor: CanvasColor; borderRadius: number;
   shadowEnabled: boolean; shadowX: number; shadowY: number; shadowBlur: number; shadowColor: CanvasColor;
   hoverEffect: boolean; hoverShadowX: number; hoverShadowY: number; hoverLift: number; hoverRotation: number;
-  animation: 'none' | 'bounce-shadow';
+  animation: 'none' | 'bounce-shadow' | 'entrance-spring';
   desktop: CanvasRect; mobile: CanvasRect;
 };
 export type HeroCanvas = { version: 1; desktop: { height: number; background: CanvasColor }; mobile: { height: number; background: CanvasColor }; elements: HeroElement[] };
@@ -24,7 +24,7 @@ export function newHeroElement(kind: HeroElement['kind'], text = '', src = ''): 
   return { id: canvasId(), name: text || kind, kind, text, src, href: kind === 'button' ? '/shop' : '', color: 'ink', background: kind === 'button' ? 'yellow' : 'transparent', bold: kind !== 'text', align: 'left', locked: false, hidden: false,
     borderWidth: kind === 'button' ? 3 : 0, borderColor: 'ink', borderRadius: kind === 'button' ? 999 : 0,
     shadowEnabled: false, shadowX: kind === 'button' ? 4 : 0, shadowY: kind === 'button' ? 4 : 0, shadowBlur: 0, shadowColor: 'ink',
-    hoverEffect: kind === 'button', hoverShadowX: 5, hoverShadowY: 6, hoverLift: 3, hoverRotation: -1, animation: 'none',
+    hoverEffect: kind === 'button', hoverShadowX: 5, hoverShadowY: 6, hoverLift: 3, hoverRotation: -1, animation: 'entrance-spring',
     desktop: { x: 60, y: 60, width: art ? 140 : 400, height: art ? 140 : 70, rotation: 0, fontSize: 32 },
     mobile: { x: 24, y: 320, width: art ? 100 : 342, height: art ? 100 : 70, rotation: 0, fontSize: 24 } };
 }
