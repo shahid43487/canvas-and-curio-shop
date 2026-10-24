@@ -376,3 +376,34 @@ export const adminGetCouponTemplates = createServerFn({ method: "POST" })
     if (error) throw error;
     return { templates: Array.isArray(row?.value) ? row.value : [] };
   });
+
+
+export const adminListAchievements = createServerFn({ method: "POST" })
+  .validator((d: Auth) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { data: achievements, error } = await (db as any).from("achievement_definitions").select("*").order("sort_order");
+    if (error) throw error;
+    return { achievements: achievements ?? [] };
+  });
+
+export const adminSaveAchievement = createServerFn({ method: "POST" })
+  .validator((d: Auth & { id: string; title: string; description: string; requirement_value: number; reward_discount_value: number; rarity: string; is_secret: boolean; is_active: boolean; sort_order: number }) => {
+    if (!/^[a-z0-9-]{2,48}$/.test(d.id)) throw new Error("Achievement ID must use lowercase letters, numbers and hyphens.");
+    if (!d.title.trim() || d.title.length > 80 || d.description.length > 300) throw new Error("Check achievement title and description.");
+    if (!Number.isInteger(d.requirement_value) || d.requirement_value < 1 || d.requirement_value > 10000) throw new Error("Requirement must be from 1 to 10000.");
+    if (!Number.isFinite(d.reward_discount_value) || d.reward_discount_value < 0 || d.reward_discount_value > 100) throw new Error("Reward must be from 0 to 100.");
+    if (!["common","uncommon","rare","epic","legendary"].includes(d.rarity)) throw new Error("Invalid rarity.");
+    return d;
+  })
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { id, ...patch } = data;
+    const { error } = await (db as any).from("achievement_definitions").upsert({
+      id, ...patch, category: data.is_secret ? "secret" : "orders",
+      requirement_type: "delivered_orders", reward_discount_type: "percent",
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "id" });
+    if (error) throw error;
+    return { ok: true };
+  });
