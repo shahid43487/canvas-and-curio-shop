@@ -28,31 +28,30 @@ export const cancelOrder = createServerFn({ method: "POST" }).middleware([requir
     return { ok: true };
   });
 export const claimAchievementReward = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
-  .inputValidator(input => z.object({ achievement: z.enum(["first-drop", "collector-three", "inner-circle-five", "repeat-legend", "secret-stuuf"]) }).parse(input))
+  .inputValidator(input => z.object({ achievement: z.string().regex(/^[a-z0-9-]{2,48}$/) }).parse(input))
   .handler(async ({ context, data }) => {
-    const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
-    const thresholds = {
-      "first-drop": { orders: 1, code: "FIRSTDROP", discount_type: "percent", discount_value: 10, description: "Achievement reward: First Drop" },
-      "collector-three": { orders: 3, code: "COLLECTOR", discount_type: "percent", discount_value: 15, description: "Achievement reward: Collector" },
-      "inner-circle-five": { orders: 5, code: "INNER5", discount_type: "percent", discount_value: 20, description: "Achievement reward: Inner Circle" },
-      "repeat-legend": { orders: 10, code: "REPEAT10", discount_type: "percent", discount_value: 25, description: "Achievement reward: Repeat Legend" },
-      "secret-stuuf": { orders: 15, code: "SECRET15", discount_type: "percent", discount_value: 30, description: "Achievement reward: The Secret Stuuf" },
-    } as const;
-    const reward = thresholds[data.achievement];
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const db = supabaseAdmin as any;
+    const { data: reward, error: rewardError } = await db.from("achievement_definitions")
+      .select("id,title,requirement_type,requirement_value,reward_discount_type,reward_discount_value,is_active,is_secret")
+      .eq("id", data.achievement).maybeSingle();
+    if (rewardError) throw rewardError;
+    if (!reward || !reward.is_active) throw new Error("This achievement is no longer available.");
+    if (reward.requirement_type !== "delivered_orders") throw new Error("This achievement cannot be claimed through order milestones.");
     const { count, error: orderError } = await db.from("orders").select("id", { count: "exact", head: true }).eq("user_id", context.userId).eq("status", "delivered");
     if (orderError) throw orderError;
-    if ((count ?? 0) < reward.orders) throw new Error("Complete the achievement before claiming its reward.");
+    if ((count ?? 0) < reward.requirement_value) throw new Error("Complete the achievement before claiming its reward.");
     const suffix = context.userId.replace(/-/g, "").slice(0, 8).toUpperCase();
-    const code = `SMOL-${reward.code}-${suffix}`;
+    const code = `SMOL-${data.achievement.toUpperCase().replace(/-/g, "").slice(0, 12)}-${suffix}`;
     const { data: existing, error: existingError } = await db.from("customer_coupons").select("id").eq("user_id", context.userId).eq("code", code).maybeSingle();
     if (existingError) throw existingError;
     if (existing) return { ok: true, code, alreadyClaimed: true };
     const { error: insertError } = await db.from("customer_coupons").insert({
       user_id: context.userId,
       code,
-      description: reward.description,
-      discount_type: reward.discount_type,
-      discount_value: reward.discount_value,
+      description: `Achievement reward: ${reward.title}`,
+      discount_type: reward.reward_discount_type,
+      discount_value: reward.reward_discount_value,
       min_order: 0,
       expires_at: null,
       used_at: null,
@@ -60,7 +59,6 @@ export const claimAchievementReward = createServerFn({ method: "POST" }).middlew
     if (insertError) throw insertError;
     return { ok: true, code, alreadyClaimed: false };
   });
-
 
 // Server-verified collectible deck. Card ownership is persisted in customer_cards,
 // not inferred from frontend state.
