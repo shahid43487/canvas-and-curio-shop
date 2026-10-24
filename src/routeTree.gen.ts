@@ -186,6 +186,7 @@ export interface FileRoutesByTo {
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
   '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/coupon-library': typeof AdminCouponLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
@@ -211,6 +212,7 @@ export interface FileRoutesById {
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
   '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/coupon-library': typeof AdminCouponLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
@@ -236,6 +238,7 @@ export interface FileRouteTypes {
     | '/admin/assets'
     | '/admin/campaigns'
     | '/admin/coupons'
+    | '/admin/coupon-library'
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
