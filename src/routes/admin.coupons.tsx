@@ -57,7 +57,7 @@ function Coupons() {
       (!needle || c.code.toLowerCase().includes(needle) || c.email.toLowerCase().includes(needle)));
   }, [coupons, q, statusFilter, typeFilter]);
   const filtered = q !== "" || statusFilter !== "all" || typeFilter !== "all";
-  const grantTemplates = coupons.filter((c) => couponStatus(c) === "active" && !c.used_at);
+  const grantTemplates = [...new Map(coupons.filter((c) => couponStatus(c) === "active" && !c.used_at).map((c) => [c.code.toUpperCase(), c])).values()];
   const selectedTemplate = grantTemplates.find((c) => c.id === grantCouponId);
   const customerRows = (customerData?.customers ?? []).filter((c) => !customerSearch.trim() || `${c.email} ${c.display_name}`.toLowerCase().includes(customerSearch.trim().toLowerCase()));
   const grantTargetCount = grantMode === "all" ? (customerData?.customers.length ?? 0) : selectedCustomerIds.length;
