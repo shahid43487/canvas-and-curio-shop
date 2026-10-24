@@ -30,7 +30,7 @@ export const cancelOrder = createServerFn({ method: "POST" }).middleware([requir
 export const claimAchievementReward = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
   .inputValidator(input => z.object({ achievement: z.enum(["first-drop", "collector-three", "inner-circle-five"]) }).parse(input))
   .handler(async ({ context, data }) => {
-    const db = context.supabase;
+    const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
     const thresholds = {
       "first-drop": { orders: 1, code: "FIRSTDROP", discount_type: "percent", discount_value: 10, description: "Achievement reward: First Drop" },
       "collector-three": { orders: 3, code: "COLLECTOR", discount_type: "percent", discount_value: 15, description: "Achievement reward: Collector" },
