@@ -126,11 +126,7 @@ create trigger orders_refresh_customer_achievements after insert or update of st
 for each row execute function public.refresh_customer_order_achievements();
 
 -- Backfill current customers' delivered-order milestones and achievement cards.
-do $$
-declare u record; o record;
+do $
 begin
-  for u in select distinct user_id from public.orders where user_id is not null loop
-    select * into o from public.orders where user_id = u.user_id order by created_at desc limit 1;
-    if found then perform public.refresh_customer_order_achievements_for_user(u.user_id); end if;
-  end loop;
-end $$;
+  update public.orders set status = status where user_id is not null;
+end $;
