@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "sourceImage": "user-supplied reference collage (30 visible cards; six additional cards not present)",
+  "canvas": {
+    "width": 300,
+    "height": 420,
+    "aspectRatio": "5:7"
+  },
+  "templates": [
+    {
+      "id": "concept-01",
+      "title": "PLAY GAMES",
+      "category": "concept",
+      "asset": "/assets/coupon-cards/concept-01-play-games.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-left",
+        "character-body",
+        "character-accessories",
+        "decorative-particles",
+        "footer-decoration"
+      ],
+      "editableFields": [
+        {
+          "key": "title",
+          "svgLayer": "header-title"
+        },
+        {
+          "key": "discount",
+          "placeholder": "{{discount}}"
+        },
+        {
+          "key": "coupon_code",
+          "placeholder": "{{coupon_code}}"
+        },
+        {
+          "key": "expiry_date",
+          "placeholder": "{{expiry_date}}"
+        }
+      ],
+      "animation": [
+        {
+          "layer": "character-body",
+          "type": "translateY",
+          "duration": 3800,
+          "amplitude": 3
+        },
+        {
+          "layer": "decorative-particles",
+          "type": "subtle-float",
+          "duration": 4200
+        }
+      ],
+      "isDefault": true,
+      "approximationNotes": "Original vector reconstruction based on visible reference; small label text approximated."
+    },
+    {
+      "id": "concept-02",
+      "title": "HEATINESS",
+      "category": "concept",
+      "asset": "/assets/coupon-cards/concept-02-heatiness.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-left",
+        "character-head",
+        "character-body",
+        "character-accessories",
+        "decorative-particles",
+        "footer-decoration"
+      ],
+      "editableFields": [
+        {
+          "key": "title",
+          "svgLayer": "header-title"
+        },
+        {
+          "key": "discount",
+          "placeholder": "{{discount}}"
+        },
+        {
+          "key": "coupon_code",
+          "placeholder": "{{coupon_code}}"
+        },
+        {
+          "key": "expiry_date",
+          "placeholder": "{{expiry_date}}"
+        }
+      ],
+      "animation": [
+        {
+          "layer": "character-head",
+          "type": "controlled-flicker",
+          "duration": 2400,
+          "amplitude": 0.02
+        }
+      ],
+      "isDefault": true,
+      "approximationNotes": "Original vector reconstruction based on visible reference; figure details simplified where pixels are unclear."
+    },
+    {
+      "id": "concept-03",
+      "title": "YOUR BRAIN",
+      "category": "concept",
+      "asset": "/assets/coupon-cards/concept-03-your-brain.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-left",
+        "character-body",
+        "character-head",
+        "character-accessories",
+        "decorative-right",
+        "decorative-particles",
+        "footer-decoration"
+      ],
+      "editableFields": [
+        {
+          "key": "title",
+          "svgLayer": "header-title"
+        },
+        {
+          "key": "discount",
+          "placeholder": "{{discount}}"
+        },
+        {
+          "key": "coupon_code",
+          "placeholder": "{{coupon_code}}"
+        },
+        {
+          "key": "expiry_date",
+          "placeholder": "{{expiry_date}}"
+        }
+      ],
+      "animation": [
+        {
+          "layer": "character-head",
+          "type": "gentle-tilt",
+          "duration": 3200,
+          "amplitude": 1
+        },
+        {
+          "layer": "decorative-right",
+          "type": "gentle-tilt",
+          "duration": 4600,
+          "amplitude": 3
+        }
+      ],
+      "isDefault": true,
+      "approximationNotes": "Original vector reconstruction based on visible reference; small label text approximated."
+    }
+  ],
+  "notes": "Pilot manifest only. Do not treat placeholder fields as live coupon redemption data."
+}
