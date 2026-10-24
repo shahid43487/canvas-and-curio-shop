@@ -277,3 +277,92 @@ export const adminDeleteCoupon = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true };
   });
+
+
+// ---------- Bulk customer coupon grants ----------
+export const adminListCustomers = createServerFn({ method: "POST" })
+  .validator((d: Auth) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const users: { id: string; email?: string; created_at?: string }[] = [];
+    for (let page = 1; page <= 100; page += 1) {
+      const { data: result, error } = await db.auth.admin.listUsers({ page, perPage: 1000 });
+      if (error) throw error;
+      users.push(...result.users.map((u) => ({ id: u.id, email: u.email ?? "", created_at: u.created_at })));
+      if (result.users.length < 1000) break;
+    }
+    const names = new Map<string, string>();
+    for (let start = 0; start < users.length; start += 500) {
+      const batch = users.slice(start, start + 500).map((u) => u.id);
+      if (!batch.length) continue;
+      const { data: profiles, error } = await db.from("profiles").select("id, display_name").in("id", batch);
+      if (error) throw error;
+      for (const profile of profiles ?? []) names.set(profile.id, profile.display_name ?? "");
+    }
+    return {
+      customers: users
+        .map((u) => ({ id: u.id, email: u.email || "No email", display_name: names.get(u.id) ?? "", created_at: u.created_at ?? "" }))
+        .sort((a, b) => a.email.localeCompare(b.email)),
+    };
+  });
+
+export const adminGrantCouponToCustomers = createServerFn({ method: "POST" })
+  .validator((d: Auth & { couponId: string; allCustomers: boolean; userIds: string[] }) => {
+    if (!d.couponId || typeof d.allCustomers !== "boolean" || !Array.isArray(d.userIds)) throw new Error("Invalid grant request");
+    if (d.userIds.length > 10000 || d.userIds.some((id) => typeof id !== "string" || id.length > 100)) throw new Error("Invalid customer selection");
+    if (!d.allCustomers && d.userIds.length === 0) throw new Error("Select at least one customer");
+    return d;
+  })
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { data: template, error: templateError } = await db.from("customer_coupons")
+      .select("code, description, discount_type, discount_value, min_order, expires_at, used_at")
+      .eq("id", data.couponId)
+      .single();
+    if (templateError) throw templateError;
+    if (template.used_at) throw new Error("Choose an unused active coupon as the template");
+    if (template.expires_at && new Date(template.expires_at).getTime() <= Date.now()) throw new Error("That coupon has expired");
+
+    const users: { id: string; email?: string }[] = [];
+    for (let page = 1; page <= 100; page += 1) {
+      const { data: result, error } = await db.auth.admin.listUsers({ page, perPage: 1000 });
+      if (error) throw error;
+      users.push(...result.users.map((u) => ({ id: u.id, email: u.email ?? "" })));
+      if (result.users.length < 1000) break;
+    }
+    const availableIds = new Set(users.map((u) => u.id));
+    const targetIds = data.allCustomers
+      ? [...availableIds]
+      : [...new Set(data.userIds)].filter((userId) => availableIds.has(userId));
+    if (!targetIds.length) throw new Error("No valid customer accounts were selected");
+
+    let granted = 0;
+    let skipped = 0;
+    for (let start = 0; start < targetIds.length; start += 250) {
+      const batchIds = targetIds.slice(start, start + 250);
+      const { data: existing, error: existingError } = await db.from("customer_coupons")
+        .select("user_id")
+        .eq("code", template.code)
+        .in("user_id", batchIds);
+      if (existingError) throw existingError;
+      const existingIds = new Set((existing ?? []).map((row) => row.user_id));
+      const rows = batchIds.filter((userId) => !existingIds.has(userId)).map((user_id) => ({
+        user_id,
+        code: template.code,
+        description: template.description ?? "",
+        discount_type: template.discount_type,
+        discount_value: template.discount_value,
+        min_order: template.min_order,
+        expires_at: template.expires_at,
+      }));
+      skipped += batchIds.length - rows.length;
+      for (let offset = 0; offset < rows.length; offset += 100) {
+        const insertBatch = rows.slice(offset, offset + 100);
+        if (!insertBatch.length) continue;
+        const { error } = await db.from("customer_coupons").insert(insertBatch);
+        if (error) throw error;
+        granted += insertBatch.length;
+      }
+    }
+    return { ok: true, granted, skipped, targeted: targetIds.length };
+  });

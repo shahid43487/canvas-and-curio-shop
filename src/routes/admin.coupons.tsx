@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Copy, Trash2 } from "lucide-react";
 import { pageHead } from "@/lib/page-head";
-import { adminDeleteCoupon, adminIssueCoupon, adminListCoupons } from "@/lib/admin.functions";
+import { adminDeleteCoupon, adminGrantCouponToCustomers, adminIssueCoupon, adminListCoupons, adminListCustomers } from "@/lib/admin.functions";
 import { useAdminToken } from "@/lib/admin-session";
 import { couponArtText, couponDesign, couponStatus, couponValueLabel, type CouponDesign, type CouponStatus } from "@/lib/coupon";
 import { formatPrice } from "@/data/products";
@@ -32,9 +32,16 @@ function Coupons() {
   const [formOpen, setFormOpen] = useState(false);
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | CouponStatus>("all");
+  const [grantOpen, setGrantOpen] = useState(false);
+  const [grantCouponId, setGrantCouponId] = useState("");
+  const [grantMode, setGrantMode] = useState<"all" | "selected">("all");
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [selectedCustomerIds, setSelectedCustomerIds] = useState<string[]>([]);
+  const [grantBusy, setGrantBusy] = useState(false);
   const [typeFilter, setTypeFilter] = useState<"all" | "percent" | "fixed">("all");
   const { data, error, isLoading } = useQuery({ queryKey: ["admin", "coupons", token], enabled: Boolean(token), retry: false, queryFn: () => adminListCoupons({ data: { token } }) });
   const set = (p: Partial<Draft>) => setDraft((d) => ({ ...d, ...p }));
+  const { data: customerData, error: customerError, isLoading: customersLoading } = useQuery({ queryKey: ["admin", "coupon-customers", token], enabled: Boolean(token && grantOpen), retry: false, queryFn: () => adminListCustomers({ data: { token } }) });
 
   const coupons = data?.coupons ?? [];
   const counts = useMemo(() => {
@@ -50,6 +57,10 @@ function Coupons() {
       (!needle || c.code.toLowerCase().includes(needle) || c.email.toLowerCase().includes(needle)));
   }, [coupons, q, statusFilter, typeFilter]);
   const filtered = q !== "" || statusFilter !== "all" || typeFilter !== "all";
+  const grantTemplates = coupons.filter((c) => couponStatus(c) === "active" && !c.used_at);
+  const selectedTemplate = grantTemplates.find((c) => c.id === grantCouponId);
+  const customerRows = (customerData?.customers ?? []).filter((c) => !customerSearch.trim() || `${c.email} ${c.display_name}`.toLowerCase().includes(customerSearch.trim().toLowerCase()));
+  const grantTargetCount = grantMode === "all" ? (customerData?.customers.length ?? 0) : selectedCustomerIds.length;
 
   const issue = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,6 +113,47 @@ function Coupons() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+
+  const grantCoupons = async () => {
+    if (!selectedTemplate) {
+      toast.error("Choose an active coupon first");
+      return;
+    }
+    if (grantMode === "selected" && selectedCustomerIds.length === 0) {
+      toast.error("Select at least one customer");
+      return;
+    }
+    const targetCount = grantMode === "all" ? (customerData?.customers.length ?? 0) : selectedCustomerIds.length;
+    if (targetCount === 0) {
+      toast.error("There are no customers to grant this coupon to");
+      return;
+    }
+    if (!confirm(`Grant ${selectedTemplate.code} to ${targetCount} customer${targetCount === 1 ? "" : "s"}? Anyone who already has this code will be skipped.`)) return;
+    setGrantBusy(true);
+    try {
+      const result = await adminGrantCouponToCustomers({
+        data: {
+          token,
+          couponId: selectedTemplate.id,
+          allCustomers: grantMode === "all",
+          userIds: grantMode === "selected" ? selectedCustomerIds : [],
+        },
+      });
+      toast.success(`Coupon granted to ${result.granted}; ${result.skipped} skipped.`);
+      setSelectedCustomerIds([]);
+      setGrantOpen(false);
+      await qc.invalidateQueries({ queryKey: ["admin", "coupons"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not grant coupons");
+    } finally {
+      setGrantBusy(false);
+    }
+  };
+
+  const toggleCustomer = (id: string) => {
+    setSelectedCustomerIds((current) => current.includes(id) ? current.filter((x) => x !== id) : [...current, id]);
+  };
+
   const previewTerms = { discount_type: draft.type, discount_value: Number(draft.value) || 0, min_order: Number(draft.min) || 0 };
   const previewText = couponArtText(previewTerms, formatPrice);
 
@@ -121,6 +173,70 @@ function Coupons() {
         <div className="admin-tile"><span>● Used</span><b>{counts.used}</b></div>
         <div className="admin-tile"><span>● Expired</span><b>{counts.expired}</b></div>
       </div>
+
+
+      <section className="admin-panel" style={{ marginBottom: "1rem" }}>
+        <div className="admin-row">
+          <div>
+            <h2 style={{ margin: 0 }}>Grant coupons</h2>
+            <small>Send an existing active coupon to everyone or selected customer accounts.</small>
+          </div>
+          <button type="button" className="admin-btn" style={{ marginLeft: "auto" }} onClick={() => setGrantOpen((open) => !open)}>{grantOpen ? "Close grant tools" : "Grant coupons"}</button>
+        </div>
+        {grantOpen && (
+          <div style={{ marginTop: "1rem", display: "grid", gap: "1rem" }}>
+            <label className="admin-form">Coupon to grant
+              <select className="admin-input" value={grantCouponId} onChange={(e) => setGrantCouponId(e.target.value)} required>
+                <option value="">Choose an active coupon…</option>
+                {grantTemplates.map((c) => <option key={c.id} value={c.id}>{c.code} — {couponValueLabel({ discount_type: c.discount_type, discount_value: Number(c.discount_value), min_order: Number(c.min_order) }, formatPrice)}{c.description ? ` · ${c.description}` : ""}</option>)}
+              </select>
+              {grantTemplates.length === 0 && <small>No active unused coupon templates are available. Create or activate a coupon first.</small>}
+            </label>
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+                <input type="radio" name="grant-mode" checked={grantMode === "all"} onChange={() => setGrantMode("all")} />
+                Everyone ({customerData?.customers.length ?? (customersLoading ? "…" : 0)})
+              </label>
+              <label style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+                <input type="radio" name="grant-mode" checked={grantMode === "selected"} onChange={() => setGrantMode("selected")} />
+                Selected customers ({selectedCustomerIds.length})
+              </label>
+            </div>
+            {grantMode === "all" ? (
+              <p><small>The coupon will be added to every registered customer account. Customers who already have this code will not receive a duplicate.</small></p>
+            ) : (
+              <div style={{ display: "grid", gap: ".75rem" }}>
+                <input className="admin-input" type="search" aria-label="Search customers" placeholder="Search customers by name or email…" value={customerSearch} onChange={(e) => setCustomerSearch(e.target.value)} />
+                <div style={{ display: "flex", gap: ".5rem", flexWrap: "wrap" }}>
+                  <button type="button" className="admin-btn ghost" onClick={() => setSelectedCustomerIds((current) => [...new Set([...current, ...customerRows.map((c) => c.id)])])} disabled={customerRows.length === 0}>Select visible</button>
+                  <button type="button" className="admin-btn ghost" onClick={() => setSelectedCustomerIds([])} disabled={selectedCustomerIds.length === 0}>Clear selection</button>
+                  <small style={{ alignSelf: "center" }}>{selectedCustomerIds.length} selected</small>
+                </div>
+                <div style={{ maxHeight: "18rem", overflowY: "auto", border: "1px solid var(--admin-border, #ddd)", borderRadius: ".5rem", padding: ".25rem .75rem" }}>
+                  {customersLoading && <p>Loading customers…</p>}
+                  {customerError && <p className="admin-error">{customerError instanceof Error ? customerError.message : "Could not load customers"}</p>}
+                  {!customersLoading && !customerError && customerRows.length === 0 && <p><small>No customers match that search.</small></p>}
+                  {customerRows.map((customer) => (
+                    <label key={customer.id} style={{ display: "flex", alignItems: "center", gap: ".65rem", padding: ".6rem 0", borderBottom: "1px solid var(--admin-border, #eee)", cursor: "pointer" }}>
+                      <input type="checkbox" checked={selectedCustomerIds.includes(customer.id)} onChange={() => toggleCustomer(customer.id)} />
+                      <span style={{ display: "grid", minWidth: 0 }}>
+                        <b style={{ overflowWrap: "anywhere" }}>{customer.display_name || customer.email}</b>
+                        <small>{customer.email}</small>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div style={{ display: "flex", alignItems: "center", gap: ".75rem", flexWrap: "wrap" }}>
+              <button type="button" className="admin-btn" onClick={() => void grantCoupons()} disabled={grantBusy || !selectedTemplate || grantTargetCount === 0 || (grantMode === "selected" && (selectedCustomerIds.length === 0 || customersLoading || Boolean(customerError)))}>
+                {grantBusy ? "Granting…" : `Grant to ${grantMode === "all" ? "everyone" : `${selectedCustomerIds.length} selected`}`}
+              </button>
+              <small>{grantTargetCount} target{grantTargetCount === 1 ? "" : "s"} · duplicates will be skipped</small>
+            </div>
+          </div>
+        )}
+      </section>
 
       {formOpen && (
         <form className="admin-panel" onSubmit={issue}>
