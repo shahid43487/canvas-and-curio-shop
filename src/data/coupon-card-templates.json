@@ -1,161 +1,1782 @@
 {
-  "schemaVersion": 1,
-  "sourceImage": "user-supplied reference collage (30 visible cards; six additional cards not present)",
+  "schemaVersion": 2,
+  "sourceImages": [
+    "original 30-card reference",
+    "9-card poster reference",
+    "16-card monster-friends reference"
+  ],
   "canvas": {
     "width": 300,
     "height": 420,
     "aspectRatio": "5:7"
   },
+  "templateCount": 55,
+  "notes": [
+    "Original vector interpretations inspired by the supplied reference images; not exact tracings.",
+    "Each card is a standalone SVG with named groups and subtle motion.",
+    "Small subtitle/logo details may be approximations where source pixels are unclear.",
+    "Coupon redemption fields and behavior are not changed by this visual manifest."
+  ],
   "templates": [
     {
-      "id": "concept-01",
+      "id": "play-games",
       "title": "PLAY GAMES",
-      "category": "concept",
+      "subtitle": "FUN",
+      "category": "smol-stuuf-reference",
       "asset": "/assets/coupon-cards/concept-01-play-games.svg",
       "layers": [
         "card-background",
         "card-border",
         "header-title",
         "header-subtitle",
-        "decorative-left",
+        "decorative-doodles",
         "character-body",
-        "character-accessories",
-        "decorative-particles",
+        "ground-shadow",
         "footer-decoration"
       ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
       "editableFields": [
-        {
-          "key": "title",
-          "svgLayer": "header-title"
-        },
-        {
-          "key": "discount",
-          "placeholder": "{{discount}}"
-        },
-        {
-          "key": "coupon_code",
-          "placeholder": "{{coupon_code}}"
-        },
-        {
-          "key": "expiry_date",
-          "placeholder": "{{expiry_date}}"
-        }
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
       ],
-      "animation": [
-        {
-          "layer": "character-body",
-          "type": "translateY",
-          "duration": 3800,
-          "amplitude": 3
-        },
-        {
-          "layer": "decorative-particles",
-          "type": "subtle-float",
-          "duration": 4200
-        }
-      ],
-      "isDefault": true,
-      "approximationNotes": "Original vector reconstruction based on visible reference; small label text approximated."
+      "status": "illustrated-svg-pilot"
     },
     {
-      "id": "concept-02",
+      "id": "heatiness",
       "title": "HEATINESS",
-      "category": "concept",
+      "subtitle": "ANGRY",
+      "category": "smol-stuuf-reference",
       "asset": "/assets/coupon-cards/concept-02-heatiness.svg",
       "layers": [
         "card-background",
         "card-border",
         "header-title",
         "header-subtitle",
-        "decorative-left",
-        "character-head",
+        "decorative-doodles",
         "character-body",
-        "character-accessories",
-        "decorative-particles",
+        "ground-shadow",
         "footer-decoration"
       ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3370,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
       "editableFields": [
-        {
-          "key": "title",
-          "svgLayer": "header-title"
-        },
-        {
-          "key": "discount",
-          "placeholder": "{{discount}}"
-        },
-        {
-          "key": "coupon_code",
-          "placeholder": "{{coupon_code}}"
-        },
-        {
-          "key": "expiry_date",
-          "placeholder": "{{expiry_date}}"
-        }
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
       ],
-      "animation": [
-        {
-          "layer": "character-head",
-          "type": "controlled-flicker",
-          "duration": 2400,
-          "amplitude": 0.02
-        }
-      ],
-      "isDefault": true,
-      "approximationNotes": "Original vector reconstruction based on visible reference; figure details simplified where pixels are unclear."
+      "status": "illustrated-svg-pilot"
     },
     {
-      "id": "concept-03",
+      "id": "your-brain",
       "title": "YOUR BRAIN",
-      "category": "concept",
+      "subtitle": "FOCUS",
+      "category": "smol-stuuf-reference",
       "asset": "/assets/coupon-cards/concept-03-your-brain.svg",
       "layers": [
         "card-background",
         "card-border",
         "header-title",
         "header-subtitle",
-        "decorative-left",
+        "decorative-doodles",
         "character-body",
-        "character-head",
-        "character-accessories",
-        "decorative-right",
-        "decorative-particles",
+        "ground-shadow",
         "footer-decoration"
       ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3540,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
       "editableFields": [
-        {
-          "key": "title",
-          "svgLayer": "header-title"
-        },
-        {
-          "key": "discount",
-          "placeholder": "{{discount}}"
-        },
-        {
-          "key": "coupon_code",
-          "placeholder": "{{coupon_code}}"
-        },
-        {
-          "key": "expiry_date",
-          "placeholder": "{{expiry_date}}"
-        }
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
       ],
-      "animation": [
-        {
-          "layer": "character-head",
-          "type": "gentle-tilt",
-          "duration": 3200,
-          "amplitude": 1
-        },
-        {
-          "layer": "decorative-right",
-          "type": "gentle-tilt",
-          "duration": 4600,
-          "amplitude": 3
-        }
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "dual-identity",
+      "title": "DUAL IDENTITY",
+      "subtitle": "BUSINESS-MAN",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/dual-identity.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
       ],
-      "isDefault": true,
-      "approximationNotes": "Original vector reconstruction based on visible reference; small label text approximated."
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3710,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "medicine",
+      "title": "MEDICINE",
+      "subtitle": "TOXIC",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/medicine.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3880,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "analysis",
+      "title": "ANALYSIS",
+      "subtitle": "BRUTAL",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/analysis.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 4050,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "dialogue",
+      "title": "DIALOGUE",
+      "subtitle": "FAIR",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/dialogue.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "threw-up",
+      "title": "THREW UP",
+      "subtitle": "STOMACH",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/threw-up.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3370,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "salted-fish",
+      "title": "SALTED FISH",
+      "subtitle": "FROG",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/salted-fish.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3540,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "resurrection",
+      "title": "RESURRECTION",
+      "subtitle": "CROW",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/resurrection.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3710,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "pissed-off",
+      "title": "PISSED OFF",
+      "subtitle": "ENRAGE",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/pissed-off.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3880,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "unicorn",
+      "title": "UNICORN",
+      "subtitle": "LOOKS",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/unicorn.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 4050,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "shackles",
+      "title": "SHACKLES",
+      "subtitle": "BORN",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/shackles.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "protagonist",
+      "title": "PROTAGONIST",
+      "subtitle": "HALO",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/protagonist.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3370,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "yellow-dog",
+      "title": "YELLOW DOG",
+      "subtitle": "HALO",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/yellow-dog.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3540,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "recharge",
+      "title": "RECHARGE",
+      "subtitle": "ENERGY",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/recharge.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3710,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "produce",
+      "title": "PRODUCE",
+      "subtitle": "BATCH",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/produce.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3880,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "wildfire",
+      "title": "WILDFIRE",
+      "subtitle": "FOX",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/wildfire.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 4050,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bromeo",
+      "title": "BROMEO",
+      "subtitle": "TISSUE",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/bromeo.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "heavy-laden",
+      "title": "HEAVY-LADEN",
+      "subtitle": "HEAD",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/heavy-laden.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3370,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "turn-off",
+      "title": "TURN-OFF",
+      "subtitle": "ROBOT",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/turn-off.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3540,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "parasitic",
+      "title": "PARASITIC",
+      "subtitle": "FEED",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/parasitic.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3710,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "brightness",
+      "title": "BRIGHTNESS",
+      "subtitle": "DARK",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/brightness.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3880,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "double-yellowline",
+      "title": "DOUBLE YELLOW LINE",
+      "subtitle": "FORBID",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/double-yellowline.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 4050,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "cargo",
+      "title": "CARGO",
+      "subtitle": "LOAD",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/cargo.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "meditate",
+      "title": "MEDITATE",
+      "subtitle": "BALANCE",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/meditate.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3370,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "antagonism",
+      "title": "ANTAGONISM",
+      "subtitle": "SELF",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/antagonism.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3540,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bondage",
+      "title": "BONDAGE",
+      "subtitle": "INSIDE",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/bondage.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3710,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "magnetic",
+      "title": "MAGNETIC",
+      "subtitle": "MOOD",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/magnetic.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3880,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "keep-going",
+      "title": "KEEP GOING",
+      "subtitle": "GO ON",
+      "category": "smol-stuuf-reference",
+      "asset": "/assets/coupon-cards/keep-going.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 4050,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "broco",
+      "title": "BROCO",
+      "subtitle": "Eat me!",
+      "category": "character-poster",
+      "asset": "/assets/coupon-cards/broco.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "tonot",
+      "title": "TONOT",
+      "subtitle": "The earth is flat",
+      "category": "character-poster",
+      "asset": "/assets/coupon-cards/tonot.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3370,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bochill",
+      "title": "BOCHILL",
+      "subtitle": "The Dumb Lil Kid",
+      "category": "character-poster",
+      "asset": "/assets/coupon-cards/bochill.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3540,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bredo",
+      "title": "BREDO",
+      "subtitle": "Breakfaaaast!",
+      "category": "character-poster",
+      "asset": "/assets/coupon-cards/bredo.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3710,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "kocheng",
+      "title": "KOCHENG",
+      "subtitle": "Ready to scratch faces",
+      "category": "character-poster",
+      "asset": "/assets/coupon-cards/kocheng.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3880,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "yo",
+      "title": "YO",
+      "subtitle": "Everybody sing!",
+      "category": "character-poster",
+      "asset": "/assets/coupon-cards/yo.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 4050,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "ded",
+      "title": "DED",
+      "subtitle": "The bunny maker",
+      "category": "character-poster",
+      "asset": "/assets/coupon-cards/ded.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "wuhu",
+      "title": "WUHU",
+      "subtitle": "Who?",
+      "category": "character-poster",
+      "asset": "/assets/coupon-cards/wuhu.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3370,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "drino",
+      "title": "DRINO",
+      "subtitle": "Work like hell",
+      "category": "character-poster",
+      "asset": "/assets/coupon-cards/drino.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3540,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-flying-geometry",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Flying Geometry",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-flying-geometry.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3710,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-crimson-eyes-ghost",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Crimson Eyes Ghost",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-crimson-eyes-ghost.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3880,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-rejoice-mask-ball",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Rejoice Mask Ball",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-rejoice-mask-ball.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 4050,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-separated-sausage-prince",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Separated Sausage Prince",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-separated-sausage-prince.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-three-green-beans",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Three Green Beans",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-three-green-beans.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3370,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-rabbit-ball",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Rabbit Ball",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-rabbit-ball.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3540,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-fashion-icon",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Fashion Icon Mr Eyes",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-fashion-icon.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3710,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-green-ship-stool",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Green Ship Stool",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-green-ship-stool.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3880,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-four-hands",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Four Hands Monster",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-four-hands.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 4050,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-snowman-clown",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Snowman Clown",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-snowman-clown.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-west-fish-cowboy",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "West Fish Cowboy",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-west-fish-cowboy.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3370,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-five-eyes-frog",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Five Eyes Frog Strange",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-five-eyes-frog.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3540,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-aberrance-kiwi-fruit",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Aberrance Kiwi Fruit",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-aberrance-kiwi-fruit.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3710,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-white-dinosaur",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "The White Dinosaur",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-white-dinosaur.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3880,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-tricolor-ivory",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Tricolor Ivory Monster",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-tricolor-ivory.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 4050,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
+    },
+    {
+      "id": "bigd-sexy",
+      "title": "BIGD MONSTER FRIENDS",
+      "subtitle": "Sexy Monster",
+      "category": "monster-friends",
+      "asset": "/assets/coupon-cards/bigd-sexy.svg",
+      "layers": [
+        "card-background",
+        "card-border",
+        "header-title",
+        "header-subtitle",
+        "decorative-doodles",
+        "character-body",
+        "ground-shadow",
+        "footer-decoration"
+      ],
+      "animation": {
+        "enabled": true,
+        "type": "gentle-float",
+        "durationMs": 3200,
+        "amplitudePx": 3,
+        "respectsReducedMotion": true
+      },
+      "editableFields": [
+        "title",
+        "subtitle",
+        "backgroundColor",
+        "characterScale",
+        "animationEnabled"
+      ],
+      "status": "illustrated-svg-pilot"
     }
-  ],
-  "notes": "Pilot manifest only. Do not treat placeholder fields as live coupon redemption data."
+  ]
 }
