@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Copy, Trash2 } from "lucide-react";
 import { pageHead } from "@/lib/page-head";
-import { adminDeleteCoupon, adminGrantCouponToCustomers, adminIssueCoupon, adminListCoupons, adminListCustomers } from "@/lib/admin.functions";
+import { adminDeleteCoupon, adminGrantCouponToCustomers, adminIssueCoupon, adminListCoupons, adminListCustomers, adminGetCouponTemplates, adminSaveSetting } from "@/lib/admin.functions";
 import { useAdminToken } from "@/lib/admin-session";
 import { couponArtText, couponDesign, couponStatus, couponValueLabel, type CouponDesign, type CouponStatus } from "@/lib/coupon";
 import { formatPrice } from "@/data/products";
@@ -65,6 +65,29 @@ function Coupons() {
   const issue = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      if (!draft.email.trim()) {
+        const existing = await adminGetCouponTemplates({ data: { token } });
+        const template = {
+          id: "coupon-template-" + Date.now().toString(36),
+          name: draft.description.trim() || draft.code.toUpperCase(),
+          code: draft.code.toUpperCase(),
+          discount_type: draft.type,
+          discount_value: Number(draft.value),
+          min_order: Number(draft.min || 0),
+          expires_at: draft.expires ? new Date(draft.expires + "T23:59:59").toISOString() : null,
+          description: draft.description.trim(),
+          design: couponDesign(previewTerms),
+          elements: [],
+          category: "Custom",
+          default: false,
+          updated_at: new Date().toISOString(),
+        };
+        await adminSaveSetting({ data: { token, key: "couponTemplates", value: [...existing.templates, template] } });
+        toast.success("Coupon template saved. Open Coupon Library to edit or assign it.");
+        setDraft(EMPTY);
+        setFormOpen(false);
+        return;
+      }
       await adminIssueCoupon({
         data: {
           token,
@@ -240,11 +263,11 @@ function Coupons() {
 
       {formOpen && (
         <form className="admin-panel" onSubmit={issue}>
-          <h2>Issue a coupon</h2>
-          <p><small>The customer must already have an account. The discount is applied to item prices when they place a pending order, and returns to them if they cancel it.</small></p>
+          <h2>Create a coupon or save a template</h2>
+          <p><small>Leave customer email blank to save a reusable design in Coupon Library. Enter an existing customer email to issue it directly.</small></p>
           <div className="coupon-form-grid">
             <div className="admin-form">
-              <label>Customer email<input className="admin-input" type="email" required value={draft.email} onChange={(e) => set({ email: e.target.value })} /></label>
+              <label>Customer email (optional)<input className="admin-input" type="email" value={draft.email} onChange={(e) => set({ email: e.target.value })} placeholder="Leave blank to save a template" /></label>
               <label>Code<input className="admin-input" required pattern="[A-Za-z0-9_\-]{3,32}" placeholder="WELCOME10" value={draft.code} onChange={(e) => set({ code: e.target.value })} /></label>
               <label>Type
                 <select className="admin-input" value={draft.type} onChange={(e) => set({ type: e.target.value as Draft["type"] })}>
@@ -262,7 +285,7 @@ function Coupons() {
               <CouponArt design={couponDesign(previewTerms)} lines={previewText.lines} note={previewText.note} code={draft.code.toUpperCase() || "YOURCODE"} valid={draft.expires ? new Date(`${draft.expires}T00:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : null} />
             </div>
           </div>
-          <button className="admin-btn">Issue coupon</button>
+          <button className="admin-btn">{draft.email.trim() ? "Issue coupon to customer" : "Save coupon template"}</button>
         </form>
       )}
 
