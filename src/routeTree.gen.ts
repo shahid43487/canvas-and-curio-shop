@@ -24,6 +24,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAssetsRouteImport } from './routes/admin.assets'
 import { Route as AdminCampaignsRouteImport } from './routes/admin.campaigns'
 import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
+import { Route as AdminCouponLibraryRouteImport } from './routes/admin.coupon-library'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
@@ -106,6 +107,11 @@ const AdminCouponsRoute = AdminCouponsRouteImport.update({
   path: '/coupons',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCouponLibraryRoute = AdminCouponLibraryRouteImport.update({
+  id: '/coupon-library',
+  path: '/coupon-library',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminMediaRoute = AdminMediaRouteImport.update({
   id: '/media',
   path: '/media',
@@ -156,6 +162,8 @@ export interface FileRoutesByFullPath {
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
   '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/coupon-library': typeof AdminCouponLibraryRoute
+  '/admin/coupon-library': typeof AdminCouponLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
@@ -473,6 +481,7 @@ interface AdminRouteChildren {
   AdminAssetsRoute: typeof AdminAssetsRoute
   AdminCampaignsRoute: typeof AdminCampaignsRoute
   AdminCouponsRoute: typeof AdminCouponsRoute
+  AdminCouponLibraryRoute: typeof AdminCouponLibraryRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRoute
@@ -484,6 +493,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAssetsRoute: AdminAssetsRoute,
   AdminCampaignsRoute: AdminCampaignsRoute,
   AdminCouponsRoute: AdminCouponsRoute,
+  AdminCouponLibraryRoute: AdminCouponLibraryRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRoute,
