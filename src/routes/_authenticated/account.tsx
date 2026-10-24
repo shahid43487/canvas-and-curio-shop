@@ -76,7 +76,7 @@ function Account() {
       <div className="account-stat stat-blue"><span>READY TO USE</span><strong>{activeCount.toString().padStart(2, "0")}</strong><Gift size={21}/></div>
     </div>
     <nav className="account-tabs" aria-label="Account sections">
-      {([{id:"overview",label:"HOME BASE",icon:UserRound},{id:"orders",label:"MY ORDERS",icon:Package},{id:"cards",label:"CARD LIBRARY",icon:Ticket},{id:"achievements",label:"ACHIEVEMENTS",icon:Crown}] as const).map(tab => <button key={tab.id} type="button" className={panel === tab.id ? "is-active" : ""} onClick={() => setPanel(tab.id)}><tab.icon size={16}/>{tab.label}{tab.id === "cards" && <span>{data.coupons.length}</span>}</button>)}
+      {([{id:"overview",label:"HOME BASE",icon:UserRound},{id:"orders",label:"MY ORDERS",icon:Package},{id:"cards",label:"CARD LIBRARY",icon:Ticket},{id:"achievements",label:"ACHIEVEMENTS",icon:Crown}] as const).map(tab => <button key={tab.id} type="button" className={panel === tab.id ? "is-active" : ""} onClick={() => setPanel(tab.id)}><tab.icon size={16}/>{tab.label}{tab.id === "cards" && <span>{data.coupons.length + earnedAchievementCards.length}</span>}</button>)}
     </nav>
 
     {panel === "overview" && <div className="account-content">
