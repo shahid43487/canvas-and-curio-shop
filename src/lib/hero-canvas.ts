@@ -13,6 +13,8 @@ export type HeroElement = {
   shadowEnabled: boolean; shadowX: number; shadowY: number; shadowBlur: number; shadowColor: CanvasColor;
   hoverEffect: boolean; hoverShadowX: number; hoverShadowY: number; hoverLift: number; hoverRotation: number;
   animation: 'none' | 'bounce-shadow' | 'entrance-spring';
+  /** Ink pill badge with the red dot (eyebrow tag). */
+  pill?: boolean;
   desktop: CanvasRect; mobile: CanvasRect;
 };
 export type HeroCanvas = { version: 1; desktop: { height: number; background: CanvasColor }; mobile: { height: number; background: CanvasColor }; elements: HeroElement[] };
@@ -28,13 +30,14 @@ export function newHeroElement(kind: HeroElement['kind'], text = '', src = ''): 
     desktop: { x: 60, y: 60, width: art ? 140 : 400, height: art ? 140 : 70, rotation: 0, fontSize: 32 },
     mobile: { x: 24, y: 320, width: art ? 100 : 342, height: art ? 100 : 70, rotation: 0, fontSize: 24 } };
 }
+export const isPillElement = (e: HeroElement) => e.pill === true || (e.kind === 'text' && e.background === 'ink' && (e.borderRadius ?? 0) >= 50);
 export function createHeroCanvas(slide: Slide): HeroCanvas {
   const elements: HeroElement[] = [];
   const add = (kind: HeroElement['kind'], name: string, text: string, src: string, d: Partial<CanvasRect>, m: Partial<CanvasRect>, extra: Partial<HeroElement> = {}) => {
     const e = newHeroElement(kind, text, src);
     elements.push({ ...e, ...extra, name, desktop: { ...e.desktop, ...d }, mobile: { ...e.mobile, ...m } });
   };
-  add('text', 'Top line', slide.eyebrow, '', { x: 40, y: 48, width: 490, height: 34, fontSize: 16 }, { x: 24, y: 280, height: 36, fontSize: 13 }, { bold: true });
+  add('text', 'Top line', slide.eyebrow, '', { x: 40, y: 48, width: 260, height: 30, fontSize: 12, rotation: -2 }, { x: 24, y: 280, width: 220, height: 28, fontSize: 11, rotation: -2 }, { bold: true, pill: true, color: 'paper', background: 'ink', borderRadius: 100, borderWidth: 0, hoverEffect: false });
   add('text', 'Headline', slide.title, '', { x: 40, y: 112, width: 550, height: 82, fontSize: 56 }, { x: 24, y: 330, height: 64, fontSize: 36 }, { bold: true });
   add('text', 'Accent headline', slide.accent, '', { x: 40, y: 198, width: 550, height: 82, fontSize: 56 }, { x: 24, y: 396, height: 64, fontSize: 36 }, { color: 'red', bold: true });
   add('text', 'Description', slide.sub, '', { x: 40, y: 300, width: 475, height: 110, fontSize: 18 }, { x: 24, y: 474, height: 130, fontSize: 16 });
