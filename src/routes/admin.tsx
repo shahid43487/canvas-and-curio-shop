@@ -59,6 +59,7 @@ function AdminShell() {
           <Link to="/admin/products">Products</Link>
           <Link to="/admin/campaigns">Hero slides</Link>
           <Link to="/admin/coupons">Coupons</Link>
+          <Link to="/admin/coupon-library">Coupon Library</Link>
           <Link to="/admin/media">Media</Link>
           <Link to="/admin/assets">Stickers</Link>
           <Link to="/admin/settings">Settings</Link>
