@@ -58,3 +58,35 @@ export const claimAchievementReward = createServerFn({ method: "POST" }).middlew
     if (insertError) throw insertError;
     return { ok: true, code, alreadyClaimed: false };
   });
+
+
+// Server-verified collectible deck. Card ownership is persisted in customer_cards,
+// not inferred from frontend state.
+export const getCardDex = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const db = supabaseAdmin as any;
+  const [cardsResult, couponsResult, achievementsResult, definitionsResult] = await Promise.all([
+    db.from("customer_cards").select("id,card_type,source_id,serial_number,rarity,acquired_at,metadata").eq("user_id", context.userId).order("acquired_at", { ascending: false }),
+    context.supabase.from("customer_coupons").select("id,code,description,discount_type,discount_value,min_order,expires_at,used_at"),
+    db.from("customer_achievements").select("achievement_id,progress,completed_at,claimed_at").eq("user_id", context.userId),
+    db.from("achievement_definitions").select("id,title,description,category,requirement_type,requirement_value,reward_discount_type,reward_discount_value,rarity,is_secret,sort_order").eq("is_active", true).order("sort_order"),
+  ]);
+  if (cardsResult.error) throw cardsResult.error;
+  if (couponsResult.error) throw couponsResult.error;
+  if (achievementsResult.error) throw achievementsResult.error;
+  if (definitionsResult.error) throw definitionsResult.error;
+  const coupons = couponsResult.data ?? [];
+  const couponById = new Map(coupons.map((coupon: { id: string }) => [coupon.id, coupon]));
+  const achievements = achievementsResult.data ?? [];
+  const definitions = (definitionsResult.data ?? []).filter((a: { is_secret: boolean }) => !a.is_secret);
+  const achievementById = new Map(achievements.map((a: { achievement_id: string }) => [a.achievement_id, a]));
+  const cards = (cardsResult.data ?? []).map((card: { id: string; card_type: string; source_id: string; serial_number: string; rarity: string; acquired_at: string; metadata: unknown }) => ({
+    ...card,
+    coupon: card.card_type === "coupon" ? couponById.get(card.source_id) ?? null : null,
+  }));
+  const progress = definitions.map((definition: { id: string; requirement_type: string; requirement_value: number; is_secret: boolean; [key: string]: unknown }) => {
+    const current = achievementById.get(definition.id) as { progress: number; completed_at: string | null; claimed_at: string | null } | undefined;
+    return { ...definition, progress: current?.progress ?? 0, completed_at: current?.completed_at ?? null, claimed_at: current?.claimed_at ?? null };
+  });
+  return { cards, achievements: progress };
+});
