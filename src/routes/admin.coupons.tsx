@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -6,13 +6,12 @@ import { Trash2 } from "lucide-react";
 import { pageHead } from "@/lib/page-head";
 import { adminDeleteCoupon, adminGrantCouponToCustomers, adminListCoupons, adminListCustomers } from "@/lib/admin.functions";
 import { useAdminToken } from "@/lib/admin-session";
-import { couponStatus, couponValueLabel, type CouponStatus } from "@/lib/coupon";
+import { couponArtText, couponDesign, couponStatus, couponValueLabel, type CouponStatus } from "@/lib/coupon";
 import { formatPrice } from "@/data/products";
+import { CouponArt } from "@/components/smol/CouponArt";
 
 export const Route = createFileRoute("/admin/coupons")({ head: () => pageHead("Coupons", "SMOL STUUF coupon administration."), component: Coupons });
 
-type Draft = { email: string; code: string; type: "percent" | "fixed"; value: string; min: string; expires: string; description: string };
-const EMPTY: Draft = { email: "", code: "", type: "percent", value: "", min: "0", expires: "", description: "" };
 const STATUS_LABEL: Record<CouponStatus, string> = { active: "Active", used: "Used", expired: "Expired" };
 
 
