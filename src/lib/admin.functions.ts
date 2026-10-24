@@ -192,8 +192,8 @@ export const adminDeleteVariation = createServerFn({ method: "POST" })
 
 // ---------- Site settings (slides, socials, sound, stickers) ----------
 export const adminSaveSetting = createServerFn({ method: "POST" })
-  .validator((d: Auth & { key: "slides" | "socials" | "sound" | "stickers" | "dialogue" | "slideInterval"; value: unknown }) => {
-    if (!["slides", "socials", "sound", "stickers", "dialogue", "slideInterval"].includes(d.key)) throw new Error("Unknown setting");
+  .validator((d: Auth & { key: "slides" | "socials" | "sound" | "stickers" | "dialogue" | "slideInterval" | "couponTemplates"; value: unknown }) => {
+    if (!["slides", "socials", "sound", "stickers", "dialogue", "slideInterval", "couponTemplates"].includes(d.key)) throw new Error("Unknown setting");
     if (d.key === "slideInterval" && (typeof d.value !== "number" || !Number.isFinite(d.value) || d.value < 2 || d.value > 15)) throw new Error("Slide duration must be 2–15 seconds");
     return d;
   })
@@ -365,4 +365,14 @@ export const adminGrantCouponToCustomers = createServerFn({ method: "POST" })
       }
     }
     return { ok: true, granted, skipped, targeted: targetIds.length };
+  });
+
+
+export const adminGetCouponTemplates = createServerFn({ method: "POST" })
+  .validator((d: Auth) => d)
+  .handler(async ({ data }) => {
+    const db = await admin(data.token);
+    const { data: row, error } = await db.from("site_settings").select("value").eq("key", "couponTemplates").maybeSingle();
+    if (error) throw error;
+    return { templates: Array.isArray(row?.value) ? row.value : [] };
   });
