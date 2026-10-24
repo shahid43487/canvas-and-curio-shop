@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { gsap } from 'gsap';
 import { Button } from '@/components/ui/button';
 import { stickerSrc } from '@/data/drops';
-import { CANVAS_WIDTH, safeHeroHref, type CanvasMode, type HeroCanvas, type HeroElement } from '@/lib/hero-canvas';
+import { CANVAS_WIDTH, isPillElement, safeHeroHref, type CanvasMode, type HeroCanvas, type HeroElement } from '@/lib/hero-canvas';
 
 export function CanvasStage({ canvas, mode, children, stageRef }: { canvas: HeroCanvas; mode: CanvasMode; children: ReactNode; stageRef?: React.Ref<HTMLDivElement> }) {
   const host = useRef<HTMLDivElement>(null);
@@ -20,12 +20,14 @@ export function CanvasStage({ canvas, mode, children, stageRef }: { canvas: Hero
 }
 export function elementStyle(e: HeroElement, mode: CanvasMode): CSSProperties {
   const r = e[mode];
-  const base = { left: r.x, top: r.y, width: r.width, height: r.height, '--canvas-rotation': `${r.rotation}deg`, fontSize: r.fontSize, textAlign: e.align, fontWeight: e.bold ? 900 : 400 } as CSSProperties;
+  // Pills hug their text like the classic .eyebrow-tag, so no fixed box.
+  const base = { left: r.x, top: r.y, ...(isPillElement(e) ? {} : { width: r.width, height: r.height }), '--canvas-rotation': `${r.rotation}deg`, fontSize: r.fontSize, textAlign: e.align, fontWeight: e.bold ? 900 : 400 } as CSSProperties;
   return { ...base, ...(e.kind === 'button' ? { border: (e.borderWidth ?? 3) > 0 ? `${e.borderWidth ?? 3}px solid var(--smol-${e.borderColor ?? 'ink'})` : 'none', borderRadius: `${e.borderRadius ?? 999}px`, '--canvas-hover-shadow': `${e.hoverShadowX ?? 5}px ${e.hoverShadowY ?? 6}px 0 var(--smol-ink)`, '--canvas-hover-lift': `${-(e.hoverLift ?? 3)}px`, '--canvas-hover-rotation': `${e.hoverRotation ?? -1}deg`, '--canvas-hover-enabled': e.hoverEffect ?? (e.kind === 'button') ? 1 : 0, '--canvas-base-shadow': e.shadowEnabled ? `${e.shadowX ?? 4}px ${e.shadowY ?? 4}px ${e.shadowBlur ?? 0}px var(--smol-${e.shadowColor ?? 'ink'})` : 'none', '--canvas-base-background': e.background === 'transparent' ? 'transparent' : `var(--smol-${e.background})`, '--canvas-base-color': `var(--smol-${e.color})` } as CSSProperties : {}) };
 }
 export function CanvasContent({ element: e, extra, editing = false, onLogoClick }: { element: HeroElement; extra?: { id: string; src: string }[] | undefined; editing?: boolean; onLogoClick?: (() => void) | undefined }) {
   const art = e.kind === 'image' || e.kind === 'sticker' || e.kind === 'logo';
   const content = art ? <img src={e.kind === 'sticker' ? stickerSrc(e.src, extra) : e.src} alt={e.name} draggable={false} /> : e.text;
+  if (isPillElement(e)) return <div className="eyebrow-tag canvas-eyebrow-pill"><span className="dot" /><span className="pill-label">{content}</span></div>;
   if (e.kind === 'button' && !editing) return <Button asChild className="canvas-link"><a href={safeHeroHref(e.href)}>{content}</a></Button>;
   if (e.kind === 'logo' && !editing) return <Button variant="ghost" className="canvas-logo" onClick={onLogoClick} aria-label="SMOL STUUF hand-drawn logo">{content}</Button>;
   return <div className={`canvas-content ${e.bold ? 'canvas-bold' : ''} ${e.kind === 'button' ? 'canvas-link' : ''}`}>{content}</div>;

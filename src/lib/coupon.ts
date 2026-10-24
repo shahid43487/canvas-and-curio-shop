@@ -10,11 +10,11 @@ export const couponStatus = (c: { used_at: string | null; expires_at: string | n
   c.used_at ? "used" : c.expires_at && new Date(c.expires_at).getTime() < Date.now() ? "expired" : "active";
 
 // Artwork is derived from the coupon's terms so no extra database column is needed.
-// "ship" and "bogo" exist for campaigns the discount engine does not price yet; they are
-// only used by the admin design gallery.
-export type CouponDesign = "smile" | "ship" | "bogo" | "dark" | "ghost";
+// "bogo" is not priced by the discount engine; it is used by the admin design gallery
+// and campaigns that grant it manually.
+export type CouponDesign = "smile" | "ticket" | "ship" | "bogo" | "dark" | "ghost";
 export const couponDesign = (c: Pick<CouponTerms, "discount_type" | "discount_value">): CouponDesign =>
-  c.discount_type === "percent" ? (c.discount_value <= 10 ? "smile" : "ghost") : c.discount_value >= 500 ? "dark" : "ship";
+  c.discount_type === "percent" ? (c.discount_value <= 10 ? "smile" : c.discount_value <= 25 ? "ticket" : "ghost") : c.discount_value >= 500 ? "dark" : "ship";
 
 export type CouponArtText = { lines: string[]; note: string };
 export function couponArtText(c: CouponTerms, money: (n: number) => string): CouponArtText {

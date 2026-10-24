@@ -1537,6 +1537,36 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 .ca-compact .ca-lines { font-size: 25cqw; text-align: center; }
 .ca-thumb { width: 52px; flex: none; }
 .ca-thumb .ca-lines { font-size: 27cqw; }
+/* Animated coupon cards: every layer moves — card bob, sway, pop-in lines,
+   stamping code, blinking/floating characters. Reduced-motion safe. */
+@media (prefers-reduced-motion: no-preference) {
+  .coupon-art:not(.ca-compact) { animation: ca-card-bob 5s ease-in-out infinite; }
+  .coupon-art:not(.ca-compact) .ca-face { animation: ca-face-sway 7s ease-in-out infinite; transform-origin: 50% 85%; }
+  .coupon-art:not(.ca-compact) .ca-brand { animation: ca-wiggle 5s ease-in-out infinite; transform-origin: 0 50%; }
+  .coupon-art:not(.ca-compact) .ca-lines span { animation: ca-pop .55s cubic-bezier(.34, 1.56, .64, 1) backwards; }
+  .coupon-art:not(.ca-compact) .ca-note { animation: ca-note-in .6s .3s cubic-bezier(.34, 1.56, .64, 1) backwards; }
+  .coupon-art:not(.ca-compact) .ca-code { animation: ca-stamp 3s ease-in-out .6s infinite; }
+  .coupon-art:not(.ca-compact) .ca-valid { animation: ca-soft-pulse 2.6s ease-in-out infinite; }
+  .ca-part-bob { animation: ca-part-bob 3.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .ca-part-float { animation: ca-part-float 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .ca-part-pulse { animation: ca-part-pulse 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .ca-part-spin { animation: ca-part-spin 8s linear infinite; transform-box: fill-box; transform-origin: center; }
+  .ca-part-blink { animation: ca-part-blink 3.4s infinite; transform-box: fill-box; transform-origin: center; }
+  .ca-part-steam { animation: ca-part-steam 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+}
+@keyframes ca-card-bob { 0%, 100% { transform: rotate(-1deg) translateY(0); } 50% { transform: rotate(-2.2deg) translateY(-5px); } }
+@keyframes ca-face-sway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(.6deg); } }
+@keyframes ca-wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-2deg); } 75% { transform: rotate(2deg); } }
+@keyframes ca-pop { from { transform: translateY(14px) scale(.8); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+@keyframes ca-note-in { from { transform: translateX(-12px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes ca-stamp { 0%, 86%, 100% { transform: rotate(-1.5deg) scale(1); } 90% { transform: rotate(-3deg) scale(1.08); } 94% { transform: rotate(-1deg) scale(.96); } }
+@keyframes ca-soft-pulse { 0%, 100% { opacity: .85; } 50% { opacity: .45; } }
+@keyframes ca-part-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-4%) rotate(-2deg); } }
+@keyframes ca-part-float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-7%) rotate(3deg); } }
+@keyframes ca-part-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+@keyframes ca-part-spin { to { transform: rotate(360deg); } }
+@keyframes ca-part-blink { 0%, 91%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.12); } }
+@keyframes ca-part-steam { 0%, 100% { transform: translateY(0) scaleY(1); opacity: .9; } 50% { transform: translateY(-6%) scaleY(1.15); opacity: .5; } }
 
 .coupon-tiles { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
 .coupon-form-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.25rem; align-items: start; margin-bottom: 1rem; }
@@ -1637,6 +1667,9 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 .canvas-element.description .canvas-content { font-family: var(--smol-body, inherit); font-weight: 400 !important; line-height: 1.55; letter-spacing: 0; }
 .canvas-element.headline .canvas-content, .canvas-element.accent-headline .canvas-content, .canvas-element.description .canvas-content, .canvas-element.top-line .canvas-content { padding: 0; }
 .canvas-kind-text { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+/* Canvas eyebrow pill — same ink tag with the red dot as the classic hero. */
+.canvas-eyebrow-pill { padding: .45em 1em; border: 0; border-radius: 100px; background: var(--smol-ink); color: var(--smol-paper); box-shadow: none; align-items: center; }
+.canvas-eyebrow-pill .pill-label { font-family: var(--smol-display); font-size: inherit; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; line-height: 1; white-space: nowrap; }
 .canvas-element img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; user-select: none; -webkit-user-drag: none; }
 .canvas-kind-image, .canvas-kind-sticker, .canvas-kind-logo { background-color: transparent; }
 .canvas-element a.canvas-link { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; padding: 0 .5em; background: transparent; color: inherit; box-shadow: none; border-radius: inherit; text-decoration: none; white-space: normal; text-align: center; font-size: inherit; font-weight: 400; }
