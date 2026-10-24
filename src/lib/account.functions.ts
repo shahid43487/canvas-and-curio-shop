@@ -28,13 +28,15 @@ export const cancelOrder = createServerFn({ method: "POST" }).middleware([requir
     return { ok: true };
   });
 export const claimAchievementReward = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
-  .inputValidator(input => z.object({ achievement: z.enum(["first-drop", "collector-three", "inner-circle-five"]) }).parse(input))
+  .inputValidator(input => z.object({ achievement: z.enum(["first-drop", "collector-three", "inner-circle-five", "repeat-legend", "secret-stuuf"]) }).parse(input))
   .handler(async ({ context, data }) => {
     const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
     const thresholds = {
       "first-drop": { orders: 1, code: "FIRSTDROP", discount_type: "percent", discount_value: 10, description: "Achievement reward: First Drop" },
       "collector-three": { orders: 3, code: "COLLECTOR", discount_type: "percent", discount_value: 15, description: "Achievement reward: Collector" },
       "inner-circle-five": { orders: 5, code: "INNER5", discount_type: "percent", discount_value: 20, description: "Achievement reward: Inner Circle" },
+      "repeat-legend": { orders: 10, code: "REPEAT10", discount_type: "percent", discount_value: 25, description: "Achievement reward: Repeat Legend" },
+      "secret-stuuf": { orders: 15, code: "SECRET15", discount_type: "percent", discount_value: 30, description: "Achievement reward: The Secret Stuuf" },
     } as const;
     const reward = thresholds[data.achievement];
     const { count, error: orderError } = await db.from("orders").select("id", { count: "exact", head: true }).eq("user_id", context.userId).eq("status", "delivered");
