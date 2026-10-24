@@ -53,7 +53,7 @@ function Account() {
     setClaiming(achievement.id);
     try {
       const result = await claim({ data: { achievement: achievement.id } });
-      await qc.invalidateQueries({ queryKey: ["customer-account"] });
+      await Promise.all([qc.invalidateQueries({ queryKey: ["customer-account"] }), qc.invalidateQueries({ queryKey: ["customer-card-dex"] })]);
       toast.success(result.alreadyClaimed ? "That reward is already in your card library." : "Reward unlocked! Your new coupon card is in your library.");
       setPanel("cards");
     } catch (e) { toast.error(e instanceof Error ? e.message : "Could not claim reward"); }
