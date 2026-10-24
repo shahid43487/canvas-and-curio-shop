@@ -122,7 +122,7 @@ begin
 end;
 $$;
 drop trigger if exists orders_refresh_customer_achievements on public.orders;
-create trigger orders_refresh_customer_achievements after insert or update of status on public.orders
+create trigger orders_refresh_customer_achievements after insert or update on public.orders
 for each row execute function public.refresh_customer_order_achievements();
 
 -- Backfill current customers' delivered-order milestones and achievement cards.
