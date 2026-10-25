@@ -1848,3 +1848,13 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 .achievement-admin-fields { display:grid; gap:12px; padding:16px; }.achievement-admin-fields label { display:grid; gap:5px; font-size:10px; font-weight:900; }.achievement-admin-fields .admin-input { width:100%; min-width:0; box-sizing:border-box; border:1.5px solid #17152d; border-radius:5px; padding:9px; background:#fff; color:#17152d; }.achievement-admin-two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }.achievement-admin-toggle { display:flex!important; align-items:center; gap:8px!important; padding:8px 0; }.achievement-admin-toggle input { accent-color:#17152d; }.achievement-admin-fields .admin-btn { display:flex; justify-content:center; align-items:center; gap:7px; border:2px solid #17152d; background:#d7ff49; color:#17152d; font-weight:900; }
 @media(max-width:700px) { .achievement-admin-grid { grid-template-columns:1fr; }.achievement-admin-two { grid-template-columns:1fr 1fr; } }
 @media(max-width:420px) { .achievement-admin-two { grid-template-columns:1fr; } }
+
+// Admin collectible-card gallery (Coupon Library)
+.admin-card-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin-top: .75rem; }
+.admin-card-card { display: grid; gap: .35rem; align-content: start; padding: 1rem; border: 1px solid var(--admin-border, #ddd); border-radius: .8rem; background: #fff; }
+.admin-card-art { display: flex; justify-content: center; margin-bottom: .35rem; }
+.admin-card-art .coupon-art { max-width: 200px; }
+.admin-card-card strong { font-size: 15px; }
+.admin-card-card small { opacity: .72; }
+.admin-card-note { color: var(--smol-red); opacity: 1 !important; }
+

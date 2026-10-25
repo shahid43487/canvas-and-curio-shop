@@ -134,7 +134,7 @@ function Coupons() {
             <label className="admin-form">Coupon to grant
               <select className="admin-input" value={grantCouponId} onChange={(e) => setGrantCouponId(e.target.value)} required>
                 <option value="">Choose an active coupon…</option>
-                {grantTemplates.map((c) => <option key={c.id} value={c.id}>{c.code} — {couponValueLabel({ discount_type: c.discount_type, discount_value: Number(c.discount_value), min_order: Number("min_order" in c ? c.min_order : 0) }, formatPrice)}{c.description ? ` · ${c.description}` : ""}</option>)}
+                {grantTemplates.map((c) => <option key={c.id} value={c.id}>{c.code} — {couponValueLabel({ discount_type: c.discount_type, discount_value: Number(c.discount_value) }, formatPrice)}{c.description ? ` · ${c.description}` : ""}</option>)}
               </select>
               {grantTemplates.length === 0 && <small>No active unused coupon templates are available. Create or activate a coupon first.</small>}
             </label>
