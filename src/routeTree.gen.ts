@@ -21,10 +21,11 @@ import { Route as SecretTransitionRouteImport } from './routes/secret-transition
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAchievementsRouteImport } from './routes/admin.achievements'
 import { Route as AdminAssetsRouteImport } from './routes/admin.assets'
 import { Route as AdminCampaignsRouteImport } from './routes/admin.campaigns'
-import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminCouponLibraryRouteImport } from './routes/admin.coupon-library'
+import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
@@ -92,6 +93,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAchievementsRoute = AdminAchievementsRouteImport.update({
+  id: '/achievements',
+  path: '/achievements',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAssetsRoute = AdminAssetsRouteImport.update({
   id: '/assets',
   path: '/assets',
@@ -102,14 +108,14 @@ const AdminCampaignsRoute = AdminCampaignsRouteImport.update({
   path: '/campaigns',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCouponsRoute = AdminCouponsRouteImport.update({
-  id: '/coupons',
-  path: '/coupons',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminCouponLibraryRoute = AdminCouponLibraryRouteImport.update({
   id: '/coupon-library',
   path: '/coupon-library',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCouponsRoute = AdminCouponsRouteImport.update({
+  id: '/coupons',
+  path: '/coupons',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminMediaRoute = AdminMediaRouteImport.update({
@@ -159,11 +165,11 @@ export interface FileRoutesByFullPath {
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/admin/achievements': typeof AdminAchievementsRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
+  '/admin/coupon-library': typeof AdminCouponLibraryRoute
   '/admin/coupons': typeof AdminCouponsRoute
-  '/admin/coupon-library': typeof AdminCouponLibraryRoute
-  '/admin/coupon-library': typeof AdminCouponLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
@@ -183,10 +189,11 @@ export interface FileRoutesByTo {
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/admin/achievements': typeof AdminAchievementsRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
-  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/coupon-library': typeof AdminCouponLibraryRoute
+  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
@@ -209,10 +216,11 @@ export interface FileRoutesById {
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
+  '/admin/achievements': typeof AdminAchievementsRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
-  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/coupon-library': typeof AdminCouponLibraryRoute
+  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
@@ -235,10 +243,11 @@ export interface FileRouteTypes {
     | '/secret-transition'
     | '/shop'
     | '/account'
+    | '/admin/achievements'
     | '/admin/assets'
     | '/admin/campaigns'
-    | '/admin/coupons'
     | '/admin/coupon-library'
+    | '/admin/coupons'
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
@@ -258,8 +267,10 @@ export interface FileRouteTypes {
     | '/secret-transition'
     | '/shop'
     | '/account'
+    | '/admin/achievements'
     | '/admin/assets'
     | '/admin/campaigns'
+    | '/admin/coupon-library'
     | '/admin/coupons'
     | '/admin/media'
     | '/admin/orders'
@@ -282,8 +293,10 @@ export interface FileRouteTypes {
     | '/secret-transition'
     | '/shop'
     | '/_authenticated/account'
+    | '/admin/achievements'
     | '/admin/assets'
     | '/admin/campaigns'
+    | '/admin/coupon-library'
     | '/admin/coupons'
     | '/admin/media'
     | '/admin/orders'
@@ -396,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/achievements': {
+      id: '/admin/achievements'
+      path: '/achievements'
+      fullPath: '/admin/achievements'
+      preLoaderRoute: typeof AdminAchievementsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/assets': {
       id: '/admin/assets'
       path: '/assets'
@@ -408,6 +428,13 @@ declare module '@tanstack/react-router' {
       path: '/campaigns'
       fullPath: '/admin/campaigns'
       preLoaderRoute: typeof AdminCampaignsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/coupon-library': {
+      id: '/admin/coupon-library'
+      path: '/coupon-library'
+      fullPath: '/admin/coupon-library'
+      preLoaderRoute: typeof AdminCouponLibraryRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/coupons': {
@@ -481,10 +508,11 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface AdminRouteChildren {
+  AdminAchievementsRoute: typeof AdminAchievementsRoute
   AdminAssetsRoute: typeof AdminAssetsRoute
   AdminCampaignsRoute: typeof AdminCampaignsRoute
-  AdminCouponsRoute: typeof AdminCouponsRoute
   AdminCouponLibraryRoute: typeof AdminCouponLibraryRoute
+  AdminCouponsRoute: typeof AdminCouponsRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRoute
@@ -493,10 +521,11 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAchievementsRoute: AdminAchievementsRoute,
   AdminAssetsRoute: AdminAssetsRoute,
   AdminCampaignsRoute: AdminCampaignsRoute,
-  AdminCouponsRoute: AdminCouponsRoute,
   AdminCouponLibraryRoute: AdminCouponLibraryRoute,
+  AdminCouponsRoute: AdminCouponsRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRoute,
