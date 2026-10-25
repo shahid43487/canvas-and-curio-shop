@@ -28,7 +28,6 @@ function Coupons() {
   const [grantBusy, setGrantBusy] = useState(false);
   const [typeFilter, setTypeFilter] = useState<"all" | "percent" | "fixed">("all");
   const { data, error, isLoading } = useQuery({ queryKey: ["admin", "coupons", token], enabled: Boolean(token), retry: false, queryFn: () => adminListCoupons({ data: { token } }) });
-  const set = (p: Partial<Draft>) => setDraft((d) => ({ ...d, ...p }));
   const { data: customerData, error: customerError, isLoading: customersLoading } = useQuery({ queryKey: ["admin", "coupon-customers", token], enabled: Boolean(token && grantOpen), retry: false, queryFn: () => adminListCustomers({ data: { token } }) });
 
   const coupons = data?.coupons ?? [];
@@ -135,7 +134,7 @@ function Coupons() {
             <label className="admin-form">Coupon to grant
               <select className="admin-input" value={grantCouponId} onChange={(e) => setGrantCouponId(e.target.value)} required>
                 <option value="">Choose an active coupon…</option>
-                {grantTemplates.map((c) => <option key={c.id} value={c.id}>{c.code} — {couponValueLabel({ discount_type: c.discount_type, discount_value: Number(c.discount_value), min_order: Number(c.min_order) }, formatPrice)}{c.description ? ` · ${c.description}` : ""}</option>)}
+                {grantTemplates.map((c) => <option key={c.id} value={c.id}>{c.code} — {couponValueLabel({ discount_type: c.discount_type, discount_value: Number(c.discount_value), min_order: Number("min_order" in c ? c.min_order : 0) }, formatPrice)}{c.description ? ` · ${c.description}` : ""}</option>)}
               </select>
               {grantTemplates.length === 0 && <small>No active unused coupon templates are available. Create or activate a coupon first.</small>}
             </label>
@@ -221,7 +220,7 @@ function Coupons() {
                     <td>{c.email}</td>
                     <td>{c.discount_type === "percent" ? "Percentage" : "Fixed amount"}</td>
                     <td>{c.discount_type === "percent" ? `${Number(c.discount_value)}%` : formatPrice(Number(c.discount_value))}</td>
-                    <td>{Number(c.min_order) > 0 ? formatPrice(Number(c.min_order)) : "—"}</td>
+                    <td>{Number("min_order" in c ? c.min_order : 0) > 0 ? formatPrice(Number("min_order" in c ? c.min_order : 0)) : "—"}</td>
                     <td><span className={`coupon-chip chip-${st}`}>{STATUS_LABEL[st]}</span></td>
                     <td>{c.expires_at ? new Date(c.expires_at).toLocaleDateString() : "—"}</td>
                     <td>{c.used_at ? "1" : "0"} / 1</td>
