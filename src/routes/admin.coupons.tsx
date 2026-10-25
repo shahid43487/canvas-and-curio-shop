@@ -206,7 +206,7 @@ function Coupons() {
             <tbody>
               {rows.length === 0 && <tr><td colSpan={9}>{filtered ? "No coupons match these filters." : "No coupons yet."}</td></tr>}
               {rows.map((c) => {
-                const terms = { discount_type: c.discount_type, discount_value: Number(c.discount_value), min_order: Number(c.min_order) };
+                const terms = { discount_type: c.discount_type, discount_value: Number(c.discount_value), min_order: Number("min_order" in c ? c.min_order : 0) };
                 const art = couponArtText(terms, formatPrice);
                 const st = couponStatus(c);
                 return (
