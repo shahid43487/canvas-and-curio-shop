@@ -16,7 +16,9 @@ export const getAccount = createServerFn({ method: "GET" }).middleware([requireS
   // fails just because the profiles row does not exist yet.
   if (!profile.data) {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const displayName = context.claims.full_name || context.claims.name || null;
+    const meta = (context.claims as Record<string, unknown>)["user_metadata"] as Record<string, unknown> | undefined;
+    const email = typeof context.claims.email === "string" ? context.claims.email : "";
+    const displayName = (meta?.full_name as string) || (meta?.name as string) || email.split("@")[0] || "SMOL CLUB MEMBER";
     const { data: created, error: createError } = await (supabaseAdmin as any).from("profiles")
       .upsert({ id: context.userId, display_name: displayName ?? "" }, { onConflict: "id" })
       .select("*").single();
