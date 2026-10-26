@@ -14,6 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievement_definitions: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          is_secret: boolean
+          rarity: string
+          requirement_type: string
+          requirement_value: number
+          reward_discount_type: string
+          reward_discount_value: number
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string
+          id: string
+          is_active?: boolean
+          is_secret?: boolean
+          rarity?: string
+          requirement_type?: string
+          requirement_value?: number
+          reward_discount_type?: string
+          reward_discount_value?: number
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          is_secret?: boolean
+          rarity?: string
+          requirement_type?: string
+          requirement_value?: number
+          reward_discount_type?: string
+          reward_discount_value?: number
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      customer_achievements: {
+        Row: {
+          achievement_id: string
+          claimed_at: string | null
+          completed_at: string | null
+          progress: number
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          claimed_at?: string | null
+          completed_at?: string | null
+          progress?: number
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          claimed_at?: string | null
+          completed_at?: string | null
+          progress?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      customer_cards: {
+        Row: {
+          acquired_at: string
+          card_type: string
+          id: string
+          metadata: Json
+          rarity: string
+          serial_number: string
+          source_id: string
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          card_type: string
+          id?: string
+          metadata?: Json
+          rarity?: string
+          serial_number?: string
+          source_id: string
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          card_type?: string
+          id?: string
+          metadata?: Json
+          rarity?: string
+          serial_number?: string
+          source_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       customer_coupons: {
         Row: {
           code: string
