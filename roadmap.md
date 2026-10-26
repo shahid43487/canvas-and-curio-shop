@@ -1,5 +1,12 @@
 # Roadmap
 
+## Current request — October 26
+- [x] Fix the `//`-comment CSS build error in styles.css
+- [x] Recreate the three tables the remix reset dropped (achievement_definitions, customer_cards, customer_achievements) with RLS + grants, seeded the five achievement definitions
+- [x] getAccount now tolerates and lazy-creates a missing member profile row
+- [x] Verified signed-in /account and /admin/coupon-library end-to-end (screenshots, zero console errors, typecheck clean)
+
+
 ## Hero canvas — October 21
 - [ ] Build inline campaign canvas with editable layers and independent desktop/mobile placement
 - [ ] Render published canvas slides while preserving legacy slides and logo interactions

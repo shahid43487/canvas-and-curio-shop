@@ -21,3 +21,4 @@
 - Select between the two approved character assets by panel and dialogue context, keeping existing dialogue timing and positioning shared so artwork changes do not disrupt reactions.
 - Product options live in product_variations (price/stock per option, visuals in button_config); the order function re-reads option price and stock server-side, so button visuals never decide price.
 - The remix starts with an empty migration directory; generate future migrations through the migration tool against the current backend, because copied migration history can target an unrelated database. Resetting repository history does not initialize or delete backend schema.
+- getAccount lazy-creates the caller's profiles row on first read (supabaseAdmin upsert, name from JWT user_metadata/email) so a customer without a profile row still loads /account; don't rely on a signup trigger for profile rows.
