@@ -1849,7 +1849,7 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 @media(max-width:700px) { .achievement-admin-grid { grid-template-columns:1fr; }.achievement-admin-two { grid-template-columns:1fr 1fr; } }
 @media(max-width:420px) { .achievement-admin-two { grid-template-columns:1fr; } }
 
-// Admin collectible-card gallery (Coupon Library)
+/* Admin collectible-card gallery (Coupon Library) */
 .admin-card-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin-top: .75rem; }
 .admin-card-card { display: grid; gap: .35rem; align-content: start; padding: 1rem; border: 1px solid var(--admin-border, #ddd); border-radius: .8rem; background: #fff; }
 .admin-card-art { display: flex; justify-content: center; margin-bottom: .35rem; }
