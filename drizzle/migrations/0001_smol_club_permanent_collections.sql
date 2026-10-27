@@ -1,0 +1,74 @@
+CREATE TABLE public.card_sets (id text PRIMARY KEY, title text NOT NULL, description text NOT NULL DEFAULT '', reward_type text NOT NULL DEFAULT '', reward_title text NOT NULL DEFAULT '', reward_details text NOT NULL DEFAULT '', reward_card_id text, completion_rule text NOT NULL DEFAULT 'all_cards' CHECK (completion_rule IN ('all_cards','card_count')), required_count integer NOT NULL DEFAULT 1 CHECK (required_count > 0), claim_enabled boolean NOT NULL DEFAULT false, claim_start timestamptz, claim_end timestamptz, is_active boolean NOT NULL DEFAULT true, sort_order integer NOT NULL DEFAULT 0);
+GRANT SELECT ON public.card_sets TO authenticated; GRANT ALL ON public.card_sets TO service_role;
+ALTER TABLE public.card_sets ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Members read sets" ON public.card_sets FOR SELECT TO authenticated USING (true);
+CREATE TABLE public.card_definitions (id text PRIMARY KEY, set_id text REFERENCES public.card_sets(id), title text NOT NULL, description text NOT NULL DEFAULT '', design text NOT NULL DEFAULT 'smile' CHECK (design IN ('smile','ticket','ghost','ship','dark','bolt')), rarity text NOT NULL DEFAULT 'common', layers jsonb NOT NULL DEFAULT '[]', motion_enabled boolean NOT NULL DEFAULT true, shadow_enabled boolean NOT NULL DEFAULT false, border_enabled boolean NOT NULL DEFAULT true, is_secret boolean NOT NULL DEFAULT false, is_active boolean NOT NULL DEFAULT true, is_archived boolean NOT NULL DEFAULT false, counts_for_completion boolean NOT NULL DEFAULT true, sort_order integer NOT NULL DEFAULT 0);
+GRANT SELECT ON public.card_definitions TO authenticated; GRANT ALL ON public.card_definitions TO service_role;
+ALTER TABLE public.card_definitions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Members read visible or owned designs" ON public.card_definitions FOR SELECT TO authenticated USING (NOT is_secret OR EXISTS (SELECT 1 FROM public.customer_cards c WHERE c.user_id=auth.uid() AND c.source_id=card_definitions.id));
+ALTER TABLE public.customer_cards ADD COLUMN card_id text REFERENCES public.card_definitions(id);
+ALTER TABLE public.achievement_definitions ADD COLUMN card_id text REFERENCES public.card_definitions(id), ADD COLUMN target_set_id text REFERENCES public.card_sets(id);
+INSERT INTO public.card_sets(id,title,description) SELECT 'club-originals','Club Originals','The original SMOL CLUB milestones.' WHERE EXISTS (SELECT 1 FROM public.achievement_definitions);
+INSERT INTO public.card_definitions(id,set_id,title,description,design,rarity,is_secret,sort_order) SELECT id,'club-originals',title,description,CASE row_number() OVER(ORDER BY sort_order,id) WHEN 1 THEN 'smile' WHEN 2 THEN 'ticket' WHEN 3 THEN 'ghost' WHEN 4 THEN 'ship' ELSE 'dark' END,rarity,is_secret,sort_order FROM public.achievement_definitions;
+UPDATE public.achievement_definitions SET card_id=id,target_set_id='club-originals';
+INSERT INTO public.card_definitions(id,title,description,design,is_archived,counts_for_completion) SELECT 'legacy-'||id::text,COALESCE(NULLIF(description,''),'Legacy club card'),'Archived permanent card from the original club.','ticket',true,false FROM public.customer_coupons ON CONFLICT DO NOTHING;
+INSERT INTO public.customer_cards(user_id,card_type,source_id,card_id,serial_number,metadata) SELECT user_id,'legacy','legacy-'||id::text,'legacy-'||id::text,'LEGACY-'||left(id::text,8),jsonb_build_object('title',COALESCE(NULLIF(description,''),'Legacy club card')) FROM public.customer_coupons cp WHERE NOT EXISTS(SELECT 1 FROM public.customer_cards c WHERE c.user_id=cp.user_id AND c.card_type='coupon' AND c.source_id=cp.id::text);
+UPDATE public.customer_cards c SET card_id='legacy-'||c.source_id, card_type='legacy', metadata=jsonb_build_object('title',COALESCE(d.title,'Legacy club card')), source_id='legacy-'||c.source_id FROM public.card_definitions d WHERE c.card_type='coupon' AND d.id='legacy-'||c.source_id;
+INSERT INTO public.card_definitions(id,title,description,is_archived,counts_for_completion) SELECT DISTINCT 'archive-'||c.id::text,'Archived club card','Preserved original collectible.',true,false FROM public.customer_cards c WHERE c.card_id IS NULL AND NOT EXISTS(SELECT 1 FROM public.card_definitions d WHERE d.id=c.source_id);
+UPDATE public.customer_cards c SET card_id=COALESCE((SELECT id FROM public.card_definitions d WHERE d.id=c.source_id),'archive-'||c.id::text) WHERE card_id IS NULL;
+CREATE UNIQUE INDEX customer_cards_one_design ON public.customer_cards(user_id,card_id) WHERE card_type <> 'legacy' AND card_type <> 'archived';
+CREATE TABLE public.set_reward_claims (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid NOT NULL, set_id text NOT NULL REFERENCES public.card_sets(id), reward_type text NOT NULL, reward_title text NOT NULL, reward_details text NOT NULL DEFAULT '', fulfillment_details text NOT NULL DEFAULT '', status text NOT NULL DEFAULT 'claimed' CHECK(status IN ('claimed','processing','fulfilled')), claimed_at timestamptz NOT NULL DEFAULT now(), fulfilled_at timestamptz, UNIQUE(user_id,set_id));
+GRANT SELECT ON public.set_reward_claims TO authenticated; GRANT ALL ON public.set_reward_claims TO service_role;
+ALTER TABLE public.set_reward_claims ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Members read own rewards" ON public.set_reward_claims FOR SELECT TO authenticated USING(user_id=auth.uid());
+CREATE INDEX customer_cards_owner_design ON public.customer_cards(user_id,card_id);
+CREATE OR REPLACE FUNCTION public.refresh_club_progress() RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$
+DECLARE uid uuid:=auth.uid(); a public.achievement_definitions; amount integer; previous public.customer_achievements;
+BEGIN
+IF uid IS NULL THEN RAISE EXCEPTION 'Sign in required'; END IF;
+PERFORM pg_advisory_xact_lock(hashtextextended(uid::text,0));
+FOR a IN SELECT * FROM public.achievement_definitions WHERE is_active AND card_id IS NOT NULL ORDER BY sort_order,id LOOP
+IF a.requirement_type='delivered_orders' THEN SELECT count(*) INTO amount FROM public.orders WHERE user_id=uid AND status='delivered';
+ELSIF a.requirement_type='delivered_spend' THEN SELECT floor(COALESCE(sum(total_amount),0)) INTO amount FROM public.orders WHERE user_id=uid AND status='delivered';
+ELSIF a.requirement_type='collected_cards' THEN SELECT count(DISTINCT card_id) INTO amount FROM public.customer_cards WHERE user_id=uid;
+ELSE CONTINUE; END IF;
+INSERT INTO public.customer_achievements(user_id,achievement_id,progress,completed_at) VALUES(uid,a.id,amount,CASE WHEN amount>=a.requirement_value THEN now() END) ON CONFLICT(user_id,achievement_id) DO UPDATE SET progress=GREATEST(customer_achievements.progress,EXCLUDED.progress),completed_at=COALESCE(customer_achievements.completed_at,EXCLUDED.completed_at);
+SELECT * INTO previous FROM public.customer_achievements WHERE user_id=uid AND achievement_id=a.id;
+IF previous.completed_at IS NOT NULL THEN
+INSERT INTO public.customer_cards(user_id,card_type,source_id,card_id,serial_number,rarity,metadata) SELECT uid,'achievement',a.id,a.card_id,'SMOL-'||left(gen_random_uuid()::text,8),a.rarity,jsonb_build_object('title',d.title) FROM public.card_definitions d WHERE d.id=a.card_id AND NOT EXISTS(SELECT 1 FROM public.customer_cards WHERE user_id=uid AND card_id=a.card_id);
+UPDATE public.customer_achievements SET claimed_at=COALESCE(claimed_at,now()) WHERE user_id=uid AND achievement_id=a.id;
+END IF;
+END LOOP;
+END $$;
+REVOKE ALL ON FUNCTION public.refresh_club_progress() FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.refresh_club_progress() TO authenticated;
+CREATE OR REPLACE FUNCTION public.claim_club_set(target_set text, fulfillment text DEFAULT '') RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$
+DECLARE uid uuid:=auth.uid(); s public.card_sets; total integer; owned integer; existing_id uuid; created uuid;
+BEGIN
+IF uid IS NULL THEN RAISE EXCEPTION 'Sign in required'; END IF;
+IF length(fulfillment)>2000 THEN RAISE EXCEPTION 'Fulfillment details too long'; END IF;
+PERFORM public.refresh_club_progress();
+SELECT id INTO existing_id FROM public.set_reward_claims WHERE user_id=uid AND set_id=target_set;
+IF existing_id IS NOT NULL THEN RETURN existing_id; END IF;
+SELECT * INTO s FROM public.card_sets WHERE id=target_set FOR UPDATE;
+IF s.id IS NULL OR NOT s.is_active OR NOT s.claim_enabled OR btrim(s.reward_type)='' OR btrim(s.reward_title)='' THEN RAISE EXCEPTION 'Reward is not available'; END IF;
+IF (s.claim_start IS NOT NULL AND now()<s.claim_start) OR (s.claim_end IS NOT NULL AND now()>s.claim_end) THEN RAISE EXCEPTION 'Outside the reward claim window'; END IF;
+SELECT count(*),count(*) FILTER(WHERE EXISTS(SELECT 1 FROM public.customer_cards c WHERE c.user_id=uid AND c.card_id=d.id)) INTO total,owned FROM public.card_definitions d WHERE d.set_id=s.id AND d.counts_for_completion AND NOT d.is_archived;
+IF total=0 OR (s.completion_rule='all_cards' AND owned<total) OR (s.completion_rule='card_count' AND owned<s.required_count) THEN RAISE EXCEPTION 'Complete the set first'; END IF;
+IF s.reward_type='digital_card' AND (s.reward_card_id IS NULL OR NOT EXISTS(SELECT 1 FROM public.card_definitions WHERE id=s.reward_card_id)) THEN RAISE EXCEPTION 'Reward card is not configured'; END IF;
+INSERT INTO public.set_reward_claims(user_id,set_id,reward_type,reward_title,reward_details,fulfillment_details) VALUES(uid,s.id,s.reward_type,s.reward_title,s.reward_details,fulfillment) RETURNING id INTO created;
+IF s.reward_type='digital_card' THEN INSERT INTO public.customer_cards(user_id,card_type,source_id,card_id,serial_number,metadata) SELECT uid,'reward',s.id,s.reward_card_id,'SMOL-'||left(gen_random_uuid()::text,8),jsonb_build_object('title',d.title) FROM public.card_definitions d WHERE d.id=s.reward_card_id AND NOT EXISTS(SELECT 1 FROM public.customer_cards WHERE user_id=uid AND card_id=s.reward_card_id); END IF;
+RETURN created;
+END $$;
+REVOKE ALL ON FUNCTION public.claim_club_set(text,text) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.claim_club_set(text,text) TO authenticated;
+CREATE OR REPLACE FUNCTION public.create_club_order(order_data jsonb,items jsonb,owner_id uuid DEFAULT NULL) RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE created uuid; BEGIN created:=public.create_order_with_items(order_data,items); UPDATE public.orders SET user_id=owner_id WHERE id=created; RETURN created; END $$;
+REVOKE ALL ON FUNCTION public.create_club_order(jsonb,jsonb,uuid) FROM PUBLIC,anon,authenticated; GRANT EXECUTE ON FUNCTION public.create_club_order(jsonb,jsonb,uuid) TO service_role;
+CREATE OR REPLACE FUNCTION public.create_owned_order(order_data jsonb,items jsonb,owner_id uuid DEFAULT NULL,coupon_code text DEFAULT NULL) RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ BEGIN RETURN public.create_club_order(order_data,items,owner_id); END $$;
+REVOKE ALL ON FUNCTION public.create_owned_order(jsonb,jsonb,uuid,text) FROM PUBLIC,anon,authenticated;
+REVOKE ALL ON FUNCTION public.create_order_with_items(jsonb,jsonb) FROM PUBLIC,anon,authenticated; GRANT EXECUTE ON FUNCTION public.create_order_with_items(jsonb,jsonb) TO service_role;
+CREATE OR REPLACE FUNCTION public.cancel_customer_order(order_id uuid) RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE target public.orders; item public.order_items; BEGIN SELECT * INTO target FROM public.orders WHERE id=order_id FOR UPDATE; IF target.id IS NULL OR auth.uid() IS NULL OR target.user_id IS DISTINCT FROM auth.uid() THEN RAISE EXCEPTION 'Order not found'; END IF; IF target.status<>'pending' OR target.payment_status='paid' THEN RAISE EXCEPTION 'Only pending, unverified orders can be cancelled'; END IF; UPDATE public.orders SET status='cancelled' WHERE id=order_id; FOR item IN SELECT * FROM public.order_items WHERE order_items.order_id=target.id LOOP IF item.variation_id IS NOT NULL THEN UPDATE public.product_variations SET stock=stock+item.quantity WHERE id=item.variation_id; ELSE UPDATE public.products SET stock=stock+item.quantity WHERE id=item.product_id; END IF; END LOOP; END $$;
+COMMENT ON TABLE public.customer_coupons IS 'DEPRECATED: SMOL CLUB uses independent permanent customer_cards. Retained pending destructive-cleanup permission.';
+COMMENT ON COLUMN public.orders.coupon_id IS 'DEPRECATED: historic reference only; no new coupon application.';
+COMMENT ON COLUMN public.orders.discount_amount IS 'DEPRECATED: historic order adjustment, never applied to new orders.';
+COMMENT ON COLUMN public.achievement_definitions.reward_discount_type IS 'DEPRECATED: achievements award card_id.';
+COMMENT ON COLUMN public.achievement_definitions.reward_discount_value IS 'DEPRECATED: achievements award card_id.';
+REVOKE ALL ON public.customer_coupons FROM anon,authenticated;
