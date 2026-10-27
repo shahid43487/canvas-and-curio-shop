@@ -9,7 +9,7 @@ import { couponArtText, type CouponDesign } from "@/lib/coupon";
 import { CouponArt } from "@/components/smol/CouponArt";
 import { formatPrice } from "@/data/products";
 
-export const Route = createFileRoute("/admin/coupon-library")({
+export const Route = createFileRoute("/admin/card-library")({
   head: () => pageHead("Coupon Library", "Create and issue store coupons from the animated collectible-card gallery."),
   component: CouponLibrary,
 });
