@@ -97,12 +97,6 @@ function OrderConfirmation() {
               <span>{formatPrice(item.unit_price * item.quantity)}</span>
             </div>
           ))}
-          {Number(order.discount_amount) > 0 && (
-            <div className="order-row">
-              <span>Coupon discount</span>
-              <span>−{formatPrice(Number(order.discount_amount))}</span>
-            </div>
-          )}
           <div className="order-row total">
             <span>Total</span>
             <span>{formatPrice(order.total_amount)}</span>

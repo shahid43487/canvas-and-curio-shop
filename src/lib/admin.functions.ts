@@ -4,7 +4,7 @@ import { pacmanConfigSchema, type PacmanConfig } from "./pacman-config";
 type Auth = { token: string };
 const ORDER_STATUS = ["pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
 
-async function admin(token: string) {
+export async function admin(token: string) {
   const expected = process.env["ADMIN_TOKEN"];
   if (!expected || typeof token !== "string") throw new Error("Wrong admin key");
   if (token !== expected) {
@@ -89,8 +89,8 @@ export const adminUpdateProduct = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const patch: { price?: number; stock?: number; is_hidden?: boolean } = {};
-    if (num(data.price) !== undefined) patch.price = data.price!;
-    if (num(data.stock) !== undefined) patch.stock = Math.floor(data.stock!);
+    if (num(data.price) !== undefined) patch.price = Number(data.price);
+    if (num(data.stock) !== undefined) patch.stock = Math.floor(Number(data.stock));
     if (typeof data.is_hidden === "boolean") patch.is_hidden = data.is_hidden;
     const { error } = await db.from("products").update(patch).eq("id", data.id);
     if (error) throw error;
@@ -102,8 +102,8 @@ export const adminUpdateVariation = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const db = await admin(data.token);
     const patch: { price?: number; stock?: number } = {};
-    if (num(data.price) !== undefined) patch.price = data.price!;
-    if (num(data.stock) !== undefined) patch.stock = Math.floor(data.stock!);
+    if (num(data.price) !== undefined) patch.price = Number(data.price);
+    if (num(data.stock) !== undefined) patch.stock = Math.floor(Number(data.stock));
     const { error } = await db.from("product_variations").update(patch).eq("id", data.id);
     if (error) throw error;
     return { ok: true };
@@ -192,8 +192,8 @@ export const adminDeleteVariation = createServerFn({ method: "POST" })
 
 // ---------- Site settings (slides, socials, sound, stickers) ----------
 export const adminSaveSetting = createServerFn({ method: "POST" })
-  .validator((d: Auth & { key: "slides" | "socials" | "sound" | "stickers" | "dialogue" | "slideInterval" | "couponTemplates"; value: unknown }) => {
-    if (!["slides", "socials", "sound", "stickers", "dialogue", "slideInterval", "couponTemplates"].includes(d.key)) throw new Error("Unknown setting");
+  .validator((d: Auth & { key: "slides" | "socials" | "sound" | "stickers" | "dialogue" | "slideInterval"; value: unknown }) => {
+    if (!["slides", "socials", "sound", "stickers", "dialogue", "slideInterval"].includes(d.key)) throw new Error("Unknown setting");
     if (d.key === "slideInterval" && (typeof d.value !== "number" || !Number.isFinite(d.value) || d.value < 2 || d.value > 15)) throw new Error("Slide duration must be 2–15 seconds");
     return d;
   })
@@ -225,61 +225,6 @@ export const adminFileUrl = createServerFn({ method: "POST" })
   });
 
 
-// ---------- Customer coupons ----------
-type CouponInput = { email: string; code: string; description: string; discount_type: "percent" | "fixed"; discount_value: number; min_order: number; expires_at: string | null };
-
-export const adminListCoupons = createServerFn({ method: "POST" })
-  .validator((d: Auth) => d)
-  .handler(async ({ data }) => {
-    const db = await admin(data.token);
-    const { data: coupons, error } = await db.from("customer_coupons").select("*").limit(200);
-    if (error) throw error;
-    const rows = coupons ?? [];
-    const emails = new Map<string, string>();
-    await Promise.all([...new Set(rows.map((c) => c.user_id))].map(async (id) => {
-      const { data: u } = await db.auth.admin.getUserById(id);
-      emails.set(id, u.user?.email ?? "unknown");
-    }));
-    return { coupons: rows.map((c) => ({ ...c, email: emails.get(c.user_id) ?? "unknown" })) };
-  });
-
-export const adminIssueCoupon = createServerFn({ method: "POST" })
-  .validator((d: Auth & { coupon: CouponInput }) => {
-    const c = d.coupon;
-    if (!c.email?.trim()) throw new Error("Customer email is required");
-    if (!/^[A-Za-z0-9_-]{3,32}$/.test(c.code ?? "")) throw new Error("Code must be 3–32 letters, numbers, - or _");
-    if (!["percent", "fixed"].includes(c.discount_type)) throw new Error("Bad discount type");
-    if (typeof c.discount_value !== "number" || !Number.isFinite(c.discount_value) || c.discount_value <= 0) throw new Error("Discount must be more than 0");
-    if (c.discount_type === "percent" && c.discount_value > 100) throw new Error("Percent discount cannot exceed 100");
-    if (num(c.min_order) === undefined) throw new Error("Minimum order must be 0 or more");
-    if (c.expires_at && Number.isNaN(Date.parse(c.expires_at))) throw new Error("Bad expiry date");
-    return d;
-  })
-  .handler(async ({ data }) => {
-    const db = await admin(data.token);
-    const c = data.coupon;
-    const { data: userId, error: lookupError } = await db.rpc("admin_find_user_by_email", { lookup: c.email });
-    if (lookupError) throw lookupError;
-    if (!userId) throw new Error("No customer with that email — they need to sign up first");
-    const { error } = await db.from("customer_coupons").insert({
-      user_id: userId, code: c.code.toUpperCase(), description: c.description.trim().slice(0, 200),
-      discount_type: c.discount_type, discount_value: c.discount_value, min_order: c.min_order, expires_at: c.expires_at,
-    });
-    if (error) throw error;
-    return { ok: true };
-  });
-
-export const adminDeleteCoupon = createServerFn({ method: "POST" })
-  .validator((d: Auth & { id: string }) => d)
-  .handler(async ({ data }) => {
-    const db = await admin(data.token);
-    const { error } = await db.from("customer_coupons").delete().eq("id", data.id).is("used_at", null);
-    if (error) throw error;
-    return { ok: true };
-  });
-
-
-// ---------- Bulk customer coupon grants ----------
 export const adminListCustomers = createServerFn({ method: "POST" })
   .validator((d: Auth) => d)
   .handler(async ({ data }) => {
@@ -306,104 +251,3 @@ export const adminListCustomers = createServerFn({ method: "POST" })
     };
   });
 
-export const adminGrantCouponToCustomers = createServerFn({ method: "POST" })
-  .validator((d: Auth & { couponId: string; allCustomers: boolean; userIds: string[] }) => {
-    if (!d.couponId || typeof d.allCustomers !== "boolean" || !Array.isArray(d.userIds)) throw new Error("Invalid grant request");
-    if (d.userIds.length > 10000 || d.userIds.some((id) => typeof id !== "string" || id.length > 100)) throw new Error("Invalid customer selection");
-    if (!d.allCustomers && d.userIds.length === 0) throw new Error("Select at least one customer");
-    return d;
-  })
-  .handler(async ({ data }) => {
-    const db = await admin(data.token);
-    const { data: template, error: templateError } = await db.from("customer_coupons")
-      .select("code, description, discount_type, discount_value, min_order, expires_at, used_at")
-      .eq("id", data.couponId)
-      .single();
-    if (templateError) throw templateError;
-    if (template.used_at) throw new Error("Choose an unused active coupon as the template");
-    if (template.expires_at && new Date(template.expires_at).getTime() <= Date.now()) throw new Error("That coupon has expired");
-
-    const users: { id: string; email?: string }[] = [];
-    for (let page = 1; page <= 100; page += 1) {
-      const { data: result, error } = await db.auth.admin.listUsers({ page, perPage: 1000 });
-      if (error) throw error;
-      users.push(...result.users.map((u) => ({ id: u.id, email: u.email ?? "" })));
-      if (result.users.length < 1000) break;
-    }
-    const availableIds = new Set(users.map((u) => u.id));
-    const targetIds = data.allCustomers
-      ? [...availableIds]
-      : [...new Set(data.userIds)].filter((userId) => availableIds.has(userId));
-    if (!targetIds.length) throw new Error("No valid customer accounts were selected");
-
-    let granted = 0;
-    let skipped = 0;
-    for (let start = 0; start < targetIds.length; start += 250) {
-      const batchIds = targetIds.slice(start, start + 250);
-      const { data: existing, error: existingError } = await db.from("customer_coupons")
-        .select("user_id")
-        .eq("code", template.code)
-        .in("user_id", batchIds);
-      if (existingError) throw existingError;
-      const existingIds = new Set((existing ?? []).map((row) => row.user_id));
-      const rows = batchIds.filter((userId) => !existingIds.has(userId)).map((user_id) => ({
-        user_id,
-        code: template.code,
-        description: template.description ?? "",
-        discount_type: template.discount_type,
-        discount_value: template.discount_value,
-        min_order: template.min_order,
-        expires_at: template.expires_at,
-      }));
-      skipped += batchIds.length - rows.length;
-      for (let offset = 0; offset < rows.length; offset += 100) {
-        const insertBatch = rows.slice(offset, offset + 100);
-        if (!insertBatch.length) continue;
-        const { error } = await db.from("customer_coupons").insert(insertBatch);
-        if (error) throw error;
-        granted += insertBatch.length;
-      }
-    }
-    return { ok: true, granted, skipped, targeted: targetIds.length };
-  });
-
-
-export const adminGetCouponTemplates = createServerFn({ method: "POST" })
-  .validator((d: Auth) => d)
-  .handler(async ({ data }) => {
-    const db = await admin(data.token);
-    const { data: row, error } = await db.from("site_settings").select("value").eq("key", "couponTemplates").maybeSingle();
-    if (error) throw error;
-    return { templates: Array.isArray(row?.value) ? row.value : [] };
-  });
-
-
-export const adminListAchievements = createServerFn({ method: "POST" })
-  .validator((d: Auth) => d)
-  .handler(async ({ data }) => {
-    const db = await admin(data.token);
-    const { data: achievements, error } = await (db as any).from("achievement_definitions").select("*").order("sort_order");
-    if (error) throw error;
-    return { achievements: achievements ?? [] };
-  });
-
-export const adminSaveAchievement = createServerFn({ method: "POST" })
-  .validator((d: Auth & { id: string; title: string; description: string; requirement_value: number; reward_discount_value: number; rarity: string; is_secret: boolean; is_active: boolean; sort_order: number }) => {
-    if (!/^[a-z0-9-]{2,48}$/.test(d.id)) throw new Error("Achievement ID must use lowercase letters, numbers and hyphens.");
-    if (!d.title.trim() || d.title.length > 80 || d.description.length > 300) throw new Error("Check achievement title and description.");
-    if (!Number.isInteger(d.requirement_value) || d.requirement_value < 1 || d.requirement_value > 10000) throw new Error("Requirement must be from 1 to 10000.");
-    if (!Number.isFinite(d.reward_discount_value) || d.reward_discount_value < 0 || d.reward_discount_value > 100) throw new Error("Reward must be from 0 to 100.");
-    if (!["common","uncommon","rare","epic","legendary"].includes(d.rarity)) throw new Error("Invalid rarity.");
-    return d;
-  })
-  .handler(async ({ data }) => {
-    const db = await admin(data.token);
-    const { id, ...patch } = data;
-    const { error } = await (db as any).from("achievement_definitions").upsert({
-      id, ...patch, category: data.is_secret ? "secret" : "orders",
-      requirement_type: "delivered_orders", reward_discount_type: "percent",
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "id" });
-    if (error) throw error;
-    return { ok: true };
-  });
