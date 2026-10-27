@@ -28,6 +28,7 @@ import { Route as AdminCardLibraryRouteImport } from './routes/admin.card-librar
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as AdminSetsRouteImport } from './routes/admin.sets'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
@@ -127,6 +128,11 @@ const AdminProductsRoute = AdminProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSetsRoute = AdminSetsRouteImport.update({
+  id: '/sets',
+  path: '/sets',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/sets': typeof AdminSetsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/sets': typeof AdminSetsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
@@ -215,6 +223,7 @@ export interface FileRoutesById {
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/sets': typeof AdminSetsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/sets'
     | '/admin/settings'
     | '/order/$id'
     | '/product/$id'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/sets'
     | '/admin/settings'
     | '/order/$id'
     | '/product/$id'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/sets'
     | '/admin/settings'
     | '/order/$id'
     | '/product/$id'
@@ -446,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProductsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/sets': {
+      id: '/admin/sets'
+      path: '/sets'
+      fullPath: '/admin/sets'
+      preLoaderRoute: typeof AdminSetsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -496,6 +515,7 @@ interface AdminRouteChildren {
   AdminMediaRoute: typeof AdminMediaRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRoute
+  AdminSetsRoute: typeof AdminSetsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -508,6 +528,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMediaRoute: AdminMediaRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRoute,
+  AdminSetsRoute: AdminSetsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
