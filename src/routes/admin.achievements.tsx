@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -28,7 +28,7 @@ function AchievementLab() {
   const selectedCard = cards.find((card: any) => card.id === draft.card_id);
   const preview = selectedCard ? <CardArt card={{ title: selectedCard.title, description: selectedCard.description ?? "", design: selectedCard.design as CardDraft["design"], rarity: draft.rarity, motion_enabled: selectedCard.motion_enabled !== false, shadow_enabled: selectedCard.shadow_enabled === true, border_enabled: selectedCard.border_enabled !== false, layers: selectedCard.layers }} /> : null;
   const load = (row: any) => setDraft({ ...row, card_id: row.card_id ?? "", rarity: row.rarity as AchievementDraft["rarity"], requirement_type: row.requirement_type as AchievementDraft["requirement_type"] });
-  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); setBusy(true);
     try { await save({ data: { token, achievement: draft } }); await qc.invalidateQueries({ queryKey: ["admin-club"] }); toast.success("Achievement saved"); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Could not save achievement"); }
@@ -42,7 +42,7 @@ function AchievementLab() {
     <div className="club-design-tray">{(data?.achievements ?? []).map((row: any) => <Button key={row.id} type="button" variant={draft.id === row.id ? "default" : "outline"} onClick={() => load(row)}>{row.title}</Button>)}<Button type="button" onClick={() => setDraft(blank())}><Plus size={15}/> New achievement</Button></div>
     <div className="club-editor achievement-editor">
       <form className="admin-form achievement-admin-fields" onSubmit={submit}>
-        <label>Internal ID<input className="admin-input" required pattern="[a-z0-9-]{2,80}" value={draft.id} onChange={e => patch({ id: e.target.value })} disabled={Boolean(data?.achievements.some((a: any) => a.id === draft.id)} /></label>
+        <label>Internal ID<input className="admin-input" required pattern="[a-z0-9-]{2,80}" value={draft.id} onChange={e => patch({ id: e.target.value })} disabled={Boolean(data?.achievements.some((a: any) => a.id === draft.id))} /></label>
         <label>Display title<input className="admin-input" required maxLength={80} value={draft.title} onChange={e => patch({ title: e.target.value })}/></label>
         <label>Description<textarea className="admin-input" rows={3} maxLength={300} value={draft.description} onChange={e => patch({ description: e.target.value })}/></label>
         <div className="achievement-admin-two"><label>Category<input className="admin-input" maxLength={60} value={draft.category} onChange={e => patch({ category: e.target.value })}/></label><label>Rarity<select className="admin-input" value={draft.rarity} onChange={e => patch({ rarity: e.target.value as AchievementDraft["rarity"] })}>{["common","uncommon","rare","epic","legendary"].map(v => <option key={v}>{v}</option>)}</select></label></div>
