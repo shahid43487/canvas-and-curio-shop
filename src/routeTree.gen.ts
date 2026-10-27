@@ -24,11 +24,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAchievementsRouteImport } from './routes/admin.achievements'
 import { Route as AdminAssetsRouteImport } from './routes/admin.assets'
 import { Route as AdminCampaignsRouteImport } from './routes/admin.campaigns'
-import { Route as AdminCouponLibraryRouteImport } from './routes/admin.coupon-library'
-import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
+import { Route as AdminCardLibraryRouteImport } from './routes/admin.card-library'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as AdminSetsRouteImport } from './routes/admin.sets'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
@@ -108,14 +108,9 @@ const AdminCampaignsRoute = AdminCampaignsRouteImport.update({
   path: '/campaigns',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCouponLibraryRoute = AdminCouponLibraryRouteImport.update({
-  id: '/coupon-library',
-  path: '/coupon-library',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCouponsRoute = AdminCouponsRouteImport.update({
-  id: '/coupons',
-  path: '/coupons',
+const AdminCardLibraryRoute = AdminCardLibraryRouteImport.update({
+  id: '/card-library',
+  path: '/card-library',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminMediaRoute = AdminMediaRouteImport.update({
@@ -131,6 +126,11 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
 const AdminProductsRoute = AdminProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSetsRoute = AdminSetsRouteImport.update({
+  id: '/sets',
+  path: '/sets',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -168,11 +168,11 @@ export interface FileRoutesByFullPath {
   '/admin/achievements': typeof AdminAchievementsRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
-  '/admin/coupon-library': typeof AdminCouponLibraryRoute
-  '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/card-library': typeof AdminCardLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/sets': typeof AdminSetsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
@@ -192,11 +192,11 @@ export interface FileRoutesByTo {
   '/admin/achievements': typeof AdminAchievementsRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
-  '/admin/coupon-library': typeof AdminCouponLibraryRoute
-  '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/card-library': typeof AdminCardLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/sets': typeof AdminSetsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
@@ -219,11 +219,11 @@ export interface FileRoutesById {
   '/admin/achievements': typeof AdminAchievementsRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
-  '/admin/coupon-library': typeof AdminCouponLibraryRoute
-  '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/card-library': typeof AdminCardLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/sets': typeof AdminSetsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
@@ -246,11 +246,11 @@ export interface FileRouteTypes {
     | '/admin/achievements'
     | '/admin/assets'
     | '/admin/campaigns'
-    | '/admin/coupon-library'
-    | '/admin/coupons'
+    | '/admin/card-library'
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/sets'
     | '/admin/settings'
     | '/order/$id'
     | '/product/$id'
@@ -270,11 +270,11 @@ export interface FileRouteTypes {
     | '/admin/achievements'
     | '/admin/assets'
     | '/admin/campaigns'
-    | '/admin/coupon-library'
-    | '/admin/coupons'
+    | '/admin/card-library'
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/sets'
     | '/admin/settings'
     | '/order/$id'
     | '/product/$id'
@@ -296,11 +296,11 @@ export interface FileRouteTypes {
     | '/admin/achievements'
     | '/admin/assets'
     | '/admin/campaigns'
-    | '/admin/coupon-library'
-    | '/admin/coupons'
+    | '/admin/card-library'
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/sets'
     | '/admin/settings'
     | '/order/$id'
     | '/product/$id'
@@ -430,18 +430,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCampaignsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/coupon-library': {
-      id: '/admin/coupon-library'
-      path: '/coupon-library'
-      fullPath: '/admin/coupon-library'
-      preLoaderRoute: typeof AdminCouponLibraryRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/coupons': {
-      id: '/admin/coupons'
-      path: '/coupons'
-      fullPath: '/admin/coupons'
-      preLoaderRoute: typeof AdminCouponsRouteImport
+    '/admin/card-library': {
+      id: '/admin/card-library'
+      path: '/card-library'
+      fullPath: '/admin/card-library'
+      preLoaderRoute: typeof AdminCardLibraryRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/media': {
@@ -463,6 +456,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/admin/products'
       preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sets': {
+      id: '/admin/sets'
+      path: '/sets'
+      fullPath: '/admin/sets'
+      preLoaderRoute: typeof AdminSetsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
@@ -511,11 +511,11 @@ interface AdminRouteChildren {
   AdminAchievementsRoute: typeof AdminAchievementsRoute
   AdminAssetsRoute: typeof AdminAssetsRoute
   AdminCampaignsRoute: typeof AdminCampaignsRoute
-  AdminCouponLibraryRoute: typeof AdminCouponLibraryRoute
-  AdminCouponsRoute: typeof AdminCouponsRoute
+  AdminCardLibraryRoute: typeof AdminCardLibraryRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRoute
+  AdminSetsRoute: typeof AdminSetsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -524,11 +524,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAchievementsRoute: AdminAchievementsRoute,
   AdminAssetsRoute: AdminAssetsRoute,
   AdminCampaignsRoute: AdminCampaignsRoute,
-  AdminCouponLibraryRoute: AdminCouponLibraryRoute,
-  AdminCouponsRoute: AdminCouponsRoute,
+  AdminCardLibraryRoute: AdminCardLibraryRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRoute,
+  AdminSetsRoute: AdminSetsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }

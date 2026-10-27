@@ -8,6 +8,13 @@
       "when": 1792981942145,
       "tag": "0000_recreate_collectible_and_achievement_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793084782691,
+      "tag": "0001_smol_club_permanent_collections",
+      "breakpoints": true
     }
   ]
 }

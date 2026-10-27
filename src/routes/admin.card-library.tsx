@@ -1,0 +1,31 @@
+import { useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { CardArt } from "@/components/smol/CardArt";
+import { adminClub, adminSaveCard } from "@/lib/club-admin.functions";
+import { useAdminToken } from "@/lib/admin-session";
+import { designs, parseLayers, type CardDraft, type CardLayer } from "@/lib/club";
+import { pageHead } from "@/lib/page-head";
+export const Route = createFileRoute("/admin/card-library")({ head: () => pageHead("Card Library", "SMOL CLUB permanent collectible artwork and layered card editor."), component: Library });
+const fresh = (): CardDraft => ({ id: "", title: "", description: "", design: "smile", rarity: "common", set_id: null, layers: [], motion_enabled: true, shadow_enabled: false, border_enabled: true, is_active: true, is_secret: false, is_archived: false, counts_for_completion: true, sort_order: 0 });
+function Library() {
+ const token=useAdminToken(), qc=useQueryClient(), save=useServerFn(adminSaveCard);
+ const {data,error}=useQuery({queryKey:["admin-club",token],queryFn:()=>adminClub({data:{token}})});
+ const [draft,setDraft]=useState<CardDraft>(fresh), [busy,setBusy]=useState(false);
+ const patch=(v:Partial<CardDraft>)=>setDraft(d=>({...d,...v}));
+ const layer=(id:string,v:Partial<CardLayer>)=>patch({layers:draft.layers.map(l=>l.id===id?{...l,...v}:l)});
+ return <div className="club-admin"><h1 className="admin-h1">Card Library</h1>{error && <p role="alert">{error.message}</p>}
+ <div className="club-design-tray">{designs.map(design=><Button key={design} variant={draft.design===design?"default":"outline"} onClick={()=>patch({design})}>{design}</Button>)}</div>
+ <div className="club-editor"><form className="admin-form" onSubmit={async e=>{e.preventDefault();setBusy(true);try {await save({data:{token,card:draft}});await qc.invalidateQueries({queryKey:["admin-club"]});toast.success("Card saved");}catch(e){toast.error(e instanceof Error?e.message:"Save failed");}finally{setBusy(false);}}}>
+ <label>Card ID<input className="admin-input" required value={draft.id} onChange={e=>patch({id:e.target.value})}/></label><label>Title<input className="admin-input" required value={draft.title} onChange={e=>patch({title:e.target.value})}/></label><label>Description<textarea className="admin-input" value={draft.description} onChange={e=>patch({description:e.target.value})}/></label>
+ <label>Set<select className="admin-input" value={draft.set_id||""} onChange={e=>patch({set_id:e.target.value||null})}><option value="">Independent card</option>{data?.sets.map(s=><option key={s.id} value={s.id}>{s.title}</option>)}</select></label>
+ <label>Rarity<select className="admin-input" value={draft.rarity} onChange={e=>patch({rarity:e.target.value as CardDraft["rarity"]})}>{["common","uncommon","rare","epic","legendary"].map(v=><option key={v}>{v}</option>)}</select></label>
+ <label>Sort order<input className="admin-input" type="number" value={draft.sort_order} onChange={e=>patch({sort_order:Number(e.target.value)})}/></label>
+ {(["motion_enabled","shadow_enabled","border_enabled","is_secret","is_active","is_archived","counts_for_completion"] as const).map(k=><label className="club-check" key={k}><input type="checkbox" checked={draft[k]} onChange={e=>patch({[k]:e.target.checked})}/>{k.replaceAll("_"," ")}</label>)}
+ <h2>SVG layers</h2>{draft.layers.map(l=><fieldset key={l.id} className="club-layer-fields"><legend>{l.kind} layer</legend><label>Kind<select value={l.kind} onChange={e=>layer(l.id,{kind:e.target.value as CardLayer["kind"]})}>{["text","star","circle"].map(v=><option key={v}>{v}</option>)}</select></label><label>Text<input value={l.text} onChange={e=>layer(l.id,{text:e.target.value})}/></label>{(["x","y","size","rotation"] as const).map(k=><label key={k}>{k}<input type="number" value={l[k]} onChange={e=>layer(l.id,{[k]:Number(e.target.value)})}/></label>)}<label>Tone<select value={l.tone} onChange={e=>layer(l.id,{tone:e.target.value as CardLayer["tone"]})}>{["ink","paper","red","yellow","mint"].map(v=><option key={v}>{v}</option>)}</select></label><label>Animation<select value={l.motion} onChange={e=>layer(l.id,{motion:e.target.value as CardLayer["motion"]})}>{["none","bob","blink","spin","sparkle"].map(v=><option key={v}>{v}</option>)}</select></label><label className="club-check"><input type="checkbox" checked={l.visible} onChange={e=>layer(l.id,{visible:e.target.checked})}/>Visible</label><Button type="button" variant="outline" onClick={()=>patch({layers:draft.layers.filter(v=>v.id!==l.id)})}>Remove layer</Button></fieldset>)}
+ <Button type="button" variant="outline" onClick={()=>patch({layers:[...draft.layers,{id:crypto.randomUUID(),kind:"star",text:"",x:150,y:120,size:30,rotation:0,tone:"yellow",motion:"sparkle",visible:true}]})}>Add layer</Button><Button type="submit" disabled={busy}>{busy?"Saving…":"Save card"}</Button><Button type="button" variant="outline" onClick={()=>setDraft(fresh())}>New card</Button></form><aside className="club-live-preview"><CardArt card={draft}/><span>PREVIEW / {draft.design}</span></aside></div>
+ <h2>Saved designs</h2><div className="club-grid">{data?.cards.map(c=><article key={c.id}><CardArt card={{...c,design:c.design as CardDraft["design"],rarity:c.rarity as CardDraft["rarity"]}}/><Button variant="outline" onClick={()=>setDraft({...c,design:c.design as CardDraft["design"],rarity:c.rarity as CardDraft["rarity"],layers:parseLayers(c.layers)})}>Edit {c.title}</Button></article>)}</div></div>;
+}

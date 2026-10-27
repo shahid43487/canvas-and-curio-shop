@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       achievement_definitions: {
         Row: {
+          card_id: string | null
           category: string
           created_at: string
           description: string
@@ -28,10 +29,12 @@ export type Database = {
           reward_discount_type: string
           reward_discount_value: number
           sort_order: number
+          target_set_id: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          card_id?: string | null
           category?: string
           created_at?: string
           description?: string
@@ -44,10 +47,12 @@ export type Database = {
           reward_discount_type?: string
           reward_discount_value?: number
           sort_order?: number
+          target_set_id?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          card_id?: string | null
           category?: string
           created_at?: string
           description?: string
@@ -60,8 +65,137 @@ export type Database = {
           reward_discount_type?: string
           reward_discount_value?: number
           sort_order?: number
+          target_set_id?: string | null
           title?: string
           updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "achievement_definitions_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "card_definitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "achievement_definitions_target_set_id_fkey"
+            columns: ["target_set_id"]
+            isOneToOne: false
+            referencedRelation: "card_sets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      card_definitions: {
+        Row: {
+          border_enabled: boolean
+          counts_for_completion: boolean
+          description: string
+          design: string
+          id: string
+          is_active: boolean
+          is_archived: boolean
+          is_secret: boolean
+          layers: Json
+          motion_enabled: boolean
+          rarity: string
+          set_id: string | null
+          shadow_enabled: boolean
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          border_enabled?: boolean
+          counts_for_completion?: boolean
+          description?: string
+          design?: string
+          id: string
+          is_active?: boolean
+          is_archived?: boolean
+          is_secret?: boolean
+          layers?: Json
+          motion_enabled?: boolean
+          rarity?: string
+          set_id?: string | null
+          shadow_enabled?: boolean
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          border_enabled?: boolean
+          counts_for_completion?: boolean
+          description?: string
+          design?: string
+          id?: string
+          is_active?: boolean
+          is_archived?: boolean
+          is_secret?: boolean
+          layers?: Json
+          motion_enabled?: boolean
+          rarity?: string
+          set_id?: string | null
+          shadow_enabled?: boolean
+          sort_order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_definitions_set_id_fkey"
+            columns: ["set_id"]
+            isOneToOne: false
+            referencedRelation: "card_sets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      card_sets: {
+        Row: {
+          claim_enabled: boolean
+          claim_end: string | null
+          claim_start: string | null
+          completion_rule: string
+          description: string
+          id: string
+          is_active: boolean
+          required_count: number
+          reward_card_id: string | null
+          reward_details: string
+          reward_title: string
+          reward_type: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          claim_enabled?: boolean
+          claim_end?: string | null
+          claim_start?: string | null
+          completion_rule?: string
+          description?: string
+          id: string
+          is_active?: boolean
+          required_count?: number
+          reward_card_id?: string | null
+          reward_details?: string
+          reward_title?: string
+          reward_type?: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          claim_enabled?: boolean
+          claim_end?: string | null
+          claim_start?: string | null
+          completion_rule?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          required_count?: number
+          reward_card_id?: string | null
+          reward_details?: string
+          reward_title?: string
+          reward_type?: string
+          sort_order?: number
+          title?: string
         }
         Relationships: []
       }
@@ -92,6 +226,7 @@ export type Database = {
       customer_cards: {
         Row: {
           acquired_at: string
+          card_id: string | null
           card_type: string
           id: string
           metadata: Json
@@ -102,6 +237,7 @@ export type Database = {
         }
         Insert: {
           acquired_at?: string
+          card_id?: string | null
           card_type: string
           id?: string
           metadata?: Json
@@ -112,6 +248,7 @@ export type Database = {
         }
         Update: {
           acquired_at?: string
+          card_id?: string | null
           card_type?: string
           id?: string
           metadata?: Json
@@ -120,7 +257,15 @@ export type Database = {
           source_id?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "customer_cards_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "card_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       customer_coupons: {
         Row: {
@@ -416,6 +561,53 @@ export type Database = {
         }
         Relationships: []
       }
+      set_reward_claims: {
+        Row: {
+          claimed_at: string
+          fulfilled_at: string | null
+          fulfillment_details: string
+          id: string
+          reward_details: string
+          reward_title: string
+          reward_type: string
+          set_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string
+          fulfilled_at?: string | null
+          fulfillment_details?: string
+          id?: string
+          reward_details?: string
+          reward_title: string
+          reward_type: string
+          set_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string
+          fulfilled_at?: string | null
+          fulfillment_details?: string
+          id?: string
+          reward_details?: string
+          reward_title?: string
+          reward_type?: string
+          set_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "set_reward_claims_set_id_fkey"
+            columns: ["set_id"]
+            isOneToOne: false
+            referencedRelation: "card_sets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_settings: {
         Row: {
           key: string
@@ -441,6 +633,14 @@ export type Database = {
     Functions: {
       admin_find_user_by_email: { Args: { lookup: string }; Returns: string }
       cancel_customer_order: { Args: { order_id: string }; Returns: undefined }
+      claim_club_set: {
+        Args: { fulfillment?: string; target_set: string }
+        Returns: string
+      }
+      create_club_order: {
+        Args: { items: Json; order_data: Json; owner_id?: string }
+        Returns: string
+      }
       create_order_with_items: {
         Args: { items: Json; order_data: Json }
         Returns: string
@@ -454,6 +654,7 @@ export type Database = {
         }
         Returns: string
       }
+      refresh_club_progress: { Args: never; Returns: undefined }
     }
     Enums: {
       payment_method: "cod" | "bkash"

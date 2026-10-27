@@ -18,9 +18,7 @@ import { useCart, itemKey, unitPrice } from "@/hooks/use-cart";
 import { CHECKOUT_IDLE, CHECKOUT_IDLE_HIGH, CHECKOUT_IDLE_ONE } from "@/data/dialogue-defaults";
 import { useDialogue } from "@/hooks/use-dialogue";
 import { CheckoutSpeaker } from "@/components/smol/CheckoutSpeaker";
-import { CouponPanel } from "@/components/smol/CouponPanel";
-import { createOrder, previewCoupon } from "@/lib/orders.functions";
-import { useCustomer } from "@/hooks/use-customer";
+import { createOrder } from "@/lib/orders.functions";
 import logo from "@/assets/smol-stuuf-logo.png";
 
 const checkoutSchema = z.object({
@@ -58,35 +56,7 @@ function Checkout() {
   const { items, totalPrice } = useCart();
   const isSecretOrder = items.some((item) => item.product.is_hidden === true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const customer = useCustomer();
-  const [couponPanelOpen, setCouponPanelOpen] = useState(false);
-  const [couponBusy, setCouponBusy] = useState(false);
-  const [coupon, setCoupon] = useState<{ code: string; discount: number; total: number } | null>(null);
-  // A changed cart invalidates the previewed discount.
-  useEffect(() => setCoupon(null), [totalPrice, items.length]);
-  const payable = coupon ? coupon.total : totalPrice;
-
-  const applyCoupon = async (code: string): Promise<boolean> => {
-    if (!code.trim()) return false;
-    setCouponBusy(true);
-    try {
-      const result = await previewCoupon({
-        data: {
-          code,
-          items: items.map((i) => ({ product_id: i.product.id, ...(i.variation?.id ? { variation_id: i.variation.id } : {}), quantity: i.quantity })),
-        },
-      });
-      setCoupon({ code: result.code, discount: result.discount, total: result.total });
-      toast.success(`Coupon ${result.code} applied`);
-      return true;
-    } catch (error) {
-      setCoupon(null);
-      toast.error(error instanceof Error ? error.message : "Could not apply coupon");
-      return false;
-    } finally {
-      setCouponBusy(false);
-    }
-  };
+  const payable = totalPrice;
 
   const {
     register,
@@ -162,7 +132,6 @@ function Checkout() {
           order: {
             ...values,
             total_amount: payable,
-            ...(coupon ? { coupon_code: coupon.code } : {}),
             order_source: isSecretOrder ? "secret" : "regular",
           },
           items: orderItems,
@@ -288,30 +257,6 @@ function Checkout() {
                 </div>
               ))}
             </div>
-            <div className="summary-coupon">
-              {!customer ? (
-                <p className="summary-note"><Link to="/auth">Sign in</Link> to use a coupon.</p>
-              ) : coupon ? (
-                <div className="coupon-applied">
-                  <div className="coupon-applied-head">
-                    <span className="coupon-tag">{coupon.code}</span>
-                    <button type="button" className="coupon-remove" onClick={() => setCoupon(null)}>Remove</button>
-                  </div>
-                  <p className="summary-note">Coupon applied — you saved {formatPrice(coupon.discount)}.</p>
-                </div>
-              ) : (
-                <button type="button" className="coupon-open" onClick={() => setCouponPanelOpen(true)}>
-                  <span aria-hidden="true">🎟</span> Have a coupon? <b>Apply</b>
-                </button>
-              )}
-              {customer && <CouponPanel open={couponPanelOpen} onOpenChange={setCouponPanelOpen} subtotal={totalPrice} busy={couponBusy} appliedCode={coupon?.code ?? null} onApply={applyCoupon} />}
-            </div>
-            {coupon && (
-              <>
-                <div className="summary-item"><span>Subtotal</span><span>{formatPrice(totalPrice)}</span></div>
-                <div className="summary-item summary-discount"><span>Discount ({coupon.code})</span><span>−{formatPrice(coupon.discount)}</span></div>
-              </>
-            )}
             <div className="summary-total">
               <span>Total</span>
               <span>{formatPrice(payable)}</span>

@@ -58,9 +58,9 @@ function AdminShell() {
           <Link to="/admin/orders">Orders</Link>
           <Link to="/admin/products">Products</Link>
           <Link to="/admin/campaigns">Hero slides</Link>
-          <Link to="/admin/coupons">Coupons</Link>
+          <Link to="/admin/card-library">Card Library</Link>
+          <Link to="/admin/sets">Sets & rewards</Link>
           <Link to="/admin/achievements">Achievement Lab</Link>
-          <Link to="/admin/coupon-library" style={{ marginLeft: 12, fontSize: "0.92em", opacity: 0.9 }}>↳ Coupon Library · Create</Link>
           <Link to="/admin/media">Media</Link>
           <Link to="/admin/assets">Stickers</Link>
           <Link to="/admin/settings">Settings</Link>
