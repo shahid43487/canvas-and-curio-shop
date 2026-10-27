@@ -1,5 +1,13 @@
 # Roadmap
 
+## SMOL CLUB transition — October 27
+- [ ] Audit coupon dependencies and preserve existing ownership and order totals
+- [ ] Apply independent cards, sets, achievements and atomic reward claims
+- [ ] Replace coupon administration with Card Library and set/reward editors
+- [ ] Replace customer coupon UI and remove checkout discount application
+- [ ] Test rules, authenticated collection flow, admin previews and mobile layout
+- [ ] Verify automatic build evidence and lint; document destructive-cleanup limitations
+
 ## Current request — October 26
 - [x] Fix the `//`-comment CSS build error in styles.css
 - [x] Recreate the three tables the remix reset dropped (achievement_definitions, customer_cards, customer_achievements) with RLS + grants, seeded the five achievement definitions
