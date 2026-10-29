@@ -54,6 +54,8 @@ function Account() {
     shadow_enabled: definition.shadow_enabled === true,
     border_enabled: definition.border_enabled !== false,
     layers: parseLayers(definition.layers),
+    background_url: definition.background_url ?? null,
+    sound_url: definition.sound_url ?? null,
   });
   const copy = async (value: string) => {
     try { await navigator.clipboard.writeText(value); toast.success("Member ID copied"); }

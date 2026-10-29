@@ -1,5 +1,10 @@
 # Roadmap
 
+## Card editor uploads — October 29
+- [ ] Persistent card background, sound and sanitized SVG layers
+- [ ] Twelve independent motion choices with speed/intensity and reduced-motion support
+- [ ] Verify saving/reopening and report checks within the focused pass
+
 ## SMOL CLUB transition — October 27
 - [ ] Audit coupon dependencies and preserve existing ownership and order totals
 - [ ] Apply independent cards, sets, achievements and atomic reward claims
