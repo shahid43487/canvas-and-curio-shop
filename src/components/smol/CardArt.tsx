@@ -1,6 +1,8 @@
+import { useRef, useState, type CSSProperties } from "react";
+import { Button } from "@/components/ui/button";
 import { parseLayers, type CardDraft, type CardLayer } from "@/lib/club";
 
-type Props = { card: Pick<CardDraft, "title" | "description" | "design" | "rarity" | "motion_enabled" | "shadow_enabled" | "border_enabled"> & { layers: unknown }; serial?: string; locked?: boolean };
+type Props = { card: Pick<CardDraft, "title" | "description" | "design" | "rarity" | "motion_enabled" | "shadow_enabled" | "border_enabled"> & { layers: unknown; background_url?: string | null; sound_url?: string | null }; serial?: string; locked?: boolean };
 
 function Illustration({ design }: { design: CardDraft["design"] }) {
   if (design === "smile") return <g className="card-illustration card-illustration-bob">
@@ -41,6 +43,7 @@ function Illustration({ design }: { design: CardDraft["design"] }) {
 function LayerShape({ layer }: { layer: CardLayer }) {
   const common = { fill: "currentColor" };
   switch (layer.kind) {
+    case "svg": return layer.asset_url ? <image href={layer.asset_url} x={-layer.size/2} y={-layer.size/2} width={layer.size} height={layer.size} preserveAspectRatio="xMidYMid meet" className="club-uploaded-svg"/> : null;
     case "text": return <text x="0" y="0" fontSize={layer.size} textAnchor="middle" dominantBaseline="middle" fontFamily="var(--smol-display)" fontWeight="900" paintOrder="stroke" stroke="var(--card-paper)" strokeWidth="1.2">{layer.text}</text>;
     case "circle": return <circle r={layer.size / 2} {...common}/>;
     case "star": return <path d={Array.from({length:10},(_,i)=>{const a=-Math.PI/2+i*Math.PI/5,r=i%2===0?layer.size/2:layer.size/4.4;return `${i===0?"M":"L"} ${Math.cos(a)*r} ${Math.sin(a)*r}`;}).join(" ")+" Z"} {...common}/>;
@@ -57,8 +60,12 @@ function LayerShape({ layer }: { layer: CardLayer }) {
 }
 
 export function CardArt({ card, serial, locked }: Props) {
+  const audio = useRef<HTMLAudioElement>(null);
+  const [audioError,setAudioError] = useState(false);
+  const [playing,setPlaying] = useState(false);
   const layers = parseLayers(card.layers).filter(layer => layer.visible);
-  return <div className={`club-card-art ca-${card.design} ${card.motion_enabled && !locked ? "club-motion" : ""} ${card.shadow_enabled ? "club-shadow" : ""} ${card.border_enabled ? "club-border" : ""} ${locked ? "club-locked" : ""}`} role="img" aria-label={locked ? "Locked collectible card" : card.title}>
+  return <div className={`club-card-art ca-${card.design} ${card.motion_enabled && !locked ? "club-motion" : ""} ${card.shadow_enabled ? "club-shadow" : ""} ${card.border_enabled ? "club-border" : ""} ${locked ? "club-locked" : ""}`} role="group" aria-label={locked ? "Locked collectible card" : card.title}>
+    {card.background_url && <img className="club-card-background" src={card.background_url} alt=""/>}
     <svg className="club-card-illustration" viewBox="0 0 300 380" aria-hidden="true" preserveAspectRatio="none">
       <path d="M-25 75L80 -20H180L-25 185Z" fill="var(--card-paper)" opacity=".45"/>
       <circle cx="245" cy="95" r="72" fill="none" stroke="var(--card-ink)" strokeWidth="2" opacity=".14"/>
@@ -66,7 +73,7 @@ export function CardArt({ card, serial, locked }: Props) {
       <path d="M20 260l28-9 8-28 9 28 28 9-28 9-9 28-8-28z" fill="var(--card-accent)" opacity=".85"/>
       <path d="M258 242l13 4 4 13 4-13 13-4-13-4-4-13-4 13z" fill="var(--card-pop)"/>
       <Illustration design={card.design}/>
-      {layers.map(layer=><g key={layer.id} transform={`translate(${layer.x} ${layer.y}) rotate(${layer.rotation}) scale(${layer.scale ?? 1})`} opacity={layer.opacity ?? 1} className={`club-tone-${layer.tone} club-layer-${layer.motion}`}><LayerShape layer={layer}/></g>)}
+      {layers.map(layer=><g key={layer.id} transform={`translate(${layer.x} ${layer.y}) rotate(${layer.rotation}) scale(${layer.scale ?? 1})`} opacity={layer.opacity ?? 1} className={`club-tone-${layer.tone}`}><g className={card.motion_enabled && !locked ? `club-motion-layer club-motion-${layer.motion}` : ""} style={{"--layer-duration":`${4/layer.speed}s`,"--layer-distance":`${6*layer.intensity}px`,"--layer-angle":`${8*layer.intensity}deg`,"--layer-growth":1+0.12*layer.intensity} as CSSProperties}><LayerShape layer={layer}/></g></g>)}
     </svg>
     <div className="club-card-face">
       <span className="club-card-brand">SMOL CLUB <i>✳</i> {card.rarity.toUpperCase()}</span>
@@ -74,6 +81,7 @@ export function CardArt({ card, serial, locked }: Props) {
       <h3>{locked ? "LOCKED" : card.title || "UNTITLED LEGEND"}</h3>
       <p>{locked ? "A little legend awaits." : card.description || "A tiny object. A big personality."}</p>
       <small>{serial || "PERMANENT COLLECTIBLE"}</small>
+      {card.sound_url && !locked && <><audio key={card.sound_url} ref={audio} src={card.sound_url} preload="none" onError={()=>{setAudioError(true);setPlaying(false);}} onEnded={()=>setPlaying(false)}/><Button type="button" variant="outline" size="sm" onClick={async e=>{e.stopPropagation();const player=audio.current;if(!player)return;if(!player.paused){player.pause();setPlaying(false);return;}setAudioError(false);try{await player.play();setPlaying(true);}catch{setAudioError(true);setPlaying(false);}}}>{playing?"Pause sound":"Play sound"}</Button>{audioError&&<span role="status">Sound unavailable or unsupported.</span>}</>}
     </div>
   </div>;
 }
