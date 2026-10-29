@@ -60,8 +60,7 @@ export function CardArt({ card, serial, locked }: Props) {
   const layers = parseLayers(card.layers).filter(layer => layer.visible);
   return <div className={`club-card-art ca-${card.design} ${card.motion_enabled && !locked ? "club-motion" : ""} ${card.shadow_enabled ? "club-shadow" : ""} ${card.border_enabled ? "club-border" : ""} ${locked ? "club-locked" : ""}`} role="img" aria-label={locked ? "Locked collectible card" : card.title}>
     <svg className="club-card-illustration" viewBox="0 0 300 380" aria-hidden="true" preserveAspectRatio="none">
-      <defs><pattern id={`grain-${card.design}`} width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".8" fill="var(--card-ink)" opacity=".12"/></pattern></defs>
-      <path d="M0 0H300V380H0Z" fill="url(#grain-placeholder)"/>
+      <path d="M0 0H300V380H0Z" fill="var(--card-bg)"/>
       <path d="M-25 75L80 -20H180L-25 185Z" fill="var(--card-paper)" opacity=".45"/>
       <circle cx="245" cy="95" r="72" fill="none" stroke="var(--card-ink)" strokeWidth="2" opacity=".14"/>
       <circle cx="245" cy="95" r="56" fill="none" stroke="var(--card-ink)" strokeWidth="1.5" strokeDasharray="4 7" opacity=".22"/>
