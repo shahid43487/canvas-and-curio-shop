@@ -17,7 +17,7 @@ export const adminUploadCardAsset = createServerFn({ method: "POST" }).validator
   if (error) throw new Error("Upload failed. Please try again.");
   const {data: signed,error: signingError} = await db.storage.from("media").createSignedUrl(path,60*60*24*365*10);
   if (signingError || !signed) throw new Error("Cannot open uploaded file");
-  const base = import.meta.env.VITE_SUPABASE_URL;
+  const base = import.meta.env['VITE_SUPABASE_URL'];
   return {url: signed.signedUrl.replace(new URL(signed.signedUrl).origin, base), path};
 });
 export const adminClub = createServerFn({ method: "POST" }).validator((d: unknown) => z.object({ token: z.string() }).parse(d)).handler(async ({ data }) => {
