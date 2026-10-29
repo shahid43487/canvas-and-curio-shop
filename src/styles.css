@@ -1858,3 +1858,97 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 .admin-card-card small { opacity: .72; }
 .admin-card-note { color: var(--smol-red); opacity: 1 !important; }
 
+
+
+/* ---------- SMOL CLUB collectible card studio refresh ---------- */
+.club-admin { width:min(1480px,100%); margin:0 auto; padding:clamp(18px,3vw,42px); color:var(--smol-ink); }
+.club-admin > .admin-h1 { font-size:clamp(2rem,4vw,3.2rem); letter-spacing:-.045em; margin:0 0 1.4rem; }
+.club-design-tray { display:flex; flex-wrap:wrap; gap:.55rem; margin:0 0 1.4rem; }
+.club-design-tray button { min-width:84px; text-transform:capitalize; border:1px solid #d7d1c5; border-radius:12px; box-shadow:0 3px 0 #17213b12; transition:transform .2s ease,box-shadow .2s ease; }
+.club-design-tray button:hover { transform:translateY(-2px) rotate(-1deg); box-shadow:0 5px 0 #17213b18; }
+.club-editor { display:grid; grid-template-columns:minmax(0,1fr) minmax(290px,360px); gap:clamp(18px,2.5vw,36px); align-items:start; }
+.club-editor > .admin-form { min-width:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:14px 16px; }
+.club-editor > .admin-form > label:not(.club-check), .club-editor > .admin-form > h2, .club-editor > .admin-form > .club-layer-fields { min-width:0; }
+.club-editor > .admin-form > label:nth-of-type(3) { grid-column:span 2; }
+.club-editor > .admin-form > h2, .club-editor > .admin-form > .club-layer-fields { grid-column:1/-1; }
+.club-editor > .admin-form > button { min-height:44px; }
+.club-editor .admin-input { box-sizing:border-box; width:100%; min-width:0; min-height:44px; border:1.5px solid #d8d1c4; border-radius:11px; background:#fffdf8; padding:10px 12px; color:var(--smol-ink); }
+.club-editor textarea.admin-input { min-height:84px; resize:vertical; }
+.club-editor .club-check { display:flex; align-items:center; gap:9px; min-height:35px; font-size:.9rem; text-transform:capitalize; }
+.club-editor .club-check input { width:18px; height:18px; accent-color:var(--smol-ink); }
+.club-layer-fields { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; min-width:0; border:1px solid #d8d1c4; border-radius:14px; padding:14px; background:#fffdf8; }
+.club-layer-fields legend { padding:0 8px; font-weight:800; text-transform:uppercase; font-size:.72rem; letter-spacing:.08em; }
+.club-layer-fields label { display:grid; gap:5px; min-width:0; font-size:.8rem; }
+.club-layer-fields label:nth-of-type(1),.club-layer-fields label:nth-of-type(2) { grid-column:span 3; }
+.club-layer-fields input,.club-layer-fields select { box-sizing:border-box; width:100%; min-width:0; border:1px solid #d8d1c4; border-radius:8px; padding:8px; background:white; }
+.club-layer-fields button { grid-column:1/-1; }
+.club-live-preview { position:sticky; top:24px; min-width:0; display:flex; flex-direction:column; align-items:stretch; gap:12px; padding:18px; border:1px solid #d9d1c2; border-radius:22px; background:linear-gradient(145deg,#fffdf8,#f0e8d7); box-shadow:0 10px 0 #17213b0a,0 22px 48px #17213b12; overflow:hidden; }
+.club-live-preview > span { order:-1; font-size:.68rem; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:#65606b; }
+.club-live-preview > .club-card-art { align-self:center; width:100%; max-width:310px; }
+.club-live-preview > h2 { font-size:1.35rem; line-height:1.05; margin:.25rem 0 0; overflow-wrap:anywhere; }
+.club-live-preview > p { color:#59586a; font-size:.9rem; line-height:1.5; margin:0; }
+.club-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:22px; margin:1.5rem 0 3rem; }
+.club-grid > article { display:grid; gap:12px; align-content:start; min-width:0; padding:14px; border:1px solid #ded7ca; border-radius:18px; background:#fffdf8; }
+.club-grid > article > .club-card-art { width:100%; }
+.club-grid > article > button { width:100%; white-space:normal; }
+.club-card-art { --card-bg:#fff5d8; --card-ink:#141b50; --card-accent:#ff432e; --card-pop:#ffd52f; position:relative; isolation:isolate; display:block; box-sizing:border-box; width:100%; max-width:320px; aspect-ratio: .79; container-type:inline-size; border-radius:clamp(14px,5cqw,24px); overflow:hidden; background:var(--card-bg); color:var(--card-ink); transform:rotate(-1deg); filter:none; }
+.club-card-art::before { content:""; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.32; background-image:radial-gradient(var(--card-ink) .65px,transparent .8px); background-size:5cqw 5cqw; mask-image:linear-gradient(135deg,#000 0%,transparent 82%); }
+.club-card-art::after { content:""; position:absolute; z-index:0; width:72cqw; height:72cqw; right:-23cqw; top:17cqw; border:2.2cqw solid var(--card-ink); border-radius:50%; opacity:.1; pointer-events:none; }
+.club-card-face { position:absolute; z-index:1; inset:0; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; padding:8cqw; overflow:hidden; }
+.club-card-brand { position:relative; z-index:3; display:inline-flex; max-width:100%; align-items:center; gap:1.5cqw; padding:2.1cqw 3.2cqw; border: .65cqw solid var(--card-ink); border-radius:99px; background:var(--card-ink); color:var(--card-bg); font:900 3.1cqw/1 var(--smol-display); letter-spacing:.09em; }
+.club-card-brand::before { content:"✳"; color:var(--card-pop); font-size:4.4cqw; }
+.club-card-art .ca-deco { position:absolute; top:21cqw; right:4cqw; width:57cqw; height:57cqw; max-width:none; transform:rotate(7deg); overflow:visible; }
+.club-card-art h3 { position:relative; z-index:3; max-width:100%; margin:auto 0 0; padding-top:4cqw; font:900 12.4cqw/.88 var(--smol-display); letter-spacing:-.065em; overflow-wrap:anywhere; text-wrap:balance; text-shadow:.5cqw .6cqw 0 color-mix(in srgb,var(--card-pop) 85%,transparent); }
+.club-card-art p { position:relative; z-index:3; max-width:92%; margin:3cqw 0 0; font:600 4.1cqw/1.25 var(--smol-body); overflow-wrap:anywhere; }
+.club-card-art small { position:relative; z-index:3; margin-top:5cqw; font:900 2.7cqw/1 var(--smol-display); letter-spacing:.12em; text-transform:uppercase; }
+.club-card-layers { position:absolute !important; z-index:2; inset:0; display:block; width:100% !important; height:100% !important; max-width:none !important; overflow:hidden; pointer-events:none; }
+.club-card-layers text { font-family:var(--smol-display); font-weight:900; fill:currentColor; }
+.club-card-layers circle { stroke:currentColor; stroke-width:2; }
+.club-tone-ink { color:var(--card-ink); fill:var(--card-ink); }
+.club-tone-paper { color:var(--card-bg); fill:var(--card-bg); }
+.club-tone-red { color:var(--card-accent); fill:var(--card-accent); }
+.club-tone-yellow { color:var(--card-pop); fill:var(--card-pop); }
+.club-tone-mint { color:#68d8b4; fill:#68d8b4; }
+.club-layer-bob { animation:club-layer-bob 3.8s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.club-layer-blink { animation:club-layer-blink 3.5s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.club-layer-spin { animation:club-layer-spin 12s linear infinite; transform-box:fill-box; transform-origin:center; }
+.club-layer-sparkle { animation:club-layer-sparkle 2.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.club-layer-none { animation:none; }
+.club-card-art.ca-ticket { --card-bg:#ffdfd1; --card-ink:#a52a22; --card-accent:#ff432e; --card-pop:#ffd52f; }
+.club-card-art.ca-ghost { --card-bg:#d8f7e9; --card-ink:#123d48; --card-accent:#20a88c; --card-pop:#ffca40; }
+.club-card-art.ca-ship { --card-bg:#d8e8ff; --card-ink:#17245f; --card-accent:#ef4937; --card-pop:#ffcf32; }
+.club-card-art.ca-dark { --card-bg:#171a35; --card-ink:#fff4d7; --card-accent:#ff634f; --card-pop:#ffd52f; }
+.club-card-art.ca-bolt { --card-bg:#ffe04d; --card-ink:#141b50; --card-accent:#f33b2b; --card-pop:#fff8e5; }
+.club-card-art.ca-smile { --card-bg:#fff0bb; --card-ink:#141b50; --card-accent:#ff432e; --card-pop:#ffcf32; }
+.club-card-art.ca-dark .club-card-brand { background:var(--card-pop); color:var(--card-ink); }
+.club-card-art.ca-dark .ca-deco { filter:drop-shadow(1.5cqw 2cqw 0 var(--card-accent)); }
+.club-card-art.club-border { outline:.8cqw solid var(--card-ink); outline-offset:-.8cqw; }
+.club-card-art:not(.club-border) { outline:none; }
+.club-card-art.club-shadow { filter:drop-shadow(1.5cqw 2cqw 0 var(--card-ink)); }
+.club-card-art.club-motion { animation:club-card-float 4.8s ease-in-out infinite; }
+.club-card-art.club-motion:hover { animation-play-state:paused; transform:rotate(0) translateY(-3px) scale(1.015); }
+.club-card-art.club-locked { filter:grayscale(.8) saturate(.45); }
+.club-card-art.club-locked .club-card-face { background:repeating-linear-gradient(135deg,transparent 0 8px,#141b5008 8px 16px); }
+.club-card-art.club-locked h3 { text-shadow:none; }
+@keyframes club-card-float { 0%,100% { transform:rotate(-1deg) translateY(0); } 50% { transform:rotate(.8deg) translateY(-5px); } }
+@keyframes club-layer-bob { 0%,100% { transform:translateY(0) rotate(-2deg); } 50% { transform:translateY(-5px) rotate(2deg); } }
+@keyframes club-layer-blink { 0%,90%,100% { transform:scaleY(1); } 95% { transform:scaleY(.12); } }
+@keyframes club-layer-spin { to { transform:rotate(360deg); } }
+@keyframes club-layer-sparkle { 0%,100% { transform:scale(.86) rotate(-8deg); opacity:.72; } 50% { transform:scale(1.12) rotate(8deg); opacity:1; } }
+@media (max-width:900px) {
+ .club-editor { grid-template-columns:minmax(0,1fr) 280px; }
+ .club-editor > .admin-form { gap:12px; }
+}
+@media (max-width:700px) {
+ .club-editor { grid-template-columns:minmax(0,1fr); }
+ .club-live-preview { position:relative; top:auto; order:-1; display:grid; grid-template-columns:minmax(120px,42%) minmax(0,1fr); align-items:center; gap:12px; }
+ .club-live-preview > span { grid-column:1/-1; }
+ .club-live-preview > .club-card-art { grid-row:2/5; width:100%; max-width:210px; }
+ .club-editor > .admin-form { grid-template-columns:minmax(0,1fr); }
+ .club-editor > .admin-form > label:nth-of-type(3),.club-editor > .admin-form > h2,.club-editor > .admin-form > .club-layer-fields { grid-column:1; }
+ .club-layer-fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .club-layer-fields label:nth-of-type(1),.club-layer-fields label:nth-of-type(2) { grid-column:span 2; }
+}
+@media (prefers-reduced-motion:reduce) {
+ .club-card-art.club-motion,.club-layer-bob,.club-layer-blink,.club-layer-spin,.club-layer-sparkle { animation:none !important; }
+}
