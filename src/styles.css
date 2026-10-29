@@ -2174,7 +2174,7 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 }
 
 
-/* Mobile hero canvas: fit the complete artboard in one glance */
+/* Mobile hero canvas: scale the whole mobile artboard to the available width */
 @media (max-width:700px) {
   .canvas-area .hero-canvas-host.canvas-mobile {
     width:100% !important;
@@ -2182,14 +2182,9 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
     min-width:0 !important;
     overflow:hidden;
   }
-  .canvas-area .hero-canvas-stage {
-    width:100% !important;
-    max-width:100% !important;
-    height:auto !important;
-    aspect-ratio: 390 / 520;
-    transform:none !important;
-  }
-  .canvas-area .hero-canvas-stage > * {
-    max-width:100%;
+  /* Keep CanvasStage's measured scale transform so every layer scales with the artboard. */
+  .canvas-area .hero-canvas-host.canvas-mobile .hero-canvas-stage {
+    max-width:none;
+    transform-origin:top left;
   }
 }
