@@ -15,6 +15,13 @@
       "when": 1793084782691,
       "tag": "0001_smol_club_permanent_collections",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793292156085,
+      "tag": "0002_card_background_and_sound",
+      "breakpoints": true
     }
   ]
 }
