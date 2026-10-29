@@ -1,9 +1,10 @@
 # Roadmap
 
 ## Card editor uploads — October 29
-- [ ] Persistent card background, sound and sanitized SVG layers
-- [ ] Twelve independent motion choices with speed/intensity and reduced-motion support
-- [ ] Verify saving/reopening and report checks within the focused pass
+- [x] Persistent card background, sound and sanitized SVG layers
+- [x] Twelve independent motion choices with speed/intensity and reduced-motion support
+- [x] Verified real background/audio/SVG uploads, save/reopen and retained Wave selection in admin; four focused tests passed and automatic build OK
+- [ ] Customer-owned card playback and mobile checks not exercised in this budget-limited pass
 
 ## SMOL CLUB transition — October 27
 - [ ] Audit coupon dependencies and preserve existing ownership and order totals
