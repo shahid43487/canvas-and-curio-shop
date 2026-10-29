@@ -2172,3 +2172,24 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
  .canvas-asset-trigger { min-height:39px; padding-inline:10px; font-size:12px; }
  .canvas-asset-menu .canvas-sticker-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
 }
+
+
+/* Mobile hero canvas: fit the complete artboard in one glance */
+@media (max-width:700px) {
+  .canvas-area .hero-canvas-host.canvas-mobile {
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    overflow:hidden;
+  }
+  .canvas-area .hero-canvas-stage {
+    width:100% !important;
+    max-width:100% !important;
+    height:auto !important;
+    aspect-ratio: 390 / 520;
+    transform:none !important;
+  }
+  .canvas-area .hero-canvas-stage > * {
+    max-width:100%;
+  }
+}
