@@ -2105,3 +2105,49 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 @media (prefers-reduced-motion:reduce) {
  .club-collection-bento .club-grid > article { transition:none; }
 }
+
+
+/* Hero editor: fit the complete canvas in the available width */
+.canvas-columns {
+  grid-template-columns:minmax(190px, .72fr) minmax(0, 1.28fr);
+  grid-template-rows:auto auto;
+  align-items:start;
+}
+.canvas-area {
+  grid-column:1 / -1;
+  grid-row:1;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  overflow:hidden;
+  padding:clamp(8px,1.2vw,16px);
+}
+.canvas-area .hero-canvas-host,
+.canvas-area .hero-canvas-host.canvas-desktop,
+.canvas-area .hero-canvas-host.canvas-mobile {
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  margin-inline:auto;
+}
+.canvas-area .hero-canvas-stage {
+  transform-origin:top left;
+  max-width:none;
+}
+.canvas-layers {
+  grid-column:1;
+  grid-row:2;
+  min-width:0;
+}
+.canvas-inspector {
+  grid-column:2;
+  grid-row:2;
+  min-width:0;
+}
+@media (max-width:700px) {
+  .canvas-columns { grid-template-columns:minmax(0,1fr); }
+  .canvas-area { grid-column:1; grid-row:1; }
+  .canvas-layers { grid-column:1; grid-row:2; }
+  .canvas-inspector { grid-column:1; grid-row:3; }
+  .canvas-area .hero-canvas-host.canvas-mobile { width:100%; }
+}
