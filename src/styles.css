@@ -1952,3 +1952,33 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 @media (prefers-reduced-motion:reduce) {
  .club-card-art.club-motion,.club-layer-bob,.club-layer-blink,.club-layer-spin,.club-layer-sparkle { animation:none !important; }
 }
+
+
+/* Illustrated card stage and precise SVG layer controls */
+.club-card-illustration { position:absolute; inset:0; z-index:1; display:block; width:100%; height:100%; overflow:hidden; pointer-events:none; }
+.club-card-face { z-index:2; background:transparent; }
+.club-card-edition { position:relative; z-index:3; margin-top:3.2cqw; font:900 2.5cqw/1 var(--smol-display); letter-spacing:.13em; opacity:.7; }
+.club-card-brand { position:relative; z-index:3; }
+.club-card-brand i { color:var(--card-pop); font-style:normal; font-size:4.5cqw; line-height:.7; }
+.club-card-art .club-card-face h3 { margin-top:auto; }
+.club-card-art .club-card-face small { padding-top:2.4cqw; border-top:.55cqw solid color-mix(in srgb,var(--card-ink) 25%,transparent); width:100%; }
+.club-card-art .card-illustration-bob { animation:club-layer-bob 4.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.club-card-art .card-illustration-spin { animation:club-layer-spin 24s linear infinite; transform-box:fill-box; transform-origin:150px 145px; }
+.club-layer-add { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; grid-column:1/-1; padding:12px; border:1px dashed #c9c1b2; border-radius:12px; background:#f6f0e4; }
+.club-layer-add label { display:grid; gap:6px; font-size:.8rem; font-weight:800; grid-column:1/-1; }
+.club-layer-add select { width:100%; min-height:42px; border:1px solid #d8d1c4; border-radius:9px; background:#fffdf8; padding:8px 10px; }
+.club-layer-fields { box-shadow:0 3px 0 #17213b08; }
+.club-layer-fields legend { text-transform:uppercase; }
+.club-layer-fields input:focus-visible,.club-layer-fields select:focus-visible,.club-layer-add select:focus-visible { outline:3px solid #ff432e; outline-offset:2px; }
+.club-editor .admin-form > h2 { margin:10px 0 0; font:900 1.2rem var(--smol-display); letter-spacing:-.02em; }
+.club-live-preview { min-height:500px; }
+.club-live-preview > .club-card-art { flex:none; }
+@media (max-width:700px) {
+ .club-live-preview { min-height:0; }
+ .club-live-preview > .club-card-art { grid-row:2/5; }
+ .club-layer-add { grid-template-columns:minmax(0,1fr); }
+ .club-layer-add button { grid-column:1; }
+}
+@media (prefers-reduced-motion:reduce) {
+ .club-card-art .card-illustration-bob,.club-card-art .card-illustration-spin { animation:none !important; }
+}
