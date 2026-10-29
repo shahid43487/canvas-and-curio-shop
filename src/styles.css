@@ -1982,3 +1982,29 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 @media (prefers-reduced-motion:reduce) {
  .club-card-art .card-illustration-bob,.club-card-art .card-illustration-spin { animation:none !important; }
 }
+.club-card-background { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+.club-motion-layer { transform-box:fill-box; transform-origin:center; animation-duration:var(--layer-duration,4s); animation-iteration-count:infinite; animation-timing-function:ease-in-out; }
+.club-motion-none { animation:none; }
+.club-motion-float { animation-name:card-float; }
+.club-motion-drift { animation-name:card-drift; }
+.club-motion-pulse { animation-name:card-pulse; }
+.club-motion-wiggle { animation-name:card-wiggle; }
+.club-motion-swing { animation-name:card-wiggle; transform-origin:top center; }
+.club-motion-flip { animation-name:card-flip; }
+.club-motion-orbit { animation-name:card-orbit; animation-timing-function:linear; }
+.club-motion-shake { animation-name:card-shake; }
+.club-motion-pop { animation-name:card-pop; }
+.club-motion-wave { animation-name:card-wave; }
+.club-motion-glitch { animation-name:card-glitch; animation-timing-function:steps(1); }
+.club-uploaded-svg { filter:drop-shadow(0 0 0 currentColor); }
+@keyframes card-float { 50% { transform:translateY(calc(-1 * var(--layer-distance))); } }
+@keyframes card-drift { 50% { transform:translateX(var(--layer-distance)); } }
+@keyframes card-pulse { 50% { transform:scale(var(--layer-growth)); } }
+@keyframes card-wiggle { 25% { transform:rotate(var(--layer-angle)); } 75% { transform:rotate(calc(-1 * var(--layer-angle))); } }
+@keyframes card-flip { 50% { transform:scaleX(calc(2 - var(--layer-growth))); } }
+@keyframes card-orbit { 0%,100% { transform:translateX(var(--layer-distance)); } 25% { transform:translateY(var(--layer-distance)); } 50% { transform:translateX(calc(-1 * var(--layer-distance))); } 75% { transform:translateY(calc(-1 * var(--layer-distance))); } }
+@keyframes card-shake { 10%,30% { transform:translateX(var(--layer-distance)); } 20%,40% { transform:translateX(calc(-1 * var(--layer-distance))); } 50% { transform:none; } }
+@keyframes card-pop { 10% { transform:scale(var(--layer-growth)); } 20% { transform:scale(calc(2 - var(--layer-growth))); } 30%,100% { transform:none; } }
+@keyframes card-wave { 50% { transform:skewX(var(--layer-angle)) translateY(var(--layer-distance)); } }
+@keyframes card-glitch { 3%,7% { transform:translate(var(--layer-distance),calc(-1 * var(--layer-distance))); } 5%,9% { transform:translateX(calc(-1 * var(--layer-distance))); } 10%,100% { transform:none; } }
+@media (prefers-reduced-motion:reduce) { .club-motion-layer { animation:none !important; } }
