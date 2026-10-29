@@ -2067,3 +2067,41 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
  .admin-menu-trigger,.admin-navigation-drawer,.admin-nav-link { transition:none; }
  .admin-drawer-scrim { animation:none; }
 }
+
+
+/* Card Library Bento workspace */
+.club-admin > .admin-h1 { margin-bottom:1rem; }
+.club-design-tray { padding:12px 14px; border:1px solid #ded7c9; border-radius:18px; background:rgb(255 253 248 / 76%); }
+.club-editor { grid-template-columns:minmax(0,1.22fr) minmax(340px,.88fr); gap:clamp(16px,2vw,26px); align-items:start; }
+.club-editor > .admin-form { grid-column:2; grid-row:1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-content:start; gap:14px 13px; max-height:calc(100vh - 112px); overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable; padding:clamp(15px,1.7vw,24px); border:1px solid #d9d1c2; border-radius:22px; background:linear-gradient(155deg,#fffdf9,#f5eddf); box-shadow:0 8px 0 rgb(23 33 59 / 4%),0 20px 44px rgb(23 33 59 / 7%); }
+.club-editor > .admin-form::-webkit-scrollbar { width:9px; }
+.club-editor > .admin-form::-webkit-scrollbar-thumb { background:#c9c0b0; border:2px solid #f5eddf; border-radius:99px; }
+.club-editor > .admin-form > h2 { padding-top:12px; border-top:1px solid #e3dbcd; }
+.club-editor > .admin-form > button[type="submit"] { position:sticky; bottom:0; z-index:2; background:#141b50; color:#fff; box-shadow:0 -8px 16px #f5eddf; }
+.club-live-preview { grid-column:1; grid-row:1; position:sticky; top:96px; min-height:min(640px,calc(100vh - 120px)); height:fit-content; align-self:start; justify-content:center; padding:clamp(18px,2.4vw,34px); border:1.5px solid #d8cfbd; border-radius:28px; background:radial-gradient(circle at 20% 10%,#fffdf8 0,#f8f0e2 62%,#efe5d3 100%); box-shadow:0 8px 0 rgb(23 33 59 / 4%),0 24px 54px rgb(23 33 59 / 9%); }
+.club-live-preview::before { content:"LIVE CANVAS"; position:absolute; top:16px; right:18px; font:900 9px/1 var(--smol-display); letter-spacing:.16em; opacity:.38; }
+.club-live-preview > .club-card-art { width:min(100%,390px); max-width:390px; filter:drop-shadow(0 18px 16px rgb(20 27 80 / 12%)); }
+.club-live-preview > span { order:0; align-self:center; margin-top:8px; font-size:.7rem; }
+.club-collection-bento { margin-top:clamp(22px,3vw,40px); padding:clamp(17px,2.5vw,32px); border:1.5px solid #d8cfbd; border-radius:26px; background:linear-gradient(135deg,#fffdf8 0%,#f4ecdc 100%); box-shadow:0 8px 0 rgb(23 33 59 / 4%),0 20px 44px rgb(23 33 59 / 6%); }
+.club-collection-heading { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:22px; padding-bottom:17px; border-bottom:1px solid #dcd3c3; }
+.club-bento-kicker { display:block; margin-bottom:8px; font:900 10px/1 var(--smol-display); letter-spacing:.17em; color:#e53a2b; }
+.club-collection-heading h2 { margin:0; font:900 clamp(1.6rem,3vw,2.4rem)/1 var(--smol-display); letter-spacing:-.05em; color:#141b50; }
+.club-collection-heading p { margin:8px 0 0; color:#686273; font-size:.9rem; }
+.club-collection-count { flex:none; padding:10px 12px; border:1.5px solid #141b50; border-radius:999px; background:#ffd52f; color:#141b50; font:900 10px/1 var(--smol-display); letter-spacing:.08em; }
+.club-collection-bento .club-grid { gap:18px; }
+.club-collection-bento .club-grid > article { padding:14px; border:1px solid #ded6c7; border-radius:18px; background:#fffdf8; box-shadow:0 4px 0 rgb(20 27 80 / 4%); transition:transform .2s ease,box-shadow .2s ease; }
+.club-collection-bento .club-grid > article:hover { transform:translateY(-3px); box-shadow:0 8px 0 rgb(20 27 80 / 6%); }
+@media (max-width:900px) {
+ .club-editor { grid-template-columns:minmax(0,1fr) minmax(300px,.9fr); }
+ .club-live-preview { top:82px; }
+}
+@media (max-width:700px) {
+ .club-editor { display:flex; flex-direction:column; }
+ .club-live-preview { position:sticky; top:8px; z-index:4; width:100%; min-height:0; box-sizing:border-box; padding:14px; }
+ .club-live-preview > .club-card-art { width:min(52vw,220px); max-width:220px; }
+ .club-editor > .admin-form { order:2; width:100%; box-sizing:border-box; max-height:none; overflow:visible; }
+ .club-collection-heading { align-items:flex-start; }
+}
+@media (prefers-reduced-motion:reduce) {
+ .club-collection-bento .club-grid > article { transition:none; }
+}
