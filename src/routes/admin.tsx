@@ -48,6 +48,12 @@ function AdminShell() {
   const pathname = useRouterState({ select: state => state.location.pathname });
   useEffect(() => setToken(sessionStorage.getItem(KEY) ?? ""), []);
   useEffect(() => setMenuOpen(false), [pathname]);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setMenuOpen(false); };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
 
   const login = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -90,7 +96,7 @@ function AdminShell() {
         </header>
 
         {menuOpen && <button className="admin-drawer-scrim" type="button" aria-label="Close navigation menu" onClick={() => setMenuOpen(false)} />}
-        <aside id="admin-navigation-drawer" className={`admin-navigation-drawer ${menuOpen ? "is-open" : ""}`} aria-hidden={!menuOpen}>
+        <aside id="admin-navigation-drawer" className={`admin-navigation-drawer ${menuOpen ? "is-open" : ""}`} aria-hidden={!menuOpen} inert={!menuOpen}>
           <div className="admin-drawer-heading"><div><span className="admin-drawer-eyebrow">NAVIGATION</span><h2>Control room<span>.</span></h2></div><span className="admin-drawer-count">09</span></div>
           <nav className="admin-drawer-nav" aria-label="Admin navigation">
             {navigation.map(group => <section className="admin-nav-group" key={group.label}>
