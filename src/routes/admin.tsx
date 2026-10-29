@@ -83,6 +83,7 @@ function AdminShell() {
   return (
     <TokenCtx.Provider value={token}>
       <div className="admin-shell admin-burger-shell">
+        <style>{`.admin-shell.admin-burger-shell{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);align-content:start}.admin-burger-shell>.admin-topbar{grid-column:1/-1;grid-row:1;width:100%;min-width:0}.admin-burger-shell>.admin-main-with-topbar{grid-column:1/-1;grid-row:2;min-width:0;width:100%}`}</style>
         <header className="admin-topbar">
           <button className="admin-menu-trigger" type="button" aria-label={menuOpen ? "Close admin menu" : "Open admin menu"} aria-expanded={menuOpen} aria-controls="admin-navigation-drawer" onClick={() => setMenuOpen(open => !open)}>
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
