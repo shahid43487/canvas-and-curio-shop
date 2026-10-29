@@ -2174,17 +2174,16 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 }
 
 
-/* Mobile hero canvas: keep a true phone-width artboard, centered above inspector controls */
-@media (max-width:700px) {
-  .canvas-area .hero-canvas-host.canvas-mobile {
-    width:min(100%, 390px) !important;
-    min-width:0 !important;
-    max-width:390px !important;
-    margin-inline:auto !important;
-    overflow:hidden;
-  }
-  .canvas-area .hero-canvas-host.canvas-mobile .hero-canvas-stage {
-    max-width:none;
-    transform-origin:top left;
-  }
+/* Mobile mode must look like a phone-sized artboard even on a desktop monitor.
+   CanvasStage measures this host width and scales all layers to match it. */
+.canvas-area .hero-canvas-host.canvas-mobile {
+  width:min(100%, 390px) !important;
+  min-width:0 !important;
+  max-width:390px !important;
+  margin-inline:auto !important;
+  overflow:hidden;
+}
+.canvas-area .hero-canvas-host.canvas-mobile .hero-canvas-stage {
+  max-width:none;
+  transform-origin:top left;
 }
