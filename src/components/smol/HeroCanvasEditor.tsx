@@ -99,10 +99,6 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
       <aside className="canvas-layers">
         <div className="canvas-tools">{icon('Add text', Type, () => add(newHeroElement('text', 'New text')))}{icon('Add button', Plus, () => add(newHeroElement('button', 'Shop now')))}</div>
         <AdminUpload token={token} accept="image/*" label="Add image" onDone={(src, file) => { const e = newHeroElement('image', '', src); add({ ...e, name: file.name }); }} />
-        <h3>Layers</h3>
-        <div className="canvas-layer-list">{[...canvas.elements].reverse().map(e => <div key={e.id} className={`canvas-layer-row ${selected === e.id ? 'selected' : ''}`}><Button variant="ghost" className="canvas-layer-select" onClick={() => select(e.id)} title={e.name}>{e.name}</Button><Button variant="ghost" size="icon" title={e.hidden ? 'Show layer' : 'Hide layer'} aria-label={`${e.hidden ? 'Show' : 'Hide'} ${e.name}`} onClick={() => commit({ ...canvas, elements: canvas.elements.map(x => x.id === e.id ? { ...x, hidden: !x.hidden } : x) })}>{e.hidden ? <EyeOff /> : <Eye />}</Button></div>)}</div>
-        <h3>Stickers</h3><input aria-label="Search stickers" className="admin-input" placeholder="Search stickers" value={search} onChange={e => setSearch(e.target.value)} />
-        <div className="canvas-sticker-grid">{stickers.filter(s => s.label.toLowerCase().includes(search.toLowerCase())).map(s => <Button type="button" key={s.id} variant="outline" title={`Add ${s.label}`} aria-label={`Add ${s.label}`} draggable onDragStart={event => event.dataTransfer.setData('text/plain', s.id)} onClick={() => { const e = newHeroElement('sticker', '', s.id); add({ ...e, name: s.label }); }}><img src={s.src} alt="" /></Button>)}</div>
       </aside>
       <div className="canvas-area" onDragOver={e => e.preventDefault()} onDrop={event => {
         event.preventDefault(); const sticker = stickers.find(s => s.id === event.dataTransfer.getData('text/plain')); if (!sticker || !stage.current) return;
