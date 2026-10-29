@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
-import { ArrowDown, ArrowUp, Copy, Eye, EyeOff, Lock, Unlock, Monitor, Smartphone, Plus, Redo2, Undo2, Trash2, Type, ImagePlus, MousePointer2, RotateCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, Copy, Eye, EyeOff, Lock, Unlock, Monitor, Smartphone, Plus, Redo2, Undo2, Trash2, Type, ImagePlus, MousePointer2, RotateCcw, Layers, Sticker } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AdminUpload } from './AdminUpload';
 import { CanvasStage, CanvasContent, elementStyle } from './HeroCanvas';
 import { CANVAS_COLORS, CANVAS_WIDTH, canvasId, constrainRect, createHeroCanvas, isPillElement, newHeroElement, type CanvasMode, type CanvasRect, type HeroCanvas, type HeroElement } from '@/lib/hero-canvas';
@@ -108,6 +109,27 @@ export function HeroCanvasEditor({ slide, token, stickers, extra, onChange }: { 
         const box = stage.current.getBoundingClientRect(), scale = box.width / CANVAS_WIDTH[mode], e = newHeroElement('sticker', '', sticker.id);
         add({ ...e, name: sticker.label, [mode]: constrainRect({ ...e[mode], x: (event.clientX - box.left) / scale, y: (event.clientY - box.top) / scale }, mode, canvas[mode].height) });
       }}>
+        <div className="canvas-asset-dropdowns">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild><Button type="button" variant="outline" className="canvas-asset-trigger"><Layers /> Layers <span>{canvas.elements.length}</span></Button></DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="canvas-asset-menu">
+              <DropdownMenuLabel>Canvas layers</DropdownMenuLabel><DropdownMenuSeparator />
+              {[...canvas.elements].reverse().map(e => <DropdownMenuItem key={e.id} onSelect={() => select(e.id)} className={selected === e.id ? "canvas-dropdown-selected" : ""}>
+                {e.hidden ? <EyeOff /> : <Layers />}<span className="canvas-dropdown-label">{e.name || e.kind}</span>
+                <span role="button" tabIndex={0} aria-label={e.hidden ? `Show ${e.name}` : `Hide ${e.name}`} onPointerDown={event => event.stopPropagation()} onClick={event => { event.stopPropagation(); commit({ ...canvas, elements: canvas.elements.map(x => x.id === e.id ? { ...x, hidden: !x.hidden } : x) }); }}><Eye size={14}/></span>
+              </DropdownMenuItem>)}
+              {!canvas.elements.length && <DropdownMenuItem disabled>No layers yet</DropdownMenuItem>}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild><Button type="button" variant="outline" className="canvas-asset-trigger"><Sticker /> Stickers <span>{stickers.length}</span></Button></DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="canvas-asset-menu canvas-sticker-dropdown">
+              <DropdownMenuLabel>Add a sticker</DropdownMenuLabel>
+              <input aria-label="Search stickers" className="admin-input" placeholder="Search stickers" value={search} onChange={e => setSearch(e.target.value)} />
+              <div className="canvas-sticker-grid">{stickers.filter(s => s.label.toLowerCase().includes(search.toLowerCase())).map(s => <Button type="button" key={s.id} variant="outline" title={`Add ${s.label}`} aria-label={`Add ${s.label}`} onClick={() => { const el = newHeroElement('sticker', '', s.id); add({ ...el, name: s.label }); }}><img src={s.src} alt="" /></Button>)}</div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         <CanvasStage canvas={canvas} mode={mode} stageRef={stage}>{canvas.elements.filter(e => !e.hidden).map(e => <div key={e.id} data-layer-id={e.id} aria-label={`Canvas layer ${e.name}`} tabIndex={0} className={`canvas-element canvas-kind-${e.kind} canvas-edit-element canvas-fg-${e.color} canvas-bg-${e.kind === "text" ? "transparent" : e.background} ${e.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")} ${selected === e.id ? 'is-selected' : ''} ${e.locked ? 'is-locked' : ''}`} style={elementStyle(e, mode)} onPointerDown={event => startDrag(event, e)} onPointerMove={moveDrag} onPointerUp={() => stopDrag()} onPointerCancel={() => stopDrag(true)} onFocus={() => select(e.id)} onKeyDown={event => {
           if (e.locked || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
           event.preventDefault(); const step = event.shiftKey ? 10 : 1;
