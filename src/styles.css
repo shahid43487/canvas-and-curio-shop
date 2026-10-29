@@ -2151,3 +2151,24 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
   .canvas-inspector { grid-column:1; grid-row:3; }
   .canvas-area .hero-canvas-host.canvas-mobile { width:100%; }
 }
+
+
+/* Hero canvas asset menus sit directly above the artwork */
+.canvas-asset-dropdowns { display:flex; align-items:center; gap:9px; flex-wrap:wrap; width:100%; margin:0 auto 12px; }
+.canvas-asset-trigger { display:inline-flex; align-items:center; gap:9px; min-height:42px; border:1.5px solid #141b50; border-radius:10px; background:#fffdf8; color:#141b50; font-weight:800; box-shadow:2px 2px 0 rgb(20 27 80 / 12%); }
+.canvas-asset-trigger:hover { background:#ffda36; color:#141b50; }
+.canvas-asset-trigger > span { display:inline-grid; place-items:center; min-width:22px; height:22px; padding:0 5px; border-radius:999px; background:#141b50; color:#fff; font-size:10px; }
+.canvas-asset-menu { z-index:100; width:min(320px,calc(100vw - 32px)); max-height:min(420px,65vh); overflow-y:auto; padding:8px; border:1.5px solid #d9d1c2; border-radius:14px; background:#fffdf8; box-shadow:0 14px 38px rgb(20 27 80 / 18%); }
+.canvas-asset-menu [role="menuitem"] { display:flex; align-items:center; gap:9px; min-height:38px; cursor:pointer; }
+.canvas-asset-menu .canvas-dropdown-selected { background:#ffed9b; }
+.canvas-dropdown-label { min-width:0; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.canvas-asset-menu .canvas-sticker-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px; padding-top:10px; }
+.canvas-asset-menu .canvas-sticker-grid button { min-width:0; height:58px; padding:6px; }
+.canvas-asset-menu .canvas-sticker-grid img { width:100%; height:100%; object-fit:contain; }
+.canvas-sticker-dropdown { width:min(360px,calc(100vw - 32px)); }
+.canvas-sticker-dropdown > input { margin:4px 0; }
+@media (max-width:520px) {
+ .canvas-asset-dropdowns { gap:7px; }
+ .canvas-asset-trigger { min-height:39px; padding-inline:10px; font-size:12px; }
+ .canvas-asset-menu .canvas-sticker-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
