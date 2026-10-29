@@ -88,6 +88,7 @@ export type Database = {
       }
       card_definitions: {
         Row: {
+          background_url: string | null
           border_enabled: boolean
           counts_for_completion: boolean
           description: string
@@ -102,9 +103,11 @@ export type Database = {
           set_id: string | null
           shadow_enabled: boolean
           sort_order: number
+          sound_url: string | null
           title: string
         }
         Insert: {
+          background_url?: string | null
           border_enabled?: boolean
           counts_for_completion?: boolean
           description?: string
@@ -119,9 +122,11 @@ export type Database = {
           set_id?: string | null
           shadow_enabled?: boolean
           sort_order?: number
+          sound_url?: string | null
           title: string
         }
         Update: {
+          background_url?: string | null
           border_enabled?: boolean
           counts_for_completion?: boolean
           description?: string
@@ -136,6 +141,7 @@ export type Database = {
           set_id?: string | null
           shadow_enabled?: boolean
           sort_order?: number
+          sound_url?: string | null
           title?: string
         }
         Relationships: [
