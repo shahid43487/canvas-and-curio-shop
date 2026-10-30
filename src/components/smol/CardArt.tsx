@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type CSSProperties } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import { Button } from "@/components/ui/button";
 import { parseLayers, type CardDraft, type CardLayer } from "@/lib/club";
 
@@ -41,10 +41,9 @@ function Illustration({ design }: { design: CardDraft["design"] }) {
 }
 
 function LayerShape({ layer }: { layer: CardLayer }) {
-  const toneId = useId();
   const common = { fill: "currentColor" };
   switch (layer.kind) {
-    case "svg": return layer.asset_url ? <g><defs><filter id={toneId}><feFlood floodColor="currentColor"/><feComposite in2="SourceAlpha" operator="in"/></filter></defs><image href={layer.asset_url} x={-layer.size/2} y={-layer.size/2} width={layer.size} height={layer.size} preserveAspectRatio="xMidYMid meet" filter={`url(#${toneId})`}/></g> : null;
+    case "svg": return layer.asset_url ? <image href={layer.asset_url} x={-layer.size/2} y={-layer.size/2} width={layer.size} height={layer.size} preserveAspectRatio="xMidYMid meet" /> : null;
     case "text": return <text x="0" y="0" fontSize={layer.size} textAnchor="middle" dominantBaseline="middle" fontFamily="var(--smol-display)" fontWeight="900" paintOrder="stroke" stroke="var(--card-paper)" strokeWidth="1.2">{layer.text}</text>;
     case "circle": return <circle r={layer.size / 2} {...common}/>;
     case "star": return <path d={Array.from({length:10},(_,i)=>{const a=-Math.PI/2+i*Math.PI/5,r=i%2===0?layer.size/2:layer.size/4.4;return `${i===0?"M":"L"} ${Math.cos(a)*r} ${Math.sin(a)*r}`;}).join(" ")+" Z"} {...common}/>;
