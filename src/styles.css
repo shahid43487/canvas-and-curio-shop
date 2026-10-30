@@ -2194,7 +2194,7 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 .club-canvas-hint { margin:0 0 12px; color:#686273; font-size:12px; line-height:1.45; }
 .club-live-preview-canvas { border:2px solid #141b50; background:#fffdf8; }
 .club-live-preview-canvas .club-card-art { touch-action:none; user-select:none; }
-.club-live-preview-canvas .club-card-illustration { overflow:visible; touch-action:none; }
+.club-live-preview-canvas .club-card-illustration { overflow:visible; touch-action:none; pointer-events:auto; }
 .club-live-preview-canvas .club-card-canvas-editing [data-card-layer] { cursor:grab; pointer-events:all; }
 .club-live-preview-canvas .club-card-canvas-editing [data-card-layer]:active { cursor:grabbing; }
 .club-live-preview-canvas .club-card-layer-selected { filter:drop-shadow(0 0 3px #e53a2b); }
