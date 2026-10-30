@@ -29,7 +29,8 @@ function Library() {
     const bytes=new Uint8Array(await file.arrayBuffer());let binary="";
     for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));
     const result=await upload({data:{token,cardId:draft.id,kind,mime:"image/svg+xml",bytes:btoa(binary)}});
-    setDraft(d=>({...d,layers:[...d.layers,{id:crypto.randomUUID(),kind:"svg",asset_url:result.url,text:"",x:150+(added%4)*8,y:120+(added%4)*8,size:100,rotation:0,scale:1,opacity:1,tone:"ink",motion:"none",speed:1,intensity:1,visible:true}]}));
+    const offset=added%4;
+    setDraft(d=>({...d,layers:[...d.layers,{id:crypto.randomUUID(),kind:"svg",asset_url:result.url,text:"",x:150+offset*8,y:120+offset*8,size:100,rotation:0,scale:1,opacity:1,tone:"ink",motion:"none",speed:1,intensity:1,visible:true}]}));
     added++;
    }
    if(added)toast.success(`Added ${added} SVG layer${added===1?"":"s"} — save card to keep changes`);
