@@ -8,12 +8,16 @@ export function UploadButtonGroup({
   countLabel = "Choose file",
   disabled = false,
   onFile,
+  onFiles,
+  multiple = false,
 }: {
   accept: string;
   actionLabel?: string;
   countLabel?: string;
   disabled?: boolean;
   onFile: (file: File | undefined) => void | Promise<void>;
+  onFiles?: (files: File[]) => void | Promise<void>;
+  multiple?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
@@ -35,15 +39,17 @@ export function UploadButtonGroup({
         ref={inputRef}
         type="file"
         accept={accept}
+        multiple={multiple}
         disabled={disabled}
         className="sr-only"
         tabIndex={-1}
         aria-label={actionLabel}
         onChange={async (event) => {
           const input = event.currentTarget;
-          const file = input.files?.[0];
+          const files = Array.from(input.files ?? []);
           input.value = "";
-          if (file) await onFile(file);
+          if (multiple && onFiles) { if (files.length) await onFiles(files); }
+          else if (files[0]) await onFile(files[0]);
         }}
       />
     </div>
