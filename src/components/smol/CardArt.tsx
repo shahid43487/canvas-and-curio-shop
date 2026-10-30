@@ -2,7 +2,7 @@ import { useRef, useState, type CSSProperties } from "react";
 import { Button } from "@/components/ui/button";
 import { parseLayers, type CardDraft, type CardLayer } from "@/lib/club";
 
-type Props = { card: Pick<CardDraft, "title" | "description" | "design" | "rarity" | "motion_enabled" | "shadow_enabled" | "border_enabled"> & { layers: unknown; background_url?: string | null; sound_url?: string | null }; serial?: string; locked?: boolean };
+type Props = { card: Pick<CardDraft, "title" | "description" | "design" | "rarity" | "motion_enabled" | "shadow_enabled" | "border_enabled"> & { layers: unknown; background_url?: string | null; sound_url?: string | null }; serial?: string; locked?: boolean; canvasEditing?: boolean; selectedLayerId?: string | null; onLayerSelect?: (id: string) => void; onLayerMove?: (id: string, x: number, y: number) => void };
 
 function Illustration({ design }: { design: CardDraft["design"] }) {
   if (design === "smile") return <g className="card-illustration card-illustration-bob">
@@ -59,21 +59,22 @@ function LayerShape({ layer }: { layer: CardLayer }) {
   }
 }
 
-export function CardArt({ card, serial, locked }: Props) {
+export function CardArt({ card, serial, locked, canvasEditing = false, selectedLayerId = null, onLayerSelect, onLayerMove }: Props) {
+  const layerDrag = useRef<{ id: string; startX: number; startY: number; x: number; y: number } | null>(null);
   const audio = useRef<HTMLAudioElement>(null);
   const [audioError,setAudioError] = useState(false);
   const [playing,setPlaying] = useState(false);
   const layers = parseLayers(card.layers).filter(layer => layer.visible);
   return <div className={`club-card-art ca-${card.design} ${card.motion_enabled && !locked ? "club-motion" : ""} ${card.shadow_enabled ? "club-shadow" : ""} ${card.border_enabled ? "club-border" : ""} ${locked ? "club-locked" : ""}`} role="group" aria-label={locked ? "Locked collectible card" : card.title}>
     {card.background_url && <img className="club-card-background" src={card.background_url} alt=""/>}
-    <svg className="club-card-illustration" viewBox="0 0 300 380" aria-hidden="true" preserveAspectRatio="none">
+    <svg className={`club-card-illustration ${canvasEditing ? "club-card-canvas-editing" : ""}`} viewBox="0 0 300 380" aria-label={canvasEditing ? "Drag illustration layers to position them" : undefined} preserveAspectRatio="none" onPointerMove={event => { const d=layerDrag.current; if(!d || !onLayerMove) return; const box=event.currentTarget.getBoundingClientRect(); onLayerMove(d.id, Math.max(0,Math.min(300,d.x+(event.clientX-d.startX)*300/box.width)), Math.max(0,Math.min(380,d.y+(event.clientY-d.startY)*380/box.height))); }} onPointerUp={() => { layerDrag.current=null; }} onPointerCancel={() => { layerDrag.current=null; }}>
       <path d="M-25 75L80 -20H180L-25 185Z" fill="var(--card-paper)" opacity=".45"/>
       <circle cx="245" cy="95" r="72" fill="none" stroke="var(--card-ink)" strokeWidth="2" opacity=".14"/>
       <circle cx="245" cy="95" r="56" fill="none" stroke="var(--card-ink)" strokeWidth="1.5" strokeDasharray="4 7" opacity=".22"/>
       <path d="M20 260l28-9 8-28 9 28 28 9-28 9-9 28-8-28z" fill="var(--card-accent)" opacity=".85"/>
       <path d="M258 242l13 4 4 13 4-13 13-4-13-4-4-13-4 13z" fill="var(--card-pop)"/>
       <Illustration design={card.design}/>
-      {layers.map(layer=><g key={layer.id} transform={`translate(${layer.x} ${layer.y}) rotate(${layer.rotation}) scale(${layer.scale ?? 1})`} opacity={layer.opacity ?? 1} className={`club-tone-${layer.tone}`}><g className={card.motion_enabled && !locked ? `club-motion-layer club-motion-${layer.motion}` : ""} style={{"--layer-duration":`${4/layer.speed}s`,"--layer-distance":`${6*layer.intensity}px`,"--layer-angle":`${8*layer.intensity}deg`,"--layer-growth":1+0.12*layer.intensity} as CSSProperties}><LayerShape layer={layer}/></g></g>)}
+      {layers.map(layer=><g key={layer.id} data-card-layer={layer.id} onPointerDown={canvasEditing ? event => { event.preventDefault(); event.stopPropagation(); onLayerSelect?.(layer.id); layerDrag.current={id:layer.id,startX:event.clientX,startY:event.clientY,x:layer.x,y:layer.y}; } : undefined} onClick={canvasEditing ? () => onLayerSelect?.(layer.id) : undefined} style={canvasEditing ? {cursor:"grab"} : undefined} transform={`translate(${layer.x} ${layer.y}) rotate(${layer.rotation}) scale(${layer.scale ?? 1})`} opacity={layer.opacity ?? 1} className={`club-tone-${layer.tone} ${canvasEditing && selectedLayerId===layer.id ? "club-card-layer-selected" : ""}`}><g className={card.motion_enabled && !locked ? `club-motion-layer club-motion-${layer.motion}` : ""} style={{"--layer-duration":`${4/layer.speed}s`,"--layer-distance":`${6*layer.intensity}px`,"--layer-angle":`${8*layer.intensity}deg`,"--layer-growth":1+0.12*layer.intensity} as CSSProperties}><LayerShape layer={layer}/></g></g>)}
     </svg>
     <div className="club-card-face">
       <span className="club-card-brand">SMOL CLUB <i>✳</i> {card.rarity.toUpperCase()}</span>
