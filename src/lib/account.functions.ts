@@ -41,21 +41,3 @@ export const cancelOrder = createServerFn({ method: "POST" }).middleware([requir
     if (error) throw error;
     return { ok: true };
   });
-export const claimSetReward = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
-  .validator(input => z.object({ set: z.string().min(2).max(80), fulfillment: z.string().max(2000) }).parse(input))
-  .handler(async ({ context, data }) => { const { data: id, error } = await context.supabase.rpc("claim_club_set", { target_set: data.set, fulfillment: data.fulfillment }); if (error) throw error; return { id }; });
-
-export const getCardDex = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
-  const { error: progressError } = await context.supabase.rpc("refresh_club_progress");
-  if (progressError) throw progressError;
-  const [cards, definitions, sets, achievements, progress, rewards] = await Promise.all([
-    context.supabase.from("customer_cards").select("*").order("acquired_at", { ascending: false }),
-    context.supabase.from("card_definitions").select("*").order("sort_order"),
-    context.supabase.from("card_sets").select("*").order("sort_order"),
-    context.supabase.from("achievement_definitions").select("id,title,description,category,requirement_type,requirement_value,card_id,target_set_id,rarity,is_secret,is_active,sort_order").eq("is_active", true).order("sort_order"),
-    context.supabase.from("customer_achievements").select("*"),
-    context.supabase.from("set_reward_claims").select("*").order("claimed_at", { ascending: false }),
-  ]);
-  for (const r of [cards, definitions, sets, achievements, progress, rewards]) if (r.error) throw r.error;
-  return { cards: cards.data ?? [], definitions: definitions.data ?? [], sets: sets.data ?? [], achievements: (achievements.data ?? []).map(a => ({ ...a, state: progress.data?.find(p => p.achievement_id === a.id) ?? null })), rewards: rewards.data ?? [] };
-});
