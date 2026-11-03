@@ -41,6 +41,7 @@ type CheckoutForm = z.infer<typeof checkoutSchema>;
 export const Route = createFileRoute("/checkout")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
       { title: "Checkout — SMOL STUUF" },
       { name: "description", content: "Complete your SMOL STUUF order." },
       { property: "og:title", content: "Checkout — SMOL STUUF" },
