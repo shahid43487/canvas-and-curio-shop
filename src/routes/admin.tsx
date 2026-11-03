@@ -99,7 +99,7 @@ function AdminShell() {
               <h3>{group.label}</h3>
               {group.items.map(item => {
                 const Icon = item.icon;
-                return <Link key={item.to} to={item.to} activeOptions={"exact" in item && item.exact ? {exact:true} : undefined} activeProps={{className:"admin-nav-link is-active"}} className="admin-nav-link" onClick={() => setMenuOpen(false)}>
+                return <Link key={item.to} to={item.to} {...("exact" in item && item.exact ? {activeOptions:{exact:true}} : {})} activeProps={{className:"admin-nav-link is-active"}} className="admin-nav-link" onClick={() => setMenuOpen(false)}>
                   <span className="admin-nav-icon"><Icon size={18} strokeWidth={1.9}/></span><span>{item.label}</span><ChevronRight className="admin-nav-chevron" size={16}/>
                 </Link>;
               })}
