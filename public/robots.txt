@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://canvas-and-curio-shop.lovable.app/sitemap.xml

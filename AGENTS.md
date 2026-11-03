@@ -23,3 +23,4 @@
 - The remix starts with an empty migration directory; generate future migrations through the migration tool against the current backend, because copied migration history can target an unrelated database. Resetting repository history does not initialize or delete backend schema.
 - getAccount lazy-creates the caller's profiles row on first read (supabaseAdmin upsert, name from JWT user_metadata/email) so a customer without a profile row still loads /account; don't rely on a signup trigger for profile rows.
 - Card assets use admin-authorized validated uploads in the existing private media bucket; SVGs are allowlist-sanitized server-side and rendered as isolated images, and layer motion runs inside static transform wrappers to preserve placement.
+- Every route declares staticData.sitemap; src/routes/sitemap[.]xml.ts lists static pages plus visible products via the public client, so new pages must choose include/exclude explicitly.

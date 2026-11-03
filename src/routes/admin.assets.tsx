@@ -10,7 +10,7 @@ import { DEFAULT_SEQUENCES } from "@/data/dialogue-defaults";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { useAdminToken } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin/assets")({ head: () => pageHead("Sticker library", "SMOL STUUF sticker library administration."), component: Assets });
+export const Route = createFileRoute("/admin/assets")({ staticData: { sitemap: false }, head: () => pageHead("Sticker library", "SMOL STUUF sticker library administration."), component: Assets });
 
 type StickerStatus = "active" | "inactive" | "hidden";
 type LibrarySticker = { id: string; label: string; src: string; category: string; tags: string[]; isBuiltIn: boolean; status: StickerStatus };

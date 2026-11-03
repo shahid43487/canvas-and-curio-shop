@@ -5,7 +5,7 @@ import fierceCharacter from "@/assets/cart-fierce-character.png";
 import { SECRET_ACCESS_KEY } from "@/components/smol/SecretGate";
 import { dialogueReadingTime } from "@/hooks/use-dialogue";
 
-export const Route = createFileRoute("/secret-transition")({
+export const Route = createFileRoute("/secret-transition")({ staticData: { sitemap: false },
   head: () => ({ meta: [
     { title: "Checking the coast — SMOL STUUF" },
     { name: "description", content: "A hidden SMOL STUUF doorway." },

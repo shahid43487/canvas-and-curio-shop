@@ -7,7 +7,7 @@ import { adminSaveSetting } from "@/lib/admin.functions";
 import { useSite, type Socials } from "@/lib/site";
 import { useAdminToken } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin/settings")({ head: () => pageHead("Settings", "SMOL STUUF settings administration."), component: Settings });
+export const Route = createFileRoute("/admin/settings")({ staticData: { sitemap: false }, head: () => pageHead("Settings", "SMOL STUUF settings administration."), component: Settings });
 
 const FIELDS: [keyof Socials, string, string][] = [
   ["instagram", "Instagram", "https://instagram.com/smolstuuf"],

@@ -10,7 +10,7 @@ import { useAdminToken } from "@/lib/admin-session";
 import { PacmanConfigurator } from "@/components/smol/PacmanConfigurator";
 import { pacmanConfigSchema, type PacmanConfig } from "@/lib/pacman-config";
 
-export const Route = createFileRoute("/admin/products")({ head: () => pageHead("Catalog", "SMOL STUUF catalog administration."), component: Products });
+export const Route = createFileRoute("/admin/products")({ staticData: { sitemap: false }, head: () => pageHead("Catalog", "SMOL STUUF catalog administration."), component: Products });
 
 type Row = Awaited<ReturnType<typeof adminListCatalog>>["products"][number];
 const BLANK = { num: "", name: "", price: 0, stock: 0, tag: "NEW", color: "#FFD23F", material: "", dims: "", batch: "Batch 04", description: "", image_key: "", is_hidden: false, requires_advance_payment: false };

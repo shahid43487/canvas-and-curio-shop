@@ -18,7 +18,7 @@ const productsQueryOptions = queryOptions({
   queryFn: () => listProducts(),
 });
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "SMOL STUUF — Smol things. Big mood." },

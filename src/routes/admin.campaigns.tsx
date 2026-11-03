@@ -12,7 +12,7 @@ import { useAdminToken } from "@/lib/admin-session";
 import { HeroCanvasEditor } from "@/components/smol/HeroCanvasEditor";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/admin/campaigns")({ head: () => pageHead("Hero slides", "SMOL STUUF hero slides administration."), component: Campaigns });
+export const Route = createFileRoute("/admin/campaigns")({ staticData: { sitemap: false }, head: () => pageHead("Hero slides", "SMOL STUUF hero slides administration."), component: Campaigns });
 
 const blank = (): Slide => ({ id: `slide-${Date.now().toString(36)}`, eyebrow: "NEW DROP", title: "NEW THING.", accent: "BIG MOOD.", sub: "Say something smol and weird.", cta: { label: "Shop the drop", to: "/shop" }, sticker: "drop", preset: "split" });
 

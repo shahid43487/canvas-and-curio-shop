@@ -21,7 +21,7 @@ const productQueryOptions = (id: string) =>
     queryFn: () => getProduct({ data: { id } }),
   });
 
-export const Route = createFileRoute("/product/$id")({
+export const Route = createFileRoute("/product/$id")({ staticData: { sitemap: true },
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(productQueryOptions(params.id)),
   head: ({ loaderData }) => {
@@ -37,6 +37,25 @@ export const Route = createFileRoute("/product/$id")({
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: p ? [{ rel: "canonical", href: `https://canvas-and-curio-shop.lovable.app/product/${p.id}` }] : [],
+      scripts: p ? [{
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: p.name,
+          description: p.description,
+          sku: String(p.id),
+          brand: { "@type": "Brand", name: "SMOL STUUF" },
+          offers: {
+            "@type": "Offer",
+            price: String(p.price),
+            priceCurrency: "BDT",
+            availability: p.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            url: `https://canvas-and-curio-shop.lovable.app/product/${p.id}`,
+          },
+        }),
+      }] : [],
     };
   },
   component: ProductPage,
