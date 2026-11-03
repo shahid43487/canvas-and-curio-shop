@@ -12,6 +12,7 @@ import { DropsHero } from "@/components/smol/DropsHero";
 import { SECRET_ACCESS_KEY } from "@/components/smol/SecretGate";
 import logo from "@/assets/smol-stuuf-logo.png";
 import { listProducts } from "@/lib/products.functions";
+import { siteQuery } from "@/lib/site";
 
 const productsQueryOptions = queryOptions({
   queryKey: ["products"],
@@ -36,7 +37,14 @@ export const Route = createFileRoute("/")({ staticData: { sitemap: true },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(productsQueryOptions),
+  loader: async ({ context }) => {
+    // Prefetch site settings too so the hero renders the same slides on server and client.
+    const [products] = await Promise.all([
+      context.queryClient.ensureQueryData(productsQueryOptions),
+      context.queryClient.ensureQueryData(siteQuery).catch(() => undefined),
+    ]);
+    return products;
+  },
   component: Home,
 });
 

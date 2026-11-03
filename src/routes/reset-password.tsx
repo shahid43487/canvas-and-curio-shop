@@ -5,7 +5,7 @@ import { pageHead } from "@/lib/page-head";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/smol/SiteHeader";
 
-export const Route = createFileRoute("/reset-password")({ staticData: { sitemap: false }, head: () => pageHead("Reset password", "Choose a new SMOL STUUF password."), component: ResetPassword });
+export const Route = createFileRoute("/reset-password")({ staticData: { sitemap: false }, head: () => ({ meta: [...pageHead("Reset password", "Choose a new SMOL STUUF password.").meta, { name: "robots", content: "noindex" }] }), component: ResetPassword });
 function ResetPassword() {
   const [recovery, setRecovery] = useState(false);
   const [message, setMessage] = useState("");

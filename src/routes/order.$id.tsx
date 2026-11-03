@@ -21,6 +21,7 @@ export const Route = createFileRoute("/order/$id")({ staticData: { sitemap: fals
   validateSearch: (search: { phone?: string }) => search,
   head: ({ params }) => ({
     meta: [
+      { name: "robots", content: "noindex" },
       { title: "Order received — SMOL STUUF" },
       { name: "description", content: "Your SMOL STUUF order details." },
       { property: "og:title", content: "Order received — SMOL STUUF" },
