@@ -75,5 +75,6 @@
 - [x] Fixed admin nav type error; removed leftover coupon/card CSS
 - [x] Shrank 6 oversized PNGs (~6.9 MB → ~2.2 MB)
 - [x] Sitemap (static pages + visible products), robots Sitemap line, Product structured data + canonical
-- [ ] Mobile hero hydration mismatch (hero-slider-dots) — existing issue, not yet fixed
+- [x] Mobile hero first-load mismatch fixed (homepage prefetches site settings)
+- [x] noindex on checkout, order, sign-in, reset-password; original images kept in docs/asset-originals
 - [ ] Remaining plan phases: accessibility pass, loading/error states, data-fetching tidy-up
