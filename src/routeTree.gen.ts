@@ -19,6 +19,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SecretRouteImport } from './routes/secret'
 import { Route as SecretTransitionRouteImport } from './routes/secret-transition'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAssetsRouteImport } from './routes/admin.assets'
@@ -78,6 +79,11 @@ const SecretTransitionRoute = SecretTransitionRouteImport.update({
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/secret': typeof SecretRouteWithChildren
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/account': typeof AuthenticatedAccountRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/secret': typeof SecretRouteWithChildren
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/account': typeof AuthenticatedAccountRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/secret': typeof SecretRouteWithChildren
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/secret'
     | '/secret-transition'
     | '/shop'
+    | '/sitemap.xml'
     | '/account'
     | '/admin/assets'
     | '/admin/campaigns'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/secret'
     | '/secret-transition'
     | '/shop'
+    | '/sitemap.xml'
     | '/account'
     | '/admin/assets'
     | '/admin/campaigns'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/secret'
     | '/secret-transition'
     | '/shop'
+    | '/sitemap.xml'
     | '/_authenticated/account'
     | '/admin/assets'
     | '/admin/campaigns'
@@ -283,6 +295,7 @@ export interface RootRouteChildren {
   SecretRoute: typeof SecretRouteWithChildren
   SecretTransitionRoute: typeof SecretTransitionRoute
   ShopRoute: typeof ShopRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   OrderIdRoute: typeof OrderIdRoute
   ProductIdRoute: typeof ProductIdRoute
 }
@@ -357,6 +370,13 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/account': {
@@ -494,6 +514,7 @@ const rootRouteChildren: RootRouteChildren = {
   SecretRoute: SecretRouteWithChildren,
   SecretTransitionRoute: SecretTransitionRoute,
   ShopRoute: ShopRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   OrderIdRoute: OrderIdRoute,
   ProductIdRoute: ProductIdRoute,
 }
