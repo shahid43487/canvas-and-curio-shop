@@ -1326,11 +1326,6 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 .smol-header .links a:nth-child(4) { background: var(--smol-yellow); }
 @media (max-width: 480px) { .smol-header .links { gap: 6px; } .smol-header .links a { min-width: 0; padding-inline: 9px; font-size: 11px; } }
 
-.summary-coupon { margin: .75rem 0; }
-.coupon-row { display: flex; gap: .5rem; }
-.coupon-row input { flex: 1; min-width: 0; }
-.coupon-remove { font-size: .75rem; text-decoration: underline; background: none; border: 0; cursor: pointer; color: inherit; }
-
 
 /* Mobile hero order and narrow-screen logo clearance. */
 @media (max-width: 900px) {
@@ -1516,98 +1511,10 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 }
 
 /* ---------- Coupons: ticket artwork, admin page, customer panel ---------- */
-.coupon-art { --ca-bg: #f6efe0; --ca-fg: #111a52; --ca-pill: #e62008; --ca-pill-fg: #fff; container-type: inline-size; width: 100%; max-width: 340px; aspect-ratio: 1.08; filter: drop-shadow(0 4px 6px rgb(0 0 0 / .18)); transform: rotate(-1deg); }
-.ca-face { box-sizing: border-box; position: relative; width: 100%; height: 100%; padding: 7cqw 8cqw; background: var(--ca-bg); color: var(--ca-fg); display: flex; flex-direction: column; justify-content: flex-end; gap: 2cqw; overflow: hidden;
-  -webkit-mask: radial-gradient(circle 4.5cqw at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 4.5cqw at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
-  mask: radial-gradient(circle 4.5cqw at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 4.5cqw at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat; }
-.ca-brand { position: absolute; top: 6cqw; left: 8cqw; font: 5.2cqw/1 var(--smol-display); }
-.ca-lines { display: flex; flex-direction: column; font: 17cqw/.92 var(--smol-display); letter-spacing: -.01em; }
-.ca-lines span { overflow-wrap: anywhere; }
-.ca-deco { position: absolute; top: 18cqw; right: 7cqw; width: 30cqw; height: 30cqw; transform: rotate(8deg); }
-.ca-note { font: 700 4.3cqw/1.2 var(--smol-body); margin: 0; }
-.ca-code { align-self: flex-start; background: var(--ca-pill); color: var(--ca-pill-fg); font: 5cqw var(--smol-display); padding: 2cqw 4.5cqw; border-radius: 99px; transform: rotate(-1.5deg); }
-.ca-valid { font: 700 3cqw var(--smol-body); opacity: .85; }
-.ca-ship { --ca-bg: #e62008; --ca-fg: #fff; --ca-pill: #fff; --ca-pill-fg: #e62008; }
-.ca-bogo { --ca-bg: #fffdf8; --ca-fg: #111a52; --ca-pill: #e62008; }
-.ca-dark { --ca-bg: #14151a; --ca-fg: #ffd400; --ca-pill: #ffd400; --ca-pill-fg: #14151a; }
-.ca-dark .ca-note { color: #fff; }
-.ca-ghost { --ca-bg: #ffb8e0; --ca-fg: #111a52; --ca-pill: #111a52; --ca-pill-fg: #fff; }
-.ca-compact { aspect-ratio: 1; max-width: none; transform: none; filter: none; }
-.ca-compact .ca-face { padding: 10cqw 6cqw; justify-content: center; align-items: center; -webkit-mask: none; mask: none; border-radius: 6px; }
-.ca-compact .ca-lines { font-size: 25cqw; text-align: center; }
-.ca-thumb { width: 52px; flex: none; }
-.ca-thumb .ca-lines { font-size: 27cqw; }
 /* Animated coupon cards: every layer moves — card bob, sway, pop-in lines,
    stamping code, blinking/floating characters. Reduced-motion safe. */
-@media (prefers-reduced-motion: no-preference) {
-  .coupon-art:not(.ca-compact) { animation: ca-card-bob 5s ease-in-out infinite; }
-  .coupon-art:not(.ca-compact) .ca-face { animation: ca-face-sway 7s ease-in-out infinite; transform-origin: 50% 85%; }
-  .coupon-art:not(.ca-compact) .ca-brand { animation: ca-wiggle 5s ease-in-out infinite; transform-origin: 0 50%; }
-  .coupon-art:not(.ca-compact) .ca-lines span { animation: ca-pop .55s cubic-bezier(.34, 1.56, .64, 1) backwards; }
-  .coupon-art:not(.ca-compact) .ca-note { animation: ca-note-in .6s .3s cubic-bezier(.34, 1.56, .64, 1) backwards; }
-  .coupon-art:not(.ca-compact) .ca-code { animation: ca-stamp 3s ease-in-out .6s infinite; }
-  .coupon-art:not(.ca-compact) .ca-valid { animation: ca-soft-pulse 2.6s ease-in-out infinite; }
-  .ca-part-bob { animation: ca-part-bob 3.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-  .ca-part-float { animation: ca-part-float 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-  .ca-part-pulse { animation: ca-part-pulse 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-  .ca-part-spin { animation: ca-part-spin 8s linear infinite; transform-box: fill-box; transform-origin: center; }
-  .ca-part-blink { animation: ca-part-blink 3.4s infinite; transform-box: fill-box; transform-origin: center; }
-  .ca-part-steam { animation: ca-part-steam 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
-}
-@keyframes ca-card-bob { 0%, 100% { transform: rotate(-1deg) translateY(0); } 50% { transform: rotate(-2.2deg) translateY(-5px); } }
-@keyframes ca-face-sway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(.6deg); } }
-@keyframes ca-wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-2deg); } 75% { transform: rotate(2deg); } }
-@keyframes ca-pop { from { transform: translateY(14px) scale(.8); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-@keyframes ca-note-in { from { transform: translateX(-12px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes ca-stamp { 0%, 86%, 100% { transform: rotate(-1.5deg) scale(1); } 90% { transform: rotate(-3deg) scale(1.08); } 94% { transform: rotate(-1deg) scale(.96); } }
-@keyframes ca-soft-pulse { 0%, 100% { opacity: .85; } 50% { opacity: .45; } }
-@keyframes ca-part-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-4%) rotate(-2deg); } }
-@keyframes ca-part-float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-7%) rotate(3deg); } }
-@keyframes ca-part-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-@keyframes ca-part-spin { to { transform: rotate(360deg); } }
-@keyframes ca-part-blink { 0%, 91%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.12); } }
-@keyframes ca-part-steam { 0%, 100% { transform: translateY(0) scaleY(1); opacity: .9; } 50% { transform: translateY(-6%) scaleY(1.15); opacity: .5; } }
-
-.coupon-tiles { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-.coupon-form-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.25rem; align-items: start; margin-bottom: 1rem; }
-.coupon-form-preview { display: grid; gap: .5rem; }
-.coupon-filters { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; padding: .6rem .75rem; }
-.coupon-filters input { flex: 1 1 200px; min-width: 0; }
-.coupon-filters .admin-btn { margin: 0; }
-.coupon-table-wrap { overflow-x: auto; }
-.coupon-code-cell { display: flex; align-items: center; gap: .6rem; min-width: 150px; }
-.coupon-chip { display: inline-block; padding: .15rem .55rem; border-radius: 99px; font-size: .75rem; font-weight: 700; }
 .chip-active { background: #d9f5e5; color: #0b7a3e; } .chip-used { background: #e6e8ee; color: #4a5060; } .chip-expired { background: #fde0dd; color: #b3261e; }
-.coupon-actions { white-space: nowrap; } .coupon-actions .admin-btn { margin: 0 .25rem 0 0; padding: .3rem .5rem; }
-.coupon-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; }
-
-.coupon-open { width: 100%; text-align: left; padding: 10px 12px; border: 2px dashed var(--smol-ink); border-radius: 8px; background: transparent; font: 600 14px var(--smol-body); color: var(--smol-ink); cursor: pointer; }
-.coupon-open:hover, .coupon-open:focus-visible { background: color-mix(in srgb, var(--smol-ink) 8%, transparent); }
-.coupon-applied-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.coupon-tag { background: var(--smol-red); color: #fff; border: 2px solid var(--smol-ink); padding: 2px 9px; font: 13px var(--smol-display); border-radius: 4px; }
 .summary-discount { color: #0b7a3e; font-weight: 700; }
-
-.coupon-panel { max-width: 440px; max-height: min(88dvh, 720px); overflow-y: auto; border: 3px solid var(--smol-ink); border-radius: 14px !important; background: #fffdf8; color: var(--smol-ink); }
-.coupon-panel-title { font: 22px var(--smol-display); }
-.coupon-entry { display: flex; gap: .5rem; }
-.coupon-entry input { flex: 1; min-width: 0; }
-.coupon-list-head { display: flex; align-items: center; justify-content: space-between; margin-top: .25rem; }
-.coupon-list-head h3 { font: 16px var(--smol-display); }
-.coupon-list-head span { font-size: 12px; background: #eee9dc; border-radius: 99px; padding: 2px 10px; }
-.coupon-list { display: grid; gap: .6rem; }
-.coupon-item { display: flex; align-items: center; gap: .75rem; padding: .6rem; border: 1px solid #d8d3c8; border-radius: 10px; background: #fff; }
-.coupon-item-body { flex: 1; min-width: 0; display: grid; gap: 1px; font-size: 13px; }
-.coupon-item-body small { opacity: .75; } .coupon-short { color: var(--smol-red); opacity: 1 !important; }
-.coupon-apply { background: var(--smol-red); color: #fff; }
-.coupon-empty { font-size: 13px; opacity: .8; }
-html.smol-dark .coupon-panel { background: var(--card); color: var(--foreground); border-color: var(--smol-night-line); }
-html.smol-dark .coupon-item { background: var(--secondary); border-color: var(--smol-night-line); }
-html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(--foreground); }
-
-@media (max-width: 640px) {
-  .coupon-panel { inset: 0 !important; top: 0 !important; left: 0 !important; transform: none !important; width: 100%; max-width: none; height: 100dvh; max-height: none; border: 0; border-radius: 0 !important; }
-  .coupon-form-grid { grid-template-columns: 1fr; }
-}
 
 
 /* ---------- Hero canvas: stage, layers, editor ---------- */
@@ -1811,18 +1718,12 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 .account-empty { display:grid; place-items:center; gap:10px; text-align:center; padding:30px 18px; border:2px dashed #17152d; border-radius:10px; background:#f7f1e8; }
 .account-empty>svg { color:#bd5045; }.account-empty a { color:#17152d; font-size:11px; font-weight:900; text-decoration:underline; }.account-empty p { margin:0; }
 .achievement-mini-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-.achievement-mini { display:grid; gap:8px; padding:15px; border:2px solid #17152d; border-radius:8px; background:#f3f0ec; }.achievement-mini>span { display:grid; place-items:center; width:34px; height:34px; border:1.5px solid #17152d; border-radius:50%; background:#fff; }.achievement-mini strong { font:900 12px "Archivo Black",sans-serif; }.achievement-mini small { font-size:10px; }.achievement-mini.is-earned { background:#d7ff49; }
-.card-library-filters { display:flex; gap:15px; flex-wrap:wrap; margin:18px 0; font-size:10px; font-weight:900; }.card-library-filters>span { display:flex; align-items:center; gap:6px; }.filter-dot,.coupon-status-dot { display:inline-block; width:9px; height:9px; border:1px solid #17152d; border-radius:50%; }.dot-active,.dot-ready { background:#d7ff49; }.dot-used { background:#ff7968; }.dot-expired { background:#b9b6c4; }
-.coupon-collection-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; align-items:start; }
-.coupon-collectible { overflow:hidden; border:2px solid #17152d; border-radius:10px; background:#fff; box-shadow:4px 4px 0 #17152d; }
-.coupon-art-wrap { display:grid; place-items:center; padding:14px; background:#f1edf7; border-bottom:2px dashed #17152d; }.coupon-art-wrap>div { width:min(100%,300px); }
-.coupon-collectible-info { padding:15px; }.coupon-collectible-status { display:flex; align-items:center; gap:7px; font-size:9px; font-weight:900; letter-spacing:.06em; }.coupon-collectible-info h3 { margin:10px 0 4px; font:900 21px "Archivo Black",sans-serif; overflow-wrap:anywhere; }.coupon-collectible-info p { margin:4px 0 9px; font-weight:900; }.coupon-collectible-info>small { display:block; margin-top:5px; font-size:10px; }.coupon-used .coupon-art-wrap,.coupon-expired .coupon-art-wrap { filter:grayscale(.72); }.coupon-used .coupon-collectible-info h3 { text-decoration:line-through; text-decoration-thickness:2px; }
-.coupon-card-actions { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-top:14px; }.coupon-card-actions>span { font-size:9px; font-weight:900; }.coupon-card-actions button { display:flex; align-items:center; gap:7px; border:2px solid #17152d; background:#d7ff49; color:#17152d; font-size:11px; font-weight:900; box-shadow:2px 2px 0 #17152d; }
+.achievement-mini { display:grid; gap:8px; padding:15px; border:2px solid #17152d; border-radius:8px; background:#f3f0ec; }.achievement-mini>span { display:grid; place-items:center; width:34px; height:34px; border:1.5px solid #17152d; border-radius:50%; background:#fff; }.achievement-mini strong { font:900 12px "Archivo Black",sans-serif; }.achievement-mini small { font-size:10px; }.achievement-mini.is-earned { background:#d7ff49; }.filter-dot { display:inline-block; width:9px; height:9px; border:1px solid #17152d; border-radius:50%; }.dot-active,.dot-ready { background:#d7ff49; }.dot-used { background:#ff7968; }.dot-expired { background:#b9b6c4; }
 .achievement-library-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; margin-top:20px; align-items:stretch; }
 .achievement-card { overflow:hidden; border:2px solid #17152d; border-radius:10px; background:#fff; box-shadow:4px 4px 0 #17152d; }.achievement-art { position:relative; display:grid; place-items:center; min-height:130px; color:#17152d; border-bottom:2px solid #17152d; }.achievement-art-0 { background:#ff7968; }.achievement-art-1 { background:#7ad8ee; }.achievement-art-2 { background:#d7ff49; }.achievement-number { position:absolute; top:10px; left:12px; font:900 22px "Archivo Black",sans-serif; }.achievement-spark { position:absolute; right:14px; bottom:14px; }.achievement-locked .achievement-art { filter:saturate(.45); }.achievement-card-body { padding:16px; }.achievement-card-body h3 { margin:8px 0; font:900 19px "Archivo Black",sans-serif; }.achievement-card-body p { min-height:40px; font-size:12px; line-height:1.5; }.achievement-progress { height:8px; overflow:hidden; border:1.5px solid #17152d; border-radius:9px; background:#eee; }.achievement-progress span { display:block; height:100%; background:#ff7968; transition:width .3s; }.achievement-card-body>small { display:block; margin-top:6px; font-size:9px; font-weight:900; }.achievement-reward { display:grid; grid-template-columns:18px 1fr; gap:3px 7px; align-items:center; margin:14px 0; padding:10px; background:#f5f1e8; border:1.5px dashed #17152d; }.achievement-reward svg { grid-row:span 2; }.achievement-reward strong { font:900 12px "Archivo Black",sans-serif; }.achievement-reward span { font-size:9px; font-weight:800; }.achievement-card-body button { display:flex; width:100%; align-items:center; justify-content:center; gap:6px; padding:10px; border:2px solid #17152d; border-radius:5px; background:#d7ff49; color:#17152d; font-size:10px; font-weight:900; box-shadow:3px 3px 0 #17152d; }.achievement-claimed,.achievement-locked-note { display:flex; align-items:center; gap:6px; min-height:35px; font-size:9px; font-weight:900; }.achievement-claimed { color:#27642d; }.achievement-locked-note { color:#6e6878; }
 .account-profile-panel { display:grid; grid-template-columns:1fr 1.2fr; gap:20px; align-items:center; margin-top:36px; padding:22px; border:2px solid #17152d; border-radius:10px; background:#f5f1e8; }.account-profile-panel p { margin:8px 0 0; font-size:12px; }.account-profile-panel .profile-form { align-items:end; }.account-profile-panel label { display:grid; flex:1; gap:6px; font-size:10px; font-weight:900; }.account-profile-panel .admin-input { width:100%; min-width:0; border:2px solid #17152d; border-radius:5px; padding:10px; }.account-profile-panel button { display:flex; align-items:center; gap:6px; border:2px solid #17152d; background:#ffe65c; color:#17152d; font-weight:900; }.account-footnote { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:28px; font-size:9px; font-weight:900; letter-spacing:.08em; }
 @media (max-width:760px) { .account-stats { gap:8px; }.account-stat { padding:13px; min-height:100px; }.account-stat span { font-size:8px; }.account-stat strong { font-size:31px; }.account-stat>svg { right:10px; bottom:10px; width:17px; }.achievement-library-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.account-profile-panel { grid-template-columns:1fr; }.account-sticker { flex-basis:90px; width:90px; height:90px; }.account-sticker strong { font-size:14px; } }
-@media (max-width:520px) { .smol-account { width:calc(100% - 24px); padding-top:18px; }.smol-account .account-hero { min-height:185px; padding:22px 17px; }.smol-account .account-hero h1 { font-size:43px; }.account-sticker { flex-basis:72px; width:72px; height:72px; outline-width:2px; }.account-sticker span { font-size:6px; }.account-sticker strong { font-size:11px; }.account-sticker svg { width:17px; }.account-topline { align-items:stretch; flex-direction:column; }.account-signout { align-self:flex-start; }.account-id-copy span { max-width:62vw; }.account-stats { grid-template-columns:repeat(3,minmax(0,1fr)); }.account-stat { min-height:90px; padding:10px 8px; }.account-stat span { max-width:100%; min-height:24px; font-size:7px; letter-spacing:0; }.account-stat strong { margin-top:8px; font-size:28px; }.account-stat>svg { display:none; }.account-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }.account-tabs button { justify-content:center; padding:10px 6px; font-size:9px; }.account-welcome { grid-template-columns:1fr; }.welcome-doodle { min-height:130px; }.doodle-face { width:110px; height:110px; }.account-section-title { align-items:start; }.account-section-title>button { font-size:9px; }.achievement-mini-grid { grid-template-columns:1fr; }.coupon-collection-grid,.achievement-library-grid { grid-template-columns:1fr; }.coupon-art-wrap { padding:10px; }.account-profile-panel { padding:15px; }.account-profile-panel .profile-form { align-items:stretch; flex-direction:column; }.account-footnote { font-size:8px; } }
+@media (max-width:520px) { .smol-account { width:calc(100% - 24px); padding-top:18px; }.smol-account .account-hero { min-height:185px; padding:22px 17px; }.smol-account .account-hero h1 { font-size:43px; }.account-sticker { flex-basis:72px; width:72px; height:72px; outline-width:2px; }.account-sticker span { font-size:6px; }.account-sticker strong { font-size:11px; }.account-sticker svg { width:17px; }.account-topline { align-items:stretch; flex-direction:column; }.account-signout { align-self:flex-start; }.account-id-copy span { max-width:62vw; }.account-stats { grid-template-columns:repeat(3,minmax(0,1fr)); }.account-stat { min-height:90px; padding:10px 8px; }.account-stat span { max-width:100%; min-height:24px; font-size:7px; letter-spacing:0; }.account-stat strong { margin-top:8px; font-size:28px; }.account-stat>svg { display:none; }.account-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }.account-tabs button { justify-content:center; padding:10px 6px; font-size:9px; }.account-welcome { grid-template-columns:1fr; }.welcome-doodle { min-height:130px; }.doodle-face { width:110px; height:110px; }.account-section-title { align-items:start; }.account-section-title>button { font-size:9px; }.achievement-mini-grid { grid-template-columns:1fr; }.achievement-library-grid { grid-template-columns:1fr; }.account-profile-panel { padding:15px; }.account-profile-panel .profile-form { align-items:stretch; flex-direction:column; }.account-footnote { font-size:8px; } }
 
 
 .achievement-collection { margin:20px 0 28px; padding:16px; border:2px solid #17152d; border-radius:10px; background:#f5f1e8; }
@@ -1839,7 +1740,6 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 
 
 /* SMOL CLUB Card Dex identity, rarity and admin Achievement Lab */
-.coupon-card-meta-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:12px 0 4px; font-size:9px; font-weight:900; letter-spacing:.08em; }
 .rarity { display:inline-flex; align-items:center; padding:4px 7px; border:1.5px solid #17152d; border-radius:4px; font-size:8px; font-weight:900; letter-spacing:.08em; }
 .rarity-common { background:#eeeae4; }.rarity-uncommon { background:#d7ff49; }.rarity-rare { background:#7ad8ee; }.rarity-epic { background:#c7a0ff; }.rarity-legendary { background:#ffe65c; box-shadow:2px 2px 0 #17152d; }
 .achievement-admin-intro { display:flex; align-items:flex-start; gap:13px; margin:20px 0; padding:18px; border:2px solid #17152d; border-radius:9px; background:#e6f6a8; }.achievement-admin-intro>svg { flex:0 0 auto; }.achievement-admin-intro strong { font:900 15px "Archivo Black",sans-serif; }.achievement-admin-intro p { margin:6px 0 0; font-size:12px; line-height:1.6; }
@@ -1852,8 +1752,6 @@ html.smol-dark .coupon-open { border-color: var(--smol-night-line); color: var(-
 /* Admin collectible-card gallery (Coupon Library) */
 .admin-card-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin-top: .75rem; }
 .admin-card-card { display: grid; gap: .35rem; align-content: start; padding: 1rem; border: 1px solid var(--admin-border, #ddd); border-radius: .8rem; background: #fff; }
-.admin-card-art { display: flex; justify-content: center; margin-bottom: .35rem; }
-.admin-card-art .coupon-art { max-width: 200px; }
 .admin-card-card strong { font-size: 15px; }
 .admin-card-card small { opacity: .72; }
 .admin-card-note { color: var(--smol-red); opacity: 1 !important; }
