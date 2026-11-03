@@ -1511,7 +1511,6 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 }
 
 /* ---------- Coupons: ticket artwork, admin page, customer panel ---------- */
-   stamping code, blinking/floating characters. Reduced-motion safe. */
 .chip-active { background: #d9f5e5; color: #0b7a3e; } .chip-used { background: #e6e8ee; color: #4a5060; } .chip-expired { background: #fde0dd; color: #b3261e; }
 .summary-discount { color: #0b7a3e; font-weight: 700; }
 

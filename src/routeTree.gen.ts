@@ -21,14 +21,11 @@ import { Route as SecretTransitionRouteImport } from './routes/secret-transition
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminAchievementsRouteImport } from './routes/admin.achievements'
 import { Route as AdminAssetsRouteImport } from './routes/admin.assets'
 import { Route as AdminCampaignsRouteImport } from './routes/admin.campaigns'
-import { Route as AdminCardLibraryRouteImport } from './routes/admin.card-library'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
-import { Route as AdminSetsRouteImport } from './routes/admin.sets'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
@@ -93,11 +90,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAchievementsRoute = AdminAchievementsRouteImport.update({
-  id: '/achievements',
-  path: '/achievements',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminAssetsRoute = AdminAssetsRouteImport.update({
   id: '/assets',
   path: '/assets',
@@ -106,11 +98,6 @@ const AdminAssetsRoute = AdminAssetsRouteImport.update({
 const AdminCampaignsRoute = AdminCampaignsRouteImport.update({
   id: '/campaigns',
   path: '/campaigns',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCardLibraryRoute = AdminCardLibraryRouteImport.update({
-  id: '/card-library',
-  path: '/card-library',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminMediaRoute = AdminMediaRouteImport.update({
@@ -126,11 +113,6 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
 const AdminProductsRoute = AdminProductsRouteImport.update({
   id: '/products',
   path: '/products',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSetsRoute = AdminSetsRouteImport.update({
-  id: '/sets',
-  path: '/sets',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -165,14 +147,11 @@ export interface FileRoutesByFullPath {
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
   '/account': typeof AuthenticatedAccountRoute
-  '/admin/achievements': typeof AdminAchievementsRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
-  '/admin/card-library': typeof AdminCardLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
-  '/admin/sets': typeof AdminSetsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
@@ -189,14 +168,11 @@ export interface FileRoutesByTo {
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
   '/account': typeof AuthenticatedAccountRoute
-  '/admin/achievements': typeof AdminAchievementsRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
-  '/admin/card-library': typeof AdminCardLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
-  '/admin/sets': typeof AdminSetsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
@@ -216,14 +192,11 @@ export interface FileRoutesById {
   '/secret-transition': typeof SecretTransitionRoute
   '/shop': typeof ShopRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
-  '/admin/achievements': typeof AdminAchievementsRoute
   '/admin/assets': typeof AdminAssetsRoute
   '/admin/campaigns': typeof AdminCampaignsRoute
-  '/admin/card-library': typeof AdminCardLibraryRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
-  '/admin/sets': typeof AdminSetsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$id': typeof ProductIdRoute
@@ -243,14 +216,11 @@ export interface FileRouteTypes {
     | '/secret-transition'
     | '/shop'
     | '/account'
-    | '/admin/achievements'
     | '/admin/assets'
     | '/admin/campaigns'
-    | '/admin/card-library'
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
-    | '/admin/sets'
     | '/admin/settings'
     | '/order/$id'
     | '/product/$id'
@@ -267,14 +237,11 @@ export interface FileRouteTypes {
     | '/secret-transition'
     | '/shop'
     | '/account'
-    | '/admin/achievements'
     | '/admin/assets'
     | '/admin/campaigns'
-    | '/admin/card-library'
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
-    | '/admin/sets'
     | '/admin/settings'
     | '/order/$id'
     | '/product/$id'
@@ -293,14 +260,11 @@ export interface FileRouteTypes {
     | '/secret-transition'
     | '/shop'
     | '/_authenticated/account'
-    | '/admin/achievements'
     | '/admin/assets'
     | '/admin/campaigns'
-    | '/admin/card-library'
     | '/admin/media'
     | '/admin/orders'
     | '/admin/products'
-    | '/admin/sets'
     | '/admin/settings'
     | '/order/$id'
     | '/product/$id'
@@ -409,13 +373,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/achievements': {
-      id: '/admin/achievements'
-      path: '/achievements'
-      fullPath: '/admin/achievements'
-      preLoaderRoute: typeof AdminAchievementsRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/assets': {
       id: '/admin/assets'
       path: '/assets'
@@ -428,13 +385,6 @@ declare module '@tanstack/react-router' {
       path: '/campaigns'
       fullPath: '/admin/campaigns'
       preLoaderRoute: typeof AdminCampaignsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/card-library': {
-      id: '/admin/card-library'
-      path: '/card-library'
-      fullPath: '/admin/card-library'
-      preLoaderRoute: typeof AdminCardLibraryRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/media': {
@@ -456,13 +406,6 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/admin/products'
       preLoaderRoute: typeof AdminProductsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/sets': {
-      id: '/admin/sets'
-      path: '/sets'
-      fullPath: '/admin/sets'
-      preLoaderRoute: typeof AdminSetsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
@@ -508,27 +451,21 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface AdminRouteChildren {
-  AdminAchievementsRoute: typeof AdminAchievementsRoute
   AdminAssetsRoute: typeof AdminAssetsRoute
   AdminCampaignsRoute: typeof AdminCampaignsRoute
-  AdminCardLibraryRoute: typeof AdminCardLibraryRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRoute
-  AdminSetsRoute: typeof AdminSetsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminAchievementsRoute: AdminAchievementsRoute,
   AdminAssetsRoute: AdminAssetsRoute,
   AdminCampaignsRoute: AdminCampaignsRoute,
-  AdminCardLibraryRoute: AdminCardLibraryRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRoute,
-  AdminSetsRoute: AdminSetsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
