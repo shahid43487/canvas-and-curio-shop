@@ -93,7 +93,7 @@ function AdminShell() {
 
         {menuOpen && <button className="admin-drawer-scrim" type="button" aria-label="Close navigation menu" onClick={() => setMenuOpen(false)} />}
         <aside id="admin-navigation-drawer" className={`admin-navigation-drawer ${menuOpen ? "is-open" : ""}`} aria-hidden={!menuOpen} inert={!menuOpen}>
-          <div className="admin-drawer-heading"><div><span className="admin-drawer-eyebrow">NAVIGATION</span><h2>Control room<span>.</span></h2></div><span className="admin-drawer-count">06</span></div>
+          <div className="admin-drawer-heading"><div><span className="admin-drawer-eyebrow">NAVIGATION</span><h2>Control room<span>.</span></h2></div><span className="admin-drawer-count">07</span></div>
           <nav className="admin-drawer-nav" aria-label="Admin navigation">
             {navigation.map(group => <section className="admin-nav-group" key={group.label}>
               <h3>{group.label}</h3>
