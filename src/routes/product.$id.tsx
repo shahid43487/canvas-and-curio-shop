@@ -21,7 +21,7 @@ const productQueryOptions = (id: string) =>
     queryFn: () => getProduct({ data: { id } }),
   });
 
-export const Route = createFileRoute("/product/$id")({
+export const Route = createFileRoute("/product/$id")({ staticData: { sitemap: true },
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(productQueryOptions(params.id)),
   head: ({ loaderData }) => {

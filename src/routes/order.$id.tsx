@@ -17,7 +17,7 @@ type OrderItemWithProduct = {
   products: Product | null;
 };
 
-export const Route = createFileRoute("/order/$id")({
+export const Route = createFileRoute("/order/$id")({ staticData: { sitemap: false },
   validateSearch: (search: { phone?: string }) => search,
   head: ({ params }) => ({
     meta: [

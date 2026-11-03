@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/smol/SiteHeader";
 import { SiteFooter } from "@/components/smol/SiteFooter";
 import { GrandpaPopup } from "@/components/smol/GrandpaPopup";
 
-export const Route = createFileRoute("/about")({
+export const Route = createFileRoute("/about")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "About — SMOL STUUF" },

@@ -38,7 +38,7 @@ const checkoutSchema = z.object({
 
 type CheckoutForm = z.infer<typeof checkoutSchema>;
 
-export const Route = createFileRoute("/checkout")({
+export const Route = createFileRoute("/checkout")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Checkout — SMOL STUUF" },

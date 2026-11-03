@@ -8,7 +8,7 @@ import { formatPrice, type Product } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
 import { getSecretProduct } from "@/lib/products.functions";
 
-export const Route = createFileRoute("/secret/product/$id")({
+export const Route = createFileRoute("/secret/product/$id")({ staticData: { sitemap: false },
   head: () => ({ meta: [
     { title: "Secret product — SMOL STUUF" },
     { name: "description", content: "A hidden SMOL STUUF prank object." },

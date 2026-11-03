@@ -9,7 +9,7 @@ import { playSfx } from "@/lib/sfx";
 import { AdminUpload } from "@/components/smol/AdminUpload";
 import { useAdminToken } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin/media")({ head: () => pageHead("Media console", "SMOL STUUF media console administration."), component: Media });
+export const Route = createFileRoute("/admin/media")({ staticData: { sitemap: false }, head: () => pageHead("Media console", "SMOL STUUF media console administration."), component: Media });
 
 const TRIGGERS: Record<CustomSound["trigger"], string> = { click: "Button clicks", cart: "Add to cart", chomp: "Option pick", none: "Not used" };
 

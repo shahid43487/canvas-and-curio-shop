@@ -4,7 +4,7 @@ import { ArrowUpRight, ChevronRight, Command, LayoutDashboard, Menu, Package, Pa
 import { adminDashboard } from "@/lib/admin.functions";
 import { ADMIN_KEY as KEY, AdminTokenContext as TokenCtx } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/admin")({ staticData: { sitemap: "exclude-subtree" },
   ssr: false,
   head: () => ({
     meta: [

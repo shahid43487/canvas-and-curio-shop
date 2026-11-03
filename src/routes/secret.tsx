@@ -7,7 +7,7 @@ import { SecretGate, SECRET_ACCESS_KEY } from "@/components/smol/SecretGate";
 import { listSecretProducts } from "@/lib/products.functions";
 import type { Product } from "@/data/products";
 
-export const Route = createFileRoute("/secret")({
+export const Route = createFileRoute("/secret")({ staticData: { sitemap: false },
   head: () => ({ meta: [
     { title: "Secret prank store — SMOL STUUF" },
     { name: "description", content: "Hidden small-batch prank objects from SMOL STUUF." },

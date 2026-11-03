@@ -12,7 +12,7 @@ const productsQueryOptions = queryOptions({
   queryFn: () => listProducts(),
 });
 
-export const Route = createFileRoute("/shop")({
+export const Route = createFileRoute("/shop")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Shop all stuuf — SMOL STUUF" },

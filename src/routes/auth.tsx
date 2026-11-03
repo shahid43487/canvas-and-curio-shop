@@ -11,7 +11,7 @@ import { adminSignIn } from "@/lib/admin-auth.functions";
 import { ADMIN_KEY } from "@/lib/admin-session";
 import { pageHead } from "@/lib/page-head";
 
-export const Route = createFileRoute("/auth")({ head: () => pageHead("Sign in", "Sign in or create your SMOL STUUF customer account."), component: Auth });
+export const Route = createFileRoute("/auth")({ staticData: { sitemap: false }, head: () => pageHead("Sign in", "Sign in or create your SMOL STUUF customer account."), component: Auth });
 function Auth() {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [message, setMessage] = useState("");

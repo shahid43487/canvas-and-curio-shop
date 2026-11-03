@@ -5,7 +5,7 @@ import { adminDashboard } from "@/lib/admin.functions";
 import { formatPrice } from "@/data/products";
 import { useAdminToken } from "@/lib/admin-session";
 
-export const Route = createFileRoute("/admin/")({ head: () => pageHead("Operations", "SMOL STUUF operations administration."), component: Dashboard });
+export const Route = createFileRoute("/admin/")({ staticData: { sitemap: "exclude-subtree" }, head: () => pageHead("Operations", "SMOL STUUF operations administration."), component: Dashboard });
 
 function Dashboard() {
   const token = useAdminToken();

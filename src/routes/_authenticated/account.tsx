@@ -14,7 +14,7 @@ import { formatPrice } from "@/data/products";
 import { useCustomer } from "@/hooks/use-customer";
 
 const accountQuery = queryOptions({ queryKey: ["customer-account"], queryFn: () => getAccount() });
-export const Route = createFileRoute("/_authenticated/account")({
+export const Route = createFileRoute("/_authenticated/account")({ staticData: { sitemap: false },
   head: () => pageHead("My stuuf", "Your SMOL STUUF member profile and order history."),
   loader: ({ context }) => context.queryClient.ensureQueryData(accountQuery),
   component: Account,
