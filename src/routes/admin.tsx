@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { ArrowUpRight, ChevronRight, Command, LayoutDashboard, Menu, Package, PanelsTopLeft, Palette, Settings2, ShoppingBag, Sparkles, Sticker, Trophy, X, LogOut } from "lucide-react";
+import { ArrowUpRight, ChevronRight, Command, LayoutDashboard, Menu, Package, PanelsTopLeft, Palette, Settings2, ShoppingBag, Sticker, X, LogOut } from "lucide-react";
 import { adminDashboard } from "@/lib/admin.functions";
 import { ADMIN_KEY as KEY, AdminTokenContext as TokenCtx } from "@/lib/admin-session";
 
@@ -30,11 +30,6 @@ const navigation = [
     { label: "Hero slides", to: "/admin/campaigns", icon: PanelsTopLeft },
     { label: "Media", to: "/admin/media", icon: Palette },
     { label: "Stickers", to: "/admin/assets", icon: Sticker },
-  ]},
-  { label: "SMOL CLUB", items: [
-    { label: "Card Library", to: "/admin/card-library", icon: Sparkles },
-    { label: "Sets & rewards", to: "/admin/sets", icon: Trophy },
-    { label: "Achievement Lab", to: "/admin/achievements", icon: Command },
   ]},
   { label: "System", items: [
     { label: "Settings", to: "/admin/settings", icon: Settings2 },
@@ -98,7 +93,7 @@ function AdminShell() {
 
         {menuOpen && <button className="admin-drawer-scrim" type="button" aria-label="Close navigation menu" onClick={() => setMenuOpen(false)} />}
         <aside id="admin-navigation-drawer" className={`admin-navigation-drawer ${menuOpen ? "is-open" : ""}`} aria-hidden={!menuOpen} inert={!menuOpen}>
-          <div className="admin-drawer-heading"><div><span className="admin-drawer-eyebrow">NAVIGATION</span><h2>Control room<span>.</span></h2></div><span className="admin-drawer-count">09</span></div>
+          <div className="admin-drawer-heading"><div><span className="admin-drawer-eyebrow">NAVIGATION</span><h2>Control room<span>.</span></h2></div><span className="admin-drawer-count">06</span></div>
           <nav className="admin-drawer-nav" aria-label="Admin navigation">
             {navigation.map(group => <section className="admin-nav-group" key={group.label}>
               <h3>{group.label}</h3>
