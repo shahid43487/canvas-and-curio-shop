@@ -1,62 +1,85 @@
-# SMOL STUUF optimization plan
+# Move SMOL STUUF backend to external project "Smolstuuf" (yugcntmmeitnbboyrupm, Sydney)
 
-Retired: Card Library / SMOL CLUB cards, achievements, sets, claims and rewards. Nothing in this plan brings them back.
+Audit only so far. Nothing has been changed.
 
-## What the audit found
-- The preview build is failing right now. `src/routes/admin.tsx:102` has a type error in the admin nav links (`activeOptions` can be undefined).
-- The retired card feature is gone from routes and components. What is left: about 94 card/club rules in `src/styles.css`, plus the card tables and functions (`card_sets`, `card_definitions`, `customer_cards`, `customer_achievements`, `achievement_definitions`, `set_reward_claims`, `refresh_club_progress`, `claim_club_set`) and the deprecated `customer_coupons` table and columns in the database and generated types.
-- Large images: 7 bundled PNGs are 0.45 to 1.7 MB each (logo, header logo, characters, stickers). `src/assets` totals 9.9 MB. The header logo (1.28 MB) loads on every page.
-- SEO: 21 of 22 routes have `head()`. `public/` has `robots.txt` but no `sitemap.xml`. Product pages have no Product structured data.
-- Data loading: `checkout.tsx`, `admin.tsx` and `__root.tsx` lean on `useEffect`. Public routes need checking for missing `errorComponent`/`notFoundComponent`.
-- Git: this sandbox only shows Lovable's internal remotes and an edit branch. I can't confirm from here that the project syncs to GitHub `shahid43487/canvas-and-curio-shop` on `main`. Check Project settings → Git. Nothing will push to or overwrite a repository.
+## 1. What the app uses today
 
-## Phase 1: Make the build reliable (high impact, low risk)
-1. Fix the `admin.tsx` nav link type: build the link props conditionally.
-2. Run `tsgo` and the vitest suite. Remove or update `src/lib/card-upload.test.ts` and `src/lib/club*` if they still exist, so no retired imports remain.
-- Check: the build log shows OK, typecheck is clean, tests pass.
+**Database tables still in use**
+- products (15 queries), product_variations (8): shop, product pages, admin products — `src/lib/products.functions.ts`, `src/lib/supabase-public.ts`, `src/routes/sitemap[.]xml.ts`
+- orders (5), order_items (2): checkout, order lookup, admin orders, account history — `src/lib/orders.functions.ts`, `src/lib/account.functions.ts`, `src/lib/admin.functions.ts`
+- profiles (4): account page; created on first visit with the admin client — `src/lib/account.functions.ts`
+- site_settings (2): hero slides, campaigns, canvas data, sticker library, dialogues, media/audio deck — `src/lib/site.functions.ts`, `src/lib/site.ts`, `src/lib/admin.functions.ts`
 
-## Phase 2: Speed and Core Web Vitals
-1. Re-encode the 7 heavy PNGs to WebP/AVIF at display size (target under 150 KB each) and keep the originals' filenames as fallbacks.
-2. Preload the homepage hero/logo image. Lazy-load stickers and characters below the fold. Give every image width and height to stop layout shift.
-3. Load GSAP-heavy pieces (PacmanConfigurator, HeroCanvasEditor) only on the admin routes that use them.
-4. Delete the unused card/club CSS blocks from `styles.css`.
-- Check: compare Playwright load timings and transferred bytes on `/`, `/shop` and `/product/$id`, before and after. Screenshots should show the visuals unchanged.
+**Database functions in use**
+- create_order_with_items / create_club_order / create_owned_order (checkout; the price and stock checks run on the server)
+- cancel_customer_order (customer cancels a pending order)
+- guard_cancelled_order, enforce_variation_limit and update_updated_at_column triggers
+- admin_find_user_by_email (admin)
 
-## Phase 3: Storefront UX, mobile and accessibility
-1. Audit icon-only buttons (cart, sound bar, header, close buttons) for `aria-label`. Raise mobile tap targets to 44px or more.
-2. Use exactly one `<main>` landmark and a correct heading order on each route. Replace `h-screen` with `h-dvh`.
-3. Respect `prefers-reduced-motion` in GSAP hover/entrance effects and stickers. The existing animations stay as they are.
-4. Add clear loading, empty and error states for shop, product, checkout, order lookup and account orders.
-- Check: Playwright at 390px and 1280px on the main pages, keyboard tab-through, and console free of errors.
+**Retired, not migrated:** card_definitions, card_sets, set_reward_claims, customer_cards, customer_achievements, achievement_definitions, customer_coupons, refresh_club_progress, claim_club_set. Old columns orders.coupon_id and orders.discount_amount get copied as they are, so the table stays the same shape, but nothing new uses them.
 
-## Phase 4: Data fetching and caching
-1. Move initial reads in checkout, product and shop to loader + `ensureQueryData`/`useSuspenseQuery`. Give public catalog reads a sensible `staleTime`.
-2. Make sure every route with a loader has `errorComponent` and `notFoundComponent`. Remove admin mutations that swallow errors and show toasts instead.
-- Check: typecheck, manual flows (shop → product → cart → checkout → order page), and network log with no duplicate requests.
+**Sign-in**
+- Email/password sign-up, sign-in and password reset — `src/routes/auth.tsx`, `src/routes/reset-password.tsx`
+- Google sign-in goes through Lovable's sign-in helper (`src/integrations/lovable/index.ts`, `@lovable.dev/cloud-auth-js`). This only works on Lovable Cloud and must be replaced with standard Google sign-in on the new project.
+- Session listener in `src/routes/__root.tsx`, `use-customer.tsx`, the signed-in area gate `_authenticated/route.tsx`, and the server sign-in check (`auth-middleware.ts`, `auth-attacher.ts`, `start.ts`)
+- Admin login is separate (ADMIN_LOGIN_EMAIL / ADMIN_LOGIN_PASSWORD / ADMIN_TOKEN in `src/lib/admin-auth.functions.ts`). It doesn't use backend accounts. `adminListCustomers` uses the admin user listing.
 
-## Phase 5: SEO and AI search
-1. Add a `sitemap.xml` server route listing static pages and visible products. Reference it in `robots.txt`.
-2. Add Product structured data plus title, description and og:image (the product's absolute photo URL) on `product.$id`. Add canonical links on leaf routes. Mark `/secret*`, `/admin*`, `/auth` and `/account` noindex.
-3. Add `llms.txt` with a short shop summary.
-- Check: fetch the server-rendered HTML for each route and confirm unique titles and tags. The sitemap returns valid XML.
+**Storage**
+- One private bucket, `media`. Admin uploads go through a one-time upload link, and the app then saves a **10-year signed link** (`adminUploadUrl`, `adminFileUrl`, `uploadMedia` in `src/lib/site.ts`).
+- Those signed links are saved inside site_settings (and possibly product images). They contain the old project address and the old signing key, so **they will all break after the move and must be rewritten**.
+- `database_export_06_11_26` is an export bucket and is not needed.
+- Logo, stickers and character art are bundled in the app (`src/assets`), so they don't depend on the backend.
 
-## Phase 6: Security and access boundaries
-1. Run the security scan and database linter, and review the results.
-2. Review the admin token flow (`admin-auth.functions.ts`, `admin-session.tsx`): every admin server function must check the token server-side.
-3. Confirm guest order lookup returns only the masked summary. Confirm order and stock rules are still enforced server-side.
-4. Check media upload size and type limits on the admin upload paths.
-- Check: scan results, plus calls without a token should be rejected.
+**Not used:** realtime, edge functions, scheduled jobs (LOVABLE_CRON_SECRET is set but nothing calls it), and Lovable AI.
 
-## Phase 7: Admin usability (light touch)
-- Add confirm dialogs on destructive admin actions, save-success and failure toasts, and better empty states in orders, products and media. No redesign.
+**Hard-coded project references:** none in app source. The project address and keys come from `.env` and `supabase/config.toml`. Both are managed by Lovable and are rewritten when the project is reconnected.
 
-## Database changes that delete data (NOT applied; each needs your separate approval)
-- Drop the retired card tables: `set_reward_claims`, `customer_achievements`, `customer_cards`, `card_definitions`, `card_sets`, `achievement_definitions`. This permanently deletes customers' earned card records.
-- Drop the functions `refresh_club_progress` and `claim_club_set`.
-- Drop the `customer_coupons` table and the `orders.coupon_id` and `orders.discount_amount` columns. Old orders lose their discount history, so the columns should be archived first.
-- Remove the `cards/` files from the media storage bucket.
-Until you approve these, the tables stay untouched and the app simply stops reading them.
+## 2. Migration design
 
-## Risks
-- Re-encoding images could shift colors slightly. Product photos are compared side by side.
-- Changing loaders could change first-load behavior. This is done one route at a time and checked each time.
+1. **Schema:** apply a cleaned copy of `drizzle/schema.snapshot.sql` to Smolstuuf. It includes only the tables, enum, functions and triggers listed above, with the same row security rules and table permissions. I'd tighten the permissions while doing this: no public run access on the order functions beyond what checkout needs.
+2. **Storage:** create a private `media` bucket on Smolstuuf with the same size limit, and copy every object at the same path. Then rewrite every saved signed link (in site_settings JSON and products.image_key) to a fresh signed link from the new project. A better long-term option is to store the path and sign links when they're needed, but that's optional.
+3. **Data:** copy products, product_variations, orders, order_items, profiles and site_settings with their original IDs, so order and product links keep working. Copy auth users first, because profiles and orders refer to user IDs.
+4. **Auth users:** a full database copy of the `auth` schema keeps user IDs **and password hashes**, so customers keep their passwords. Customers who use Google sign-in reconnect automatically by email once Google is set up on Smolstuuf. Current sessions end, so everyone signs in once more.
+5. **App changes:** remove the Lovable sign-in helper, use standard Google sign-in, and point the app to the new keys. No changes to how checkout, prices or payment work.
+
+**Cutover**
+1. Keep Lovable Cloud running and untouched.
+2. Do a dry-run copy to Smolstuuf and test it on a draft: shop, checkout, account, admin and media.
+3. Briefly freeze the shop (stop orders), do a final copy of the data and files, then switch the app's keys.
+4. Check that the counts and totals match.
+
+**Rollback:** switch the keys back to Lovable Cloud. Orders placed on Smolstuuf after cutover would have to be copied back by hand, so keep the window short. Only disconnect Lovable Cloud after about two weeks of stable running, because disconnecting permanently deletes its data.
+
+## 3. What I need from you (enter secrets only in Project Settings → Secrets, never in chat)
+
+Safe to show in the browser:
+- `VITE_SUPABASE_URL` = `https://yugcntmmeitnbboyrupm.supabase.co`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`: Supabase → Project Settings → API Keys → publishable key (or the legacy anon key)
+- `VITE_SUPABASE_PROJECT_ID` = `yugcntmmeitnbboyrupm`
+
+Server only (Secrets):
+- `SUPABASE_URL` (same address) and `SUPABASE_PUBLISHABLE_KEY` (same key). These are needed for the sitemap and public reads.
+- `SUPABASE_SERVICE_ROLE_KEY`: API Keys → secret key or service_role. It's needed for admin tasks, orders, profile creation and uploads.
+- Keep the existing ADMIN_TOKEN, ADMIN_LOGIN_EMAIL and ADMIN_LOGIN_PASSWORD as they are.
+- Only for the one-time copy: `TARGET_DB_URL`. This is the database connection string from Supabase → Connect → Session pooler. Delete it afterwards.
+
+Not needed: JWT secret, storage S3 keys, or a separate anon key if the publishable key is provided.
+
+Set up in the Smolstuuf dashboard yourself:
+- Google sign-in: Authentication → Providers → Google, with your own Google client ID and secret
+- Site and redirect addresses for the published site and preview: Authentication → URL Configuration
+
+## 4. What I can and can't copy myself
+
+- **Database rows:** I can read the current Lovable Cloud data. With TARGET_DB_URL I can write it to Smolstuuf directly.
+- **Auth users with passwords:** these sit in the protected `auth` schema. I can query them read-only here, but whether I can export the password hashes is unconfirmed. If I can't, use More → Database → Manage → Settings → Export project data, and I'll restore from that file.
+- **Storage files:** I can read them with the current backend access and upload them to Smolstuuf using its secret key.
+
+## 5. Blockers and steps that need your approval
+
+- **Blocker:** Google sign-in has to be rebuilt without the Lovable helper. You need a Google client ID and secret.
+- **Blocker:** whether this project can be pointed at an outside backend at all. Lovable Cloud can't be detached in place. Options are a remix that connects to your own Supabase, or keeping the Lovable-managed keys and adding a separate set (`EXT_SUPABASE_*`). I'll confirm which before building.
+- **Approval:** briefly freezing the shop at cutover.
+- **Approval:** rewriting saved media links in site_settings and products. I'll back up the current values first.
+- **Approval, much later:** disconnecting Lovable Cloud. This is permanent.
+- Everyone has to sign in again after the switch.
