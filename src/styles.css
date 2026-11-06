@@ -2051,3 +2051,24 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
   .admin-burger-shell .admin-store-link,
   .admin-burger-shell .admin-drawer-scrim { animation: none; transition: none; }
 }
+
+/* Keep oversized legacy sticker rectangles from dominating the editor preview.
+   The stored layer geometry remains editable; only the artwork is visually capped. */
+.canvas-area .canvas-desktop .canvas-kind-sticker > .canvas-content {
+  display: grid;
+  place-items: center;
+}
+.canvas-area .canvas-desktop .canvas-kind-sticker > .canvas-content img {
+  width: min(100%, 64px);
+  height: min(100%, 64px);
+  margin: auto;
+}
+.canvas-area .canvas-mobile .canvas-kind-sticker > .canvas-content {
+  display: grid;
+  place-items: center;
+}
+.canvas-area .canvas-mobile .canvas-kind-sticker > .canvas-content img {
+  width: min(100%, 44px);
+  height: min(100%, 44px);
+  margin: auto;
+}
