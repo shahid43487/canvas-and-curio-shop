@@ -4,18 +4,26 @@ import { Button } from '@/components/ui/button';
 import { stickerSrc } from '@/data/drops';
 import { CANVAS_WIDTH, isPillElement, safeHeroHref, type CanvasMode, type HeroCanvas, type HeroElement } from '@/lib/hero-canvas';
 
-export function CanvasStage({ canvas, mode, children, stageRef }: { canvas: HeroCanvas; mode: CanvasMode; children: ReactNode; stageRef?: React.Ref<HTMLDivElement> }) {
+export function CanvasStage({ canvas, mode, children, stageRef, fitToViewport = false }: { canvas: HeroCanvas; mode: CanvasMode; children: ReactNode; stageRef?: React.Ref<HTMLDivElement>; fitToViewport?: boolean }) {
   const host = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   useEffect(() => {
     const el = host.current;
     if (!el) return;
-    const observer = new ResizeObserver(() => setScale(el.clientWidth / CANVAS_WIDTH[mode]));
+    const measure = () => {
+      const widthScale = el.clientWidth / CANVAS_WIDTH[mode];
+      const maxHeight = window.innerHeight * (mode === 'mobile' ? 0.58 : 0.64);
+      setScale(fitToViewport ? Math.min(widthScale, maxHeight / canvas[mode].height) : widthScale);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
     observer.observe(el);
-    return () => observer.disconnect();
-  }, [mode]);
-  return <div ref={host} className={`hero-canvas-host canvas-${mode}`} style={{ height: canvas[mode].height * scale }}>
-    <div ref={stageRef} className="hero-canvas-stage canvas-bg-paper" style={{ width: CANVAS_WIDTH[mode], height: canvas[mode].height, transform: `scale(${scale})` }}>{children}</div>
+    window.addEventListener('resize', measure);
+    return () => { observer.disconnect(); window.removeEventListener('resize', measure); };
+  }, [mode, canvas, fitToViewport]);
+  const stageWidth = CANVAS_WIDTH[mode];
+  return <div ref={host} className={`hero-canvas-host canvas-${mode} ${fitToViewport ? 'canvas-fit-viewport' : ''}`} style={{ height: canvas[mode].height * scale }}>
+    <div ref={stageRef} className="hero-canvas-stage canvas-bg-paper" style={{ width: stageWidth, height: canvas[mode].height, left: fitToViewport ? `calc(50% - ${stageWidth / 2}px)` : 0, transform: `scale(${scale})` }}>{children}</div>
   </div>;
 }
 export function elementStyle(e: HeroElement, mode: CanvasMode): CSSProperties {
