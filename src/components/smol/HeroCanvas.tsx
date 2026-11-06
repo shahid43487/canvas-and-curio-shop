@@ -23,7 +23,7 @@ export function CanvasStage({ canvas, mode, children, stageRef, fitToViewport = 
   }, [mode, canvas, fitToViewport]);
   const stageWidth = CANVAS_WIDTH[mode];
   return <div ref={host} className={`hero-canvas-host canvas-${mode} ${fitToViewport ? 'canvas-fit-viewport' : ''}`} style={{ height: canvas[mode].height * scale }}>
-    <div ref={stageRef} className="hero-canvas-stage canvas-bg-paper" style={{ width: stageWidth, height: canvas[mode].height, left: fitToViewport ? `calc(50% - ${stageWidth / 2}px)` : 0, transform: `scale(${scale})` }}>{children}</div>
+    <div ref={stageRef} className="hero-canvas-stage canvas-bg-paper" style={{ width: stageWidth, height: canvas[mode].height, left: fitToViewport ? `calc(50% - ${(stageWidth * scale) / 2}px)` : 0, transform: `scale(${scale})` }}>{children}</div>
   </div>;
 }
 export function elementStyle(e: HeroElement, mode: CanvasMode): CSSProperties {
