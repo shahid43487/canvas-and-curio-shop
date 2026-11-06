@@ -1605,8 +1605,11 @@ body:has(.checkout-speaker) { padding-bottom: 180px; }
 
 .canvas-columns { display: grid; grid-template-columns: 190px minmax(0, 1fr) 240px; gap: 12px; align-items: start; }
 .canvas-workspace { width: 100%; max-width: none; }
-.canvas-area .hero-canvas-host.canvas-desktop { min-width: 1180px; width: 1180px; max-width: none; }
-.canvas-area .hero-canvas-host.canvas-mobile { min-width: 390px; width: 390px; max-width: none; }
+/* Editor previews scale to the available column instead of forcing horizontal scrolling. */
+.canvas-area .hero-canvas-host.canvas-desktop { min-width: 0; width: 100%; max-width: 1180px; }
+.canvas-area .hero-canvas-host.canvas-mobile { min-width: 0; width: min(100%, 390px); max-width: 390px; }
+.canvas-area .hero-canvas-host.canvas-fit-viewport { overflow: visible; }
+.canvas-area .hero-canvas-stage { transform-origin: 0 0; }
 .canvas-area .hero-canvas-stage.canvas-bg-paper { background-image: radial-gradient(circle, rgb(22 27 83 / .24) 1px, transparent 1.2px); background-size: 12px 12px; }
 .canvas-layers, .canvas-inspector { display: grid; gap: .5rem; align-content: start; font-size: .85rem; max-height: 78vh; overflow-y: auto; }
 .canvas-layers h3, .canvas-inspector h3 { font-weight: 800; font-size: .9rem; margin-top: .25rem; overflow-wrap: anywhere; }
